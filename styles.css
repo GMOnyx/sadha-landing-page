@@ -499,6 +499,25 @@ input {
   margin-top: 365px;
 }
 
+@media (min-width: 1440px) {
+  .hero {
+    padding-top: 118px;
+  }
+
+  .hero h1,
+  .hero-title {
+    font-size: clamp(4.1rem, 4.2vw, 5.65rem);
+  }
+
+  .hero-art {
+    inset-inline: -70px;
+  }
+
+  .product-stage {
+    margin-top: 390px;
+  }
+}
+
 .dashboard-shell,
 .bento-card,
 .feature-panel,
@@ -1246,12 +1265,15 @@ input {
     grid-template-columns: 1fr 1fr;
   }
 
-  .hero h1 {
-    font-size: clamp(3.6rem, 8.6vw, 5rem);
+  .hero h1,
+  .hero-title {
+    max-width: 720px;
+    font-size: clamp(3.35rem, 8vw, 4.85rem);
   }
 
-  .hero-title {
-    font-size: clamp(5rem, 14vw, 8rem);
+  .hero-art {
+    inset-inline: -70px;
+    height: 610px;
   }
 
   .signal-system {
@@ -1277,7 +1299,7 @@ input {
   }
 
   .subhead {
-    max-width: 700px;
+    max-width: 480px;
   }
 
   .call-brief h2 {
@@ -1322,24 +1344,40 @@ input {
   }
 
   .hero {
-    padding-top: 132px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 120px;
   }
 
-  .hero h1 {
-    font-size: clamp(3rem, 13.4vw, 4.25rem);
+  .hero-copy {
+    order: 1;
   }
 
+  .hero h1,
   .hero-title {
-    font-size: clamp(4.3rem, 18vw, 6.4rem);
+    max-width: 100%;
+    font-size: clamp(2.82rem, 12.6vw, 3.9rem);
+    line-height: 0.96;
   }
 
   .subhead {
     font-size: 1rem;
   }
 
+  .hero-art {
+    position: relative;
+    order: 2;
+    inset: auto;
+    height: 230px;
+    margin-top: 42px;
+    overflow: visible;
+  }
+
   .signal-system {
+    right: 0;
+    bottom: 0;
+    left: 0;
     grid-template-columns: 1fr;
-    bottom: 26px;
     justify-items: center;
   }
 
@@ -1353,12 +1391,13 @@ input {
   }
 
   .engine-sphere {
-    width: 112px;
-    height: 112px;
+    width: 118px;
+    height: 118px;
   }
 
   .product-stage {
-    margin-top: 190px;
+    order: 3;
+    margin-top: 54px;
   }
 
   .dashboard-topbar,
@@ -1370,6 +1409,18 @@ input {
   .tracker-grid,
   .trust-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .hero-actions .button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 0.8rem;
   }
 
   .dashboard-topbar,
