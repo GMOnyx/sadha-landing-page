@@ -393,7 +393,7 @@ input {
 .hero-copy {
   position: relative;
   z-index: 1;
-  max-width: 760px;
+  max-width: min(1040px, 100%);
   margin: 0 auto;
   text-align: center;
 }
@@ -423,16 +423,16 @@ input {
 }
 
 .hero h1 {
-  max-width: 760px;
+  max-width: min(1040px, 100%);
   margin: 10px auto 0;
-  font-size: clamp(3.4rem, 5.6vw, 5.35rem);
+  font-size: clamp(3.2rem, 4.75vw, 5.15rem);
   text-wrap: balance;
 }
 
 .hero-title {
-  max-width: 760px;
+  max-width: min(1040px, 100%);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.4rem, 5.6vw, 5.35rem);
+  font-size: clamp(3.2rem, 4.75vw, 5.15rem);
   font-weight: 500;
   line-height: 0.92;
   text-transform: none;
@@ -496,7 +496,7 @@ input {
 .product-stage {
   position: relative;
   z-index: 1;
-  margin-top: 365px;
+  margin-top: 390px;
 }
 
 @media (min-width: 1440px) {
@@ -506,7 +506,8 @@ input {
 
   .hero h1,
   .hero-title {
-    font-size: clamp(4.1rem, 4.2vw, 5.65rem);
+    max-width: min(1100px, 100%);
+    font-size: clamp(3.7rem, 3.25vw, 4.15rem);
   }
 
   .hero-art {
@@ -1267,8 +1268,8 @@ input {
 
   .hero h1,
   .hero-title {
-    max-width: 720px;
-    font-size: clamp(3.35rem, 8vw, 4.85rem);
+    max-width: min(880px, 100%);
+    font-size: clamp(3.1rem, 7.2vw, 4.45rem);
   }
 
   .hero-art {
@@ -1356,8 +1357,8 @@ input {
   .hero h1,
   .hero-title {
     max-width: 100%;
-    font-size: clamp(2.82rem, 12.6vw, 3.9rem);
-    line-height: 0.96;
+    font-size: clamp(2.32rem, 10.6vw, 3.12rem);
+    line-height: 0.98;
   }
 
   .subhead {
@@ -1368,8 +1369,8 @@ input {
     position: relative;
     order: 2;
     inset: auto;
-    height: 230px;
-    margin-top: 42px;
+    height: 250px;
+    margin-top: 48px;
     overflow: visible;
   }
 
@@ -1397,7 +1398,7 @@ input {
 
   .product-stage {
     order: 3;
-    margin-top: 54px;
+    margin-top: 70px;
   }
 
   .dashboard-topbar,
