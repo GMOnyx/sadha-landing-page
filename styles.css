@@ -1345,6 +1345,14 @@ html[lang="ar"] .sadha-engine small {
   letter-spacing: 0;
 }
 
+html[lang="ar"] .hero-title span {
+  display: block;
+}
+
+html[lang="ar"] .hero-title span:first-child {
+  color: #8f8d88;
+}
+
 @media (max-width: 1060px) {
   .nav {
     grid-template-columns: 1fr auto;

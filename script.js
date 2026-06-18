@@ -144,9 +144,9 @@ const translations = {
     "hero.output2": "التزام: ورشة امتثال",
     "hero.output3": "CRM: تحديث تاريخ الإغلاق",
     "hero.eyebrow": "SADHA لذكاء الاجتماعات",
-    "hero.titleMuted": "منصة ذكاء الإيرادات",
-    "hero.titleStrong": "المصممة للشرق الأوسط وشمال أفريقيا",
-    "hero.subhead": "مكالمات المبيعات العربية والإنجليزية تتحول إلى إجراءات إيرادات واضحة.",
+    "hero.titleMuted": "صدى",
+    "hero.titleStrong": "منصة تحول المكالمات إلى إجراءات إيرادات واضحة",
+    "hero.subhead": "",
     "hero.primary": "اطلب الوصول المبكر",
     "hero.secondary": "شاهد الذكاء",
     "dashboard.label": "ذكاء الاجتماعات",
@@ -240,8 +240,13 @@ const translations = {
 const supportedLanguages = Object.keys(translations);
 let currentLanguage = "en";
 
-const t = (key) =>
-  translations[currentLanguage][key] || translations.en[key] || key;
+const t = (key) => {
+  if (Object.prototype.hasOwnProperty.call(translations[currentLanguage], key)) {
+    return translations[currentLanguage][key];
+  }
+
+  return translations.en[key] || key;
+};
 
 const getStoredLanguage = () => {
   try {
@@ -297,7 +302,12 @@ const applyLanguage = (language, { persist = false } = {}) => {
   document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
 
   document.querySelectorAll("[data-i18n]").forEach((element) => {
-    element.textContent = t(element.dataset.i18n);
+    const value = t(element.dataset.i18n);
+    element.textContent = value;
+
+    if (element.hasAttribute("data-hide-parent-when-empty")) {
+      element.parentElement.hidden = value === "";
+    }
   });
 
   document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
