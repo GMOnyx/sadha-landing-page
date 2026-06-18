@@ -28,19 +28,25 @@
     <meta name="theme-color" content="#f4f0e8" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="styles.css?v=11" />
+    <link rel="stylesheet" href="styles.css?v=12" />
   </head>
   <body>
     <header class="nav" data-nav>
-      <a class="brand" href="#top" aria-label="SADHA home">
+      <a class="brand" href="#top" aria-label="SADHA home" data-i18n-aria-label="nav.homeLabel">
         <img src="assets/sadha-logo-transparent.png" alt="SADHA" />
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
-        <a href="#features">Features</a>
-        <a href="#security">Security</a>
-        <a href="#enterprise">Enterprise</a>
+        <a href="#features" data-i18n="nav.features">Features</a>
+        <a href="#security" data-i18n="nav.security">Security</a>
+        <a href="#enterprise" data-i18n="nav.enterprise">Enterprise</a>
       </nav>
-      <a class="nav-cta" href="#access">Request Early Access</a>
+      <div class="nav-actions">
+        <a class="nav-cta" href="#access" data-i18n="nav.cta">Request Early Access</a>
+        <div class="language-toggle" role="radiogroup" aria-label="Language" data-i18n-aria-label="nav.languageLabel">
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ar" aria-pressed="false">عربي</button>
+        </div>
+      </div>
     </header>
 
     <main id="top">
@@ -48,34 +54,34 @@
         <div class="hero-art" aria-hidden="true">
           <div class="signal-system">
             <div class="speech-stream stream-in">
-              <span>بس نحتاج data residency قبل التوقيع</span>
-              <span>Pricing needs procurement clarity</span>
-              <span>Can we include Dubai legal next week?</span>
+              <span data-i18n="hero.stream1">بس نحتاج data residency قبل التوقيع</span>
+              <span data-i18n="hero.stream2">Pricing needs procurement clarity</span>
+              <span data-i18n="hero.stream3">Can we include Dubai legal next week?</span>
             </div>
             <div class="signal-line input-line"><span></span></div>
             <div class="sadha-engine">
               <div class="engine-sphere">
                 <img src="assets/sadha-waveform.png" alt="" />
               </div>
-              <small>SADHA NLP</small>
+              <small data-i18n="hero.engine">SADHA NLP</small>
             </div>
             <div class="signal-line output-line"><span></span></div>
             <div class="structured-output">
-              <span>Deal risk: Data residency</span>
-              <span>Commitment: Compliance workshop</span>
-              <span>CRM: Close date updated</span>
+              <span data-i18n="hero.output1">Deal risk: Data residency</span>
+              <span data-i18n="hero.output2">Commitment: Compliance workshop</span>
+              <span data-i18n="hero.output3">CRM: Close date updated</span>
             </div>
           </div>
         </div>
         <div class="hero-copy">
-          <p class="eyebrow">SADHA meeting intelligence</p>
-          <h1 class="hero-title"><span>The Revenue intelligence</span> <span>software built for MENA</span></h1>
+          <p class="eyebrow" data-i18n="hero.eyebrow">SADHA meeting intelligence</p>
+          <h1 class="hero-title"><span data-i18n="hero.titleMuted">The Revenue intelligence</span> <span data-i18n="hero.titleStrong">software built for MENA</span></h1>
           <p class="subhead">
-            English-Arabic sales calls, decoded into revenue actions.
+            <span data-i18n="hero.subhead">English-Arabic sales calls, decoded into revenue actions.</span>
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#access">Request Early Access</a>
-            <a class="button button-ghost" href="#meeting-intel">View Intelligence</a>
+            <a class="button button-primary" href="#access" data-i18n="hero.primary">Request Early Access</a>
+            <a class="button button-ghost" href="#meeting-intel" data-i18n="hero.secondary">View Intelligence</a>
           </div>
         </div>
 
@@ -83,65 +89,65 @@
           <div class="dashboard-shell">
             <div class="dashboard-topbar">
               <div>
-                <span>Meeting Intelligence</span>
-                <strong>Al Noor Bank / Expansion Review</strong>
+                <span data-i18n="dashboard.label">Meeting Intelligence</span>
+                <strong data-i18n="dashboard.account">Al Noor Bank / Expansion Review</strong>
               </div>
-              <div class="status-pill">Deal Health: At Risk</div>
+              <div class="status-pill" data-i18n="dashboard.health">Deal Health: At Risk</div>
             </div>
 
             <div class="dashboard-layout">
               <aside class="call-brief">
-                <span class="mini-label">Signal summary</span>
-                <h2>60-minute call, reduced to accountable revenue movement.</h2>
+                <span class="mini-label" data-i18n="dashboard.summaryLabel">Signal summary</span>
+                <h2 data-i18n="dashboard.summaryTitle">60-minute call, reduced to accountable revenue movement.</h2>
                 <div class="brief-grid">
-                  <div><strong>41:59</strong><span>Rep:Client talk ratio</span></div>
-                  <div><strong>3</strong><span>Pricing objections</span></div>
-                  <div><strong>18</strong><span>CRM fields mapped</span></div>
+                  <div><strong>41:59</strong><span data-i18n="dashboard.metric1">Rep:Client talk ratio</span></div>
+                  <div><strong>3</strong><span data-i18n="dashboard.metric2">Pricing objections</span></div>
+                  <div><strong>18</strong><span data-i18n="dashboard.metric3">CRM fields mapped</span></div>
                 </div>
                 <ul class="signal-list">
-                  <li><span></span>Saudi data residency surfaced as approval blocker</li>
-                  <li><span></span>Competitor mention detected: Clari</li>
-                  <li><span></span>VP Finance moved from observer to decision path</li>
+                  <li><span></span><b data-i18n="dashboard.signal1">Saudi data residency surfaced as approval blocker</b></li>
+                  <li><span></span><b data-i18n="dashboard.signal2">Competitor mention detected: Clari</b></li>
+                  <li><span></span><b data-i18n="dashboard.signal3">VP Finance moved from observer to decision path</b></li>
                 </ul>
               </aside>
 
               <section class="timeline-card" aria-label="Transcript intelligence timeline">
                 <div class="timeline-header">
                   <div>
-                    <span class="mini-label">Transcript intelligence</span>
-                    <h3>Regional code-switching timeline</h3>
+                    <span class="mini-label" data-i18n="timeline.label">Transcript intelligence</span>
+                    <h3 data-i18n="timeline.title">Regional code-switching timeline</h3>
                   </div>
                   <div class="language-pills"><span>EN</span><span>AR</span><span>GCC</span></div>
                 </div>
                 <div class="timeline">
                   <article class="utterance active">
                     <time>09:42</time>
-                    <div><strong>Rep</strong><p>We can align the rollout with your Q3 Majlis review, inshallah.</p></div>
+                    <div><strong data-i18n="timeline.rep">Rep</strong><p data-i18n="timeline.u1">We can align the rollout with your Q3 Majlis review, inshallah.</p></div>
                   </article>
                   <article class="utterance">
                     <time>14:06</time>
-                    <div><strong>Client</strong><p>بس نحتاج data residency داخل السعودية قبل ما نوقّع.</p></div>
+                    <div><strong data-i18n="timeline.client">Client</strong><p data-i18n="timeline.u2">بس نحتاج data residency داخل السعودية قبل ما نوقّع.</p></div>
                   </article>
                   <article class="utterance">
                     <time>22:14</time>
-                    <div><strong>Rep</strong><p>Understood. Pricing can be staged if procurement needs CAPEX clarity.</p></div>
+                    <div><strong data-i18n="timeline.rep">Rep</strong><p data-i18n="timeline.u3">Understood. Pricing can be staged if procurement needs CAPEX clarity.</p></div>
                   </article>
                   <article class="utterance">
                     <time>31:28</time>
-                    <div><strong>Client</strong><p>خلونا نشوف pilot مع compliance and the Dubai team next week.</p></div>
+                    <div><strong data-i18n="timeline.client">Client</strong><p data-i18n="timeline.u4">خلونا نشوف pilot مع compliance and the Dubai team next week.</p></div>
                   </article>
                 </div>
               </section>
 
               <aside class="action-card">
-                <span class="mini-label">AI action items</span>
+                <span class="mini-label" data-i18n="actions.label">AI action items</span>
                 <ul>
-                  <li>Send Saudi isolation brief to CIO</li>
-                  <li>Book Dubai compliance workshop</li>
-                  <li>Update Salesforce close date</li>
+                  <li data-i18n="actions.item1">Send Saudi isolation brief to CIO</li>
+                  <li data-i18n="actions.item2">Book Dubai compliance workshop</li>
+                  <li data-i18n="actions.item3">Update Salesforce close date</li>
                 </ul>
                 <div class="sync-meter">
-                  <span>CRM sync confidence</span>
+                  <span data-i18n="actions.confidence">CRM sync confidence</span>
                   <strong>94%</strong>
                 </div>
               </aside>
@@ -152,37 +158,37 @@
 
       <section class="section problem-section" id="enterprise">
         <div class="section-heading">
-          <h2>Western platforms hear the words. Sadha understands the market.</h2>
-          <p class="eyebrow">Why regional teams need native intelligence</p>
+          <h2 data-i18n="problem.title">Western platforms hear the words. Sadha understands the market.</h2>
+          <p class="eyebrow" data-i18n="problem.eyebrow">Why regional teams need native intelligence</p>
         </div>
         <div class="bento-grid">
           <article class="bento-card bento-large">
             <div class="wire-sphere" aria-hidden="true"></div>
-            <span class="mini-label">The dialect gap</span>
-            <h3>The Code-Switching Nightmare.</h3>
+            <span class="mini-label" data-i18n="problem.card1Label">The dialect gap</span>
+            <h3 data-i18n="problem.card1Title">The Code-Switching Nightmare.</h3>
             <p>
-              Western transcription fails when sales reps fluidly mix Khaleeji, Levantine,
-              or Egyptian Arabic with English. Sadha decodes it natively.
+              <span data-i18n="problem.card1Text">Western transcription fails when sales reps fluidly mix Khaleeji, Levantine,
+              or Egyptian Arabic with English. Sadha decodes it natively.</span>
             </p>
-            <div class="dialect-row"><span>Khaleeji</span><span>Levantine</span><span>Egyptian</span><span>English</span></div>
+            <div class="dialect-row"><span data-i18n="problem.dialect1">Khaleeji</span><span data-i18n="problem.dialect2">Levantine</span><span data-i18n="problem.dialect3">Egyptian</span><span data-i18n="problem.dialect4">English</span></div>
           </article>
           <article class="bento-card">
-            <span class="mini-label">Data sovereignty</span>
-            <h3>Strict Regional Compliance.</h3>
+            <span class="mini-label" data-i18n="problem.card2Label">Data sovereignty</span>
+            <h3 data-i18n="problem.card2Title">Strict Regional Compliance.</h3>
             <p>
-              Built to align with regional data residency frameworks such as Saudi Arabia's
-              NDMO/SDAIA laws. Local data infrastructure for local enterprises.
+              <span data-i18n="problem.card2Text">Built to align with regional data residency frameworks such as Saudi Arabia's
+              NDMO/SDAIA laws. Local data infrastructure for local enterprises.</span>
             </p>
           </article>
           <article class="bento-card">
-            <span class="mini-label">CRM friction</span>
-            <h3>Zero-Click CRM Logging.</h3>
+            <span class="mini-label" data-i18n="problem.card3Label">CRM friction</span>
+            <h3 data-i18n="problem.card3Title">Zero-Click CRM Logging.</h3>
             <p>
-              Sadha automatically maps call summaries, customer commitments, and next steps
-              straight into HubSpot and Salesforce.
+              <span data-i18n="problem.card3Text">Sadha automatically maps call summaries, customer commitments, and next steps
+              straight into HubSpot and Salesforce.</span>
             </p>
             <div class="crm-visual">
-              <span>Summary</span><i></i><span>HubSpot</span><i></i><span>Salesforce</span>
+              <span data-i18n="problem.summary">Summary</span><i></i><span>HubSpot</span><i></i><span>Salesforce</span>
             </div>
           </article>
         </div>
@@ -191,15 +197,15 @@
       <section class="section features-section" id="features">
         <div class="feature-row">
           <div class="feature-copy">
-            <p class="eyebrow">Manager visibility</p>
-            <h2>The X-Ray Call Timeline.</h2>
+            <p class="eyebrow" data-i18n="features.xrayLabel">Manager visibility</p>
+            <h2 data-i18n="features.xrayTitle">The X-Ray Call Timeline.</h2>
             <p>
-              Scan a 60-minute meeting in 60 seconds. Sadha turns every sales call into a
-              readable signal map for talk ratios, pricing pressure, risks, and competitor mentions.
+              <span data-i18n="features.xrayText">Scan a 60-minute meeting in 60 seconds. Sadha turns every sales call into a
+              readable signal map for talk ratios, pricing pressure, risks, and competitor mentions.</span>
             </p>
           </div>
           <div class="feature-panel xray-panel">
-            <div class="panel-header"><span>Call X-Ray</span><strong>60s review</strong></div>
+            <div class="panel-header"><span data-i18n="features.panel1Label">Call X-Ray</span><strong data-i18n="features.panel1Badge">60s review</strong></div>
             <div class="scan-track">
               <span class="bar bar-one"></span>
               <span class="bar bar-two"></span>
@@ -207,38 +213,38 @@
               <i style="left: 18%"></i><i style="left: 42%"></i><i style="left: 69%"></i><i style="left: 83%"></i>
             </div>
             <div class="tracker-grid">
-              <div><strong>41%</strong><span>Rep talk time</span></div>
-              <div><strong>59%</strong><span>Client talk time</span></div>
-              <div><strong>3</strong><span>Pricing flags</span></div>
-              <div><strong>2</strong><span>Competitors</span></div>
+              <div><strong>41%</strong><span data-i18n="features.metric1">Rep talk time</span></div>
+              <div><strong>59%</strong><span data-i18n="features.metric2">Client talk time</span></div>
+              <div><strong>3</strong><span data-i18n="features.metric3">Pricing flags</span></div>
+              <div><strong>2</strong><span data-i18n="features.metric4">Competitors</span></div>
             </div>
           </div>
         </div>
 
         <div class="feature-row reverse">
           <div class="feature-copy">
-            <p class="eyebrow">Executive-ready output</p>
-            <h2>The Post-Call Executive Summary.</h2>
+            <p class="eyebrow" data-i18n="features.summaryLabel">Executive-ready output</p>
+            <h2 data-i18n="features.summaryTitle">The Post-Call Executive Summary.</h2>
             <p>
-              Every stakeholder leaves with a clean record of what was promised, by whom,
+              <span data-i18n="features.summaryText">Every stakeholder leaves with a clean record of what was promised, by whom,
               and when. Sadha separates your obligations from customer commitments before
-              the deal memory fades.
+              the deal memory fades.</span>
             </p>
           </div>
           <div class="feature-panel summary-panel">
-            <div class="panel-header"><span>Auto-generated after 42 seconds</span><strong>Push to CRM</strong></div>
+            <div class="panel-header"><span data-i18n="features.panel2Label">Auto-generated after 42 seconds</span><strong data-i18n="features.panel2Badge">Push to CRM</strong></div>
             <div class="commitments">
               <div>
-                <h3>Our Commitments</h3>
-                <label><input type="checkbox" checked /> Send SDAIA compliance pack</label>
-                <label><input type="checkbox" checked /> Share phased pricing model</label>
-                <label><input type="checkbox" /> Confirm Arabic NLP pilot scope</label>
+                <h3 data-i18n="features.ourCommitments">Our Commitments</h3>
+                <label><input type="checkbox" checked /> <span data-i18n="features.our1">Send SDAIA compliance pack</span></label>
+                <label><input type="checkbox" checked /> <span data-i18n="features.our2">Share phased pricing model</span></label>
+                <label><input type="checkbox" /> <span data-i18n="features.our3">Confirm Arabic NLP pilot scope</span></label>
               </div>
               <div>
-                <h3>Their Commitments</h3>
-                <label><input type="checkbox" checked /> Introduce CIO and legal counsel</label>
-                <label><input type="checkbox" /> Provide procurement timeline</label>
-                <label><input type="checkbox" checked /> Confirm Dubai workshop attendees</label>
+                <h3 data-i18n="features.theirCommitments">Their Commitments</h3>
+                <label><input type="checkbox" checked /> <span data-i18n="features.their1">Introduce CIO and legal counsel</span></label>
+                <label><input type="checkbox" /> <span data-i18n="features.their2">Provide procurement timeline</span></label>
+                <label><input type="checkbox" checked /> <span data-i18n="features.their3">Confirm Dubai workshop attendees</span></label>
               </div>
             </div>
           </div>
@@ -248,25 +254,25 @@
       <section class="section trust-section" id="security">
         <div class="trust-card">
           <div>
-            <p class="eyebrow">Enterprise trust and security</p>
-            <h2>Bank-grade controls for conversations that cannot leak.</h2>
+            <p class="eyebrow" data-i18n="security.label">Enterprise trust and security</p>
+            <h2 data-i18n="security.title">Bank-grade controls for conversations that cannot leak.</h2>
           </div>
           <div class="trust-metrics">
-            <div><strong>Private</strong><span>Tenant isolation</span></div>
-            <div><strong>AES-256</strong><span>At-rest encryption</span></div>
-            <div><strong>GCC</strong><span>Regional deployment paths</span></div>
+            <div><strong data-i18n="security.metric1Value">Private</strong><span data-i18n="security.metric1Label">Tenant isolation</span></div>
+            <div><strong>AES-256</strong><span data-i18n="security.metric2Label">At-rest encryption</span></div>
+            <div><strong>GCC</strong><span data-i18n="security.metric3Label">Regional deployment paths</span></div>
           </div>
         </div>
       </section>
 
       <section class="section access-section" id="access">
         <div class="access-card">
-          <p class="eyebrow">Private enterprise preview</p>
-          <h2>Bring absolute visibility to your regional pipeline.</h2>
+          <p class="eyebrow" data-i18n="access.label">Private enterprise preview</p>
+          <h2 data-i18n="access.title">Bring absolute visibility to your regional pipeline.</h2>
           <form class="access-form">
-            <label class="sr-only" for="email">Corporate email</label>
-            <input id="email" name="email" type="email" placeholder="name@company.com" autocomplete="email" required />
-            <button type="submit">Request Early Access</button>
+            <label class="sr-only" for="email" data-i18n="access.emailLabel">Corporate email</label>
+            <input id="email" name="email" type="email" placeholder="name@company.com" data-i18n-placeholder="access.placeholder" autocomplete="email" required />
+            <button type="submit" data-i18n="access.button">Request Early Access</button>
           </form>
           <p class="form-status" role="status" aria-live="polite"></p>
         </div>
@@ -276,14 +282,14 @@
     <footer class="footer">
       <img src="assets/sadha-logo-transparent.png" alt="SADHA" />
       <div class="footer-links">
-        <a href="#features">Features</a>
-        <a href="#security">Security</a>
-        <a href="#enterprise">Enterprise</a>
-        <a href="#access">Contact</a>
+        <a href="#features" data-i18n="nav.features">Features</a>
+        <a href="#security" data-i18n="nav.security">Security</a>
+        <a href="#enterprise" data-i18n="nav.enterprise">Enterprise</a>
+        <a href="#access" data-i18n="footer.contact">Contact</a>
       </div>
-      <p>Copyright 2026 SADHA Intelligence. All rights reserved.</p>
+      <p data-i18n="footer.copy">Copyright 2026 SADHA Intelligence. All rights reserved.</p>
     </footer>
 
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
   </body>
 </html>

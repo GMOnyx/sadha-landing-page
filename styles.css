@@ -81,6 +81,7 @@ input {
   top: 18px;
   left: 50%;
   z-index: 30;
+  direction: ltr;
   display: grid;
   width: min(var(--container), calc(100% - 44px));
   min-height: 74px;
@@ -145,6 +146,13 @@ input {
   color: var(--paper-bright);
 }
 
+.nav-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-self: end;
+}
+
 .nav-cta,
 .button,
 .access-form button {
@@ -161,17 +169,49 @@ input {
 }
 
 .nav-cta {
-  justify-self: end;
   padding: 0 18px;
   background: var(--ink);
   color: var(--paper-bright);
   box-shadow: 0 12px 30px rgba(5, 5, 5, 0.14);
+  text-align: center;
+  white-space: nowrap;
 }
 
 .nav-cta:hover,
 .button:hover,
 .access-form button:hover {
   transform: translateY(-2px);
+}
+
+.language-toggle {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid rgba(5, 5, 5, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.language-toggle button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.language-toggle button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper-bright);
+  box-shadow: 0 8px 18px rgba(5, 5, 5, 0.12);
 }
 
 .hero {
@@ -674,6 +714,10 @@ input {
   font-size: 0.91rem;
   font-weight: 650;
   line-height: 1.42;
+}
+
+.signal-list li b {
+  font: inherit;
 }
 
 .signal-list li span {
@@ -1240,6 +1284,67 @@ input {
   white-space: nowrap;
 }
 
+html[dir="rtl"] .nav-links a,
+html[dir="rtl"] .nav-cta {
+  direction: rtl;
+}
+
+html[dir="rtl"] .hero-copy,
+html[dir="rtl"] .section-heading,
+html[dir="rtl"] .trust-card,
+html[dir="rtl"] .access-card,
+html[dir="rtl"] .footer {
+  text-align: center;
+}
+
+html[dir="rtl"] .bento-card,
+html[dir="rtl"] .feature-copy,
+html[dir="rtl"] .call-brief,
+html[dir="rtl"] .timeline-card,
+html[dir="rtl"] .action-card,
+html[dir="rtl"] .feature-panel {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .dashboard-topbar,
+html[dir="rtl"] .timeline-header,
+html[dir="rtl"] .panel-header,
+html[dir="rtl"] .commitments label {
+  direction: rtl;
+}
+
+html[dir="rtl"] .crm-visual i {
+  margin-right: 18px;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .footer p {
+  text-align: center;
+}
+
+html[lang="ar"] .hero h1,
+html[lang="ar"] .hero-title,
+html[lang="ar"] .section-heading h2,
+html[lang="ar"] .feature-copy h2,
+html[lang="ar"] .trust-card h2,
+html[lang="ar"] .access-card h2,
+html[lang="ar"] .dashboard-topbar strong,
+html[lang="ar"] .call-brief h2,
+html[lang="ar"] .timeline-header h3,
+html[lang="ar"] .bento-card h3,
+html[lang="ar"] .commitments h3,
+html[lang="ar"] .trust-metrics strong {
+  font-family: var(--body);
+  line-height: 1.12;
+}
+
+html[lang="ar"] .eyebrow,
+html[lang="ar"] .mini-label,
+html[lang="ar"] .sadha-engine small {
+  letter-spacing: 0;
+}
+
 @media (max-width: 1060px) {
   .nav {
     grid-template-columns: 1fr auto;
@@ -1331,14 +1436,29 @@ input {
 
   .nav {
     top: 10px;
+    min-height: 0;
+    padding: 10px;
   }
 
   .brand {
-    width: 156px;
+    width: 148px;
     height: 42px;
   }
 
+  .nav-actions {
+    display: contents;
+  }
+
+  .language-toggle {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
   .nav-cta {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
     min-height: 42px;
     padding: 0 12px;
     font-size: 0.8rem;
@@ -1347,7 +1467,7 @@ input {
   .hero {
     display: flex;
     flex-direction: column;
-    padding-top: 120px;
+    padding-top: 156px;
   }
 
   .hero-copy {
