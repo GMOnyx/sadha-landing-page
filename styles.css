@@ -16,8 +16,8 @@
     "Eurostile", "Bank Gothic", "Rajdhani", "Arial Black", ui-sans-serif,
     system-ui, sans-serif;
   --body:
-    "Plus Jakarta Sans", "Satoshi", Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
+    "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, sans-serif;
 }
 
 * {
@@ -37,6 +37,7 @@ body {
     var(--paper);
   color: var(--ink);
   font-family: var(--body);
+  font-weight: 560;
   letter-spacing: 0;
 }
 
@@ -1240,6 +1241,166 @@ input {
   color: #7f1d1d;
 }
 
+.thank-page {
+  width: min(var(--container), calc(100% - 48px));
+  margin: 0 auto;
+  padding: 168px 0 84px;
+}
+
+.thank-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.thank-copy,
+.thank-panel,
+.thank-grid article {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: rgba(251, 250, 246, 0.76);
+}
+
+.thank-copy {
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 54px;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(5, 5, 5, 0.08), transparent 20rem),
+    rgba(251, 250, 246, 0.78);
+}
+
+.thank-copy h1 {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(3.25rem, 6vw, 6.3rem);
+  font-weight: 900;
+  line-height: 0.94;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.thank-copy p:not(.eyebrow) {
+  max-width: 640px;
+  margin: 22px 0 0;
+  color: var(--ink-soft);
+  font-size: 1.12rem;
+  font-weight: 620;
+  line-height: 1.55;
+}
+
+.thank-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.thank-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 34px;
+  background: var(--ink);
+  color: var(--paper-bright);
+}
+
+.thank-panel .mini-label {
+  color: rgba(251, 250, 246, 0.62);
+}
+
+.thank-panel ul {
+  display: grid;
+  gap: 18px;
+  margin: 36px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.thank-panel li {
+  position: relative;
+  padding-left: 28px;
+  color: rgba(251, 250, 246, 0.86);
+  font-size: 1.06rem;
+  font-weight: 750;
+  line-height: 1.42;
+}
+
+.thank-panel li::before {
+  position: absolute;
+  top: 0.35em;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  content: "";
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.founder-note {
+  border: 1px solid rgba(251, 250, 246, 0.18);
+  border-radius: 18px;
+  padding: 20px;
+  background: rgba(251, 250, 246, 0.08);
+}
+
+.founder-note strong,
+.founder-note span {
+  display: block;
+}
+
+.founder-note strong {
+  color: var(--paper-bright);
+  font-family: var(--display);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.founder-note span {
+  margin-top: 9px;
+  color: rgba(251, 250, 246, 0.66);
+  font-weight: 650;
+  line-height: 1.42;
+}
+
+.thank-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.thank-grid article {
+  padding: 28px;
+}
+
+.thank-grid span {
+  color: var(--muted);
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.thank-grid h2 {
+  margin: 16px 0 12px;
+  font-family: var(--display);
+  font-size: 1.7rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.thank-grid p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-weight: 620;
+  line-height: 1.52;
+}
+
 .footer {
   display: grid;
   width: min(var(--container), calc(100% - 48px));
@@ -1366,6 +1527,7 @@ html[lang="ar"] .hero-title span:first-child {
   .feature-row,
   .feature-row.reverse,
   .section-heading,
+  .thank-hero,
   .trust-card {
     grid-template-columns: 1fr;
   }
@@ -1375,6 +1537,7 @@ html[lang="ar"] .hero-title span:first-child {
   }
 
   .tracker-grid,
+  .thank-grid,
   .trust-metrics {
     grid-template-columns: 1fr 1fr;
   }
@@ -1438,6 +1601,7 @@ html[lang="ar"] .hero-title span:first-child {
   .nav,
   .hero,
   .section,
+  .thank-page,
   .footer {
     width: calc(100% - 28px);
   }
@@ -1536,6 +1700,7 @@ html[lang="ar"] .hero-title span:first-child {
   .access-form,
   .commitments,
   .tracker-grid,
+  .thank-grid,
   .trust-metrics {
     grid-template-columns: 1fr;
   }
@@ -1576,5 +1741,36 @@ html[lang="ar"] .hero-title span:first-child {
   .access-card {
     padding-top: 50px;
     padding-bottom: 50px;
+  }
+
+  .thank-page {
+    padding-top: 118px;
+    padding-bottom: 44px;
+  }
+
+  .thank-copy,
+  .thank-panel,
+  .thank-grid article {
+    padding: 24px;
+  }
+
+  .thank-copy {
+    min-height: auto;
+  }
+
+  .thank-copy h1 {
+    font-size: clamp(2.55rem, 12vw, 3.7rem);
+  }
+
+  .thank-copy p:not(.eyebrow) {
+    font-size: 1rem;
+  }
+
+  .thank-actions {
+    display: grid;
+  }
+
+  .thank-actions .button {
+    min-height: 48px;
   }
 }

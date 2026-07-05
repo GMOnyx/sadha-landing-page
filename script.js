@@ -9,6 +9,7 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ztm-q3VrZeqqABxCp1b-sQ_jBA-Me9Y
 const EARLY_ACCESS_TABLE = "early_access_requests";
 const REQUEST_SOURCE = "sadha_landing";
 const LANGUAGE_STORAGE_KEY = "sadha-language";
+const THANK_YOU_PAGE = "thank-you.html";
 
 const translations = {
   en: {
@@ -419,6 +420,15 @@ const setSubmitting = (button, isSubmitting) => {
   button.textContent = t(isSubmitting ? "access.submitting" : "access.button");
 };
 
+const redirectToThankYou = (email) => {
+  const params = new URLSearchParams({
+    email,
+    lang: currentLanguage,
+  });
+
+  window.location.href = `${THANK_YOU_PAGE}?${params.toString()}`;
+};
+
 const submitEarlyAccess = async ({ email, button, input }) => {
   const endpoint = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${EARLY_ACCESS_TABLE}`;
 
@@ -443,7 +453,7 @@ const submitEarlyAccess = async ({ email, button, input }) => {
 
     if (response.status === 409) {
       input.value = "";
-      setFormStatus("status.duplicate", "success");
+      redirectToThankYou(email);
       return;
     }
 
@@ -452,7 +462,7 @@ const submitEarlyAccess = async ({ email, button, input }) => {
     }
 
     input.value = "";
-    setFormStatus("status.success", "success");
+    redirectToThankYou(email);
   } catch (error) {
     console.error(error);
     setFormStatus("status.error", "error");
