@@ -28,7 +28,7 @@
     <meta name="theme-color" content="#f4f0e8" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="styles.css?v=15" />
+    <link rel="stylesheet" href="styles.css?v=39" />
   </head>
   <body>
     <header class="nav" data-nav>
@@ -37,7 +37,7 @@
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#features" data-i18n="nav.features">Features</a>
-        <a href="#security" data-i18n="nav.security">Security</a>
+        <a href="#meeting-intel" data-i18n="nav.security">Dashboard</a>
         <a href="#enterprise" data-i18n="nav.enterprise">Enterprise</a>
       </nav>
       <div class="nav-actions">
@@ -52,24 +52,33 @@
     <main id="top">
       <section class="hero">
         <div class="hero-art" aria-hidden="true">
-          <div class="signal-system">
-            <div class="speech-stream stream-in">
-              <span data-i18n="hero.stream1">بس نحتاج data residency قبل التوقيع</span>
-              <span data-i18n="hero.stream2">Pricing needs procurement clarity</span>
-              <span data-i18n="hero.stream3">Can we include Dubai legal next week?</span>
+          <div class="pipeline-graphic">
+            <div class="touchpoint-row">
+              <div class="touchpoint-card"><strong data-i18n="pipeline.whatsappTitle">WhatsApp</strong><span data-i18n="pipeline.whatsapp">where deals talk</span></div>
+              <div class="touchpoint-card"><strong data-i18n="pipeline.meetTitle">Meet / Zoom</strong><span data-i18n="pipeline.meet">where deals present</span></div>
+              <div class="touchpoint-card"><strong data-i18n="pipeline.emailTitle">Email</strong><span data-i18n="pipeline.email">where deals stall</span></div>
+              <div class="touchpoint-card"><strong data-i18n="pipeline.crmTitle">CRM</strong><span data-i18n="pipeline.crm">where deals get forgotten</span></div>
+              <div class="touchpoint-card"><strong data-i18n="pipeline.callsTitle">Calls</strong><span data-i18n="pipeline.calls">where deals decide</span></div>
             </div>
-            <div class="signal-line input-line"><span></span></div>
-            <div class="sadha-engine">
-              <div class="engine-sphere">
-                <img src="assets/sadha-waveform.png" alt="" />
+
+            <div class="merge-arrows">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="pipeline-center">
+              <i></i>
+              <div class="sadha-engine">
+                <div class="engine-sphere">
+                  <img src="assets/sadha-waveform.png" alt="" />
+                </div>
+                <small data-i18n="pipeline.engine">SADHA NLP</small>
               </div>
-              <small data-i18n="hero.engine">SADHA NLP</small>
+              <i></i>
             </div>
-            <div class="signal-line output-line"><span></span></div>
-            <div class="structured-output">
-              <span data-i18n="hero.output1">Deal risk: Data residency</span>
-              <span data-i18n="hero.output2">Commitment: Compliance workshop</span>
-              <span data-i18n="hero.output3">CRM: Close date updated</span>
+
+            <div class="pipeline-truth">
+              <h2 data-i18n="pipeline.truthTitle">No lead unaccounted for.</h2>
+              <p data-i18n="pipeline.truthText">One visible timeline for every touchpoint, commitment, and deal risk.</p>
             </div>
           </div>
         </div>
@@ -86,72 +95,201 @@
         </div>
 
         <div id="meeting-intel" class="product-stage">
-          <div class="dashboard-shell">
-            <div class="dashboard-topbar">
-              <div>
-                <span data-i18n="dashboard.label">Meeting Intelligence</span>
-                <strong data-i18n="dashboard.account">Al Noor Bank / Expansion Review</strong>
+          <div class="dashboard-app" data-dashboard-app>
+            <aside class="app-sidebar" aria-label="Sadha dashboard navigation">
+              <div class="app-logo">
+                <img src="assets/sadha-logo-transparent.png" alt="SADHA" />
               </div>
-              <div class="status-pill" data-i18n="dashboard.health">Deal Health: At Risk</div>
-            </div>
-
-            <div class="dashboard-layout">
-              <aside class="call-brief">
-                <span class="mini-label" data-i18n="dashboard.summaryLabel">Signal summary</span>
-                <h2 data-i18n="dashboard.summaryTitle">60-minute call, reduced to accountable revenue movement.</h2>
-                <div class="brief-grid">
-                  <div><strong>41:59</strong><span data-i18n="dashboard.metric1">Rep:Client talk ratio</span></div>
-                  <div><strong>3</strong><span data-i18n="dashboard.metric2">Pricing objections</span></div>
-                  <div><strong>18</strong><span data-i18n="dashboard.metric3">CRM fields mapped</span></div>
-                </div>
-                <ul class="signal-list">
-                  <li><span></span><b data-i18n="dashboard.signal1">Saudi data residency surfaced as approval blocker</b></li>
-                  <li><span></span><b data-i18n="dashboard.signal2">Competitor mention detected: Clari</b></li>
-                  <li><span></span><b data-i18n="dashboard.signal3">VP Finance moved from observer to decision path</b></li>
-                </ul>
-              </aside>
-
-              <section class="timeline-card" aria-label="Transcript intelligence timeline">
-                <div class="timeline-header">
-                  <div>
-                    <span class="mini-label" data-i18n="timeline.label">Transcript intelligence</span>
-                    <h3 data-i18n="timeline.title">Regional code-switching timeline</h3>
-                  </div>
-                  <div class="language-pills"><span>EN</span><span>AR</span><span>GCC</span></div>
-                </div>
-                <div class="timeline">
-                  <article class="utterance active">
-                    <time>09:42</time>
-                    <div><strong data-i18n="timeline.rep">Rep</strong><p data-i18n="timeline.u1">We can align the rollout with your Q3 Majlis review, inshallah.</p></div>
-                  </article>
-                  <article class="utterance">
-                    <time>14:06</time>
-                    <div><strong data-i18n="timeline.client">Client</strong><p data-i18n="timeline.u2">بس نحتاج data residency داخل السعودية قبل ما نوقّع.</p></div>
-                  </article>
-                  <article class="utterance">
-                    <time>22:14</time>
-                    <div><strong data-i18n="timeline.rep">Rep</strong><p data-i18n="timeline.u3">Understood. Pricing can be staged if procurement needs CAPEX clarity.</p></div>
-                  </article>
-                  <article class="utterance">
-                    <time>31:28</time>
-                    <div><strong data-i18n="timeline.client">Client</strong><p data-i18n="timeline.u4">خلونا نشوف pilot مع compliance and the Dubai team next week.</p></div>
-                  </article>
-                </div>
-              </section>
-
-              <aside class="action-card">
-                <span class="mini-label" data-i18n="actions.label">AI action items</span>
+              <nav class="app-nav" aria-label="Dashboard views">
+                <button type="button" class="active" data-app-tab="deals"><span>◆</span> <b data-i18n="app.nav.deals">Deals</b></button>
+                <button type="button" data-app-tab="ask"><span>⌕</span> <b data-i18n="app.nav.ask">Ask Sadha</b></button>
+                <button type="button" data-app-tab="analytics"><span>▣</span> <b data-i18n="app.nav.analytics">Analytics</b></button>
+              </nav>
+              <div class="connected-card">
+                <span data-i18n="app.connected">Connected</span>
                 <ul>
-                  <li data-i18n="actions.item1">Send Saudi isolation brief to CIO</li>
-                  <li data-i18n="actions.item2">Book Dubai compliance workshop</li>
-                  <li data-i18n="actions.item3">Update Salesforce close date</li>
+                  <li data-i18n="app.connected.whatsapp">WhatsApp Business</li>
+                  <li data-i18n="app.connected.meet">Google Meet</li>
+                  <li data-i18n="app.connected.hubspot">HubSpot</li>
+                  <li class="muted" data-i18n="app.connected.gmail">Gmail — connect</li>
                 </ul>
-                <div class="sync-meter">
-                  <span data-i18n="actions.confidence">CRM sync confidence</span>
-                  <strong>94%</strong>
+              </div>
+              <div class="app-user">
+                <span>TH</span>
+                <div><strong>Tariq Haddad</strong><small data-i18n="app.user.role">Head of Sales</small></div>
+              </div>
+            </aside>
+
+            <section class="app-main" aria-live="polite">
+              <div class="app-view active" data-app-panel="deals">
+                <div class="app-header">
+                  <div>
+                    <h2 data-i18n="app.deals.title">Deals</h2>
+                    <p data-i18n="app.deals.subtitle">Every deal, with everything it said — across WhatsApp, meetings, email and CRM.</p>
+                  </div>
+                  <strong data-i18n="app.deals.pipeline">Pipeline: SAR 2.9M · 4 open</strong>
                 </div>
-              </aside>
-            </div>
+
+                <div class="deal-list">
+                  <button type="button" class="deal-row" data-deal-name="Al Noor Bank">
+                    <span class="deal-company"><strong>Al Noor Bank</strong><small data-i18n="app.location.riyadh">Riyadh, KSA</small></span>
+                    <span class="deal-value"><strong>SAR</strong>480,000</span>
+                    <span class="stage-pill stage-warning" data-i18n="app.stage.negotiation">Negotiation</span>
+                    <span class="deal-channel" data-i18n="app.channel.whatsapp2d">WhatsApp · 2d ago</span>
+                    <span class="health-pill health-risk" data-i18n="app.health.riskCompliance">At risk — compliance</span>
+                  </button>
+                  <button type="button" class="deal-row" data-deal-name="Falcon Telecom">
+                    <span class="deal-company"><strong>Falcon Telecom</strong><small data-i18n="app.location.dubai">Dubai, UAE</small></span>
+                    <span class="deal-value"><strong>AED</strong>320,000</span>
+                    <span class="stage-pill stage-proposal" data-i18n="app.stage.proposal">Proposal</span>
+                    <span class="deal-channel" data-i18n="app.channel.meetYesterday">Meet · yesterday</span>
+                    <span class="health-pill health-good" data-i18n="app.health.healthy">Healthy</span>
+                  </button>
+                  <button type="button" class="deal-row" data-deal-name="Nile Logistics">
+                    <span class="deal-company"><strong>Nile Logistics</strong><small data-i18n="app.location.cairo">Cairo, Egypt</small></span>
+                    <span class="deal-value"><strong>EGP</strong>2,400,000</span>
+                    <span class="stage-pill stage-discovery" data-i18n="app.stage.discovery">Discovery</span>
+                    <span class="deal-channel" data-i18n="app.channel.email16d">Email · 16d ago</span>
+                    <span class="health-pill health-quiet" data-i18n="app.health.quiet16">Quiet 16 days</span>
+                  </button>
+                  <button type="button" class="deal-row" data-deal-name="Petra Foods">
+                    <span class="deal-company"><strong>Petra Foods</strong><small data-i18n="app.location.amman">Amman, Jordan</small></span>
+                    <span class="deal-value"><strong>JOD</strong>60,000</span>
+                    <span class="stage-pill stage-discovery" data-i18n="app.stage.qualification">Qualification</span>
+                    <span class="deal-channel" data-i18n="app.channel.whatsapp14d">WhatsApp · 14d ago</span>
+                    <span class="health-pill health-quiet" data-i18n="app.health.quiet14">Quiet 14 days</span>
+                  </button>
+                  <button type="button" class="deal-row" data-deal-name="Gulf Retail Co.">
+                    <span class="deal-company"><strong>Gulf Retail Co.</strong><small data-i18n="app.location.jeddah">Jeddah, KSA</small></span>
+                    <span class="deal-value"><strong>SAR</strong>210,000</span>
+                    <span class="stage-pill stage-lost" data-i18n="app.stage.closedLost">Closed Lost</span>
+                    <span class="deal-channel" data-i18n="app.channel.email31d">Email · 31d ago</span>
+                    <span class="health-pill health-risk" data-i18n="app.health.pricingBudget">Pricing / budget</span>
+                  </button>
+                  <button type="button" class="deal-row" data-deal-name="Marjan Hospitality">
+                    <span class="deal-company"><strong>Marjan Hospitality</strong><small data-i18n="app.location.doha">Doha, Qatar</small></span>
+                    <span class="deal-value"><strong>QAR</strong>150,000</span>
+                    <span class="stage-pill stage-won" data-i18n="app.stage.closedWon">Closed Won</span>
+                    <span class="deal-channel" data-i18n="app.channel.crmSynced">CRM · synced</span>
+                    <span class="health-pill health-good" data-i18n="app.health.won">Won</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="app-view" data-app-panel="deal">
+                <button type="button" class="deal-back" data-app-back data-i18n="app.detail.back">← All deals</button>
+                <div class="deal-detail-header">
+                  <div>
+                    <h2 data-detail-name>Al Noor Bank</h2>
+                    <p data-detail-meta>Riyadh, KSA · SAR 480,000 · Negotiation</p>
+                  </div>
+                  <span class="health-pill health-risk" data-detail-status data-i18n="app.health.riskCompliance">At risk — compliance</span>
+                </div>
+
+                <div class="deal-detail-grid">
+                  <section class="deal-timeline">
+                    <span class="mini-label" data-i18n="app.detail.timeline">Unified timeline</span>
+                    <article class="timeline-item">
+                      <strong data-i18n="app.detail.whatsappTag">WhatsApp</strong>
+                      <p>بس نحتاج data residency داخل السعودية قبل ما نوقّع.</p>
+                      <span data-i18n="app.detail.whatsappMeta">Buyer Khalid · Tue 14:02 · flagged compliance blocker</span>
+                    </article>
+                    <article class="timeline-item">
+                      <strong data-i18n="app.detail.meetTag">Meet</strong>
+                      <p data-i18n="app.detail.meetText">60-min expansion review — 3 pricing objections, VP Finance moved from observer to decision path. Competitor mention: Clari.</p>
+                      <span data-i18n="app.detail.meetMeta">Wed 10:00 · full transcript · 4 action items</span>
+                    </article>
+                    <article class="timeline-item">
+                      <strong data-i18n="app.detail.emailTag">Email</strong>
+                      <p data-i18n="app.detail.emailText">Procurement asked for staged CAPEX pricing and the security whitepaper.</p>
+                      <span data-i18n="app.detail.emailMeta">Thu 09:14 · reply drafted by Sadha, pending your review</span>
+                    </article>
+                    <article class="timeline-item">
+                      <strong data-i18n="app.detail.crmTag">CRM</strong>
+                      <p data-i18n="app.detail.crmText">Stage → Negotiation. Close date auto-updated to Aug 15.</p>
+                      <span data-i18n="app.detail.crmMeta">Synced to HubSpot · confidence 94%</span>
+                    </article>
+                  </section>
+
+                  <aside class="deal-side-panel">
+                    <article class="deal-summary-card">
+                      <span class="mini-label" data-i18n="app.detail.summaryLabel">Sadha summary</span>
+                      <p data-i18n="app.detail.summaryText">Data residency inside KSA is the sole blocker. Buyer is otherwise committed — VP Finance joined the decision path last call. Compliance pack was promised and has not been sent.</p>
+                    </article>
+                    <article class="next-steps-card">
+                      <span class="mini-label" data-i18n="app.detail.nextSteps">Next steps</span>
+                      <ul>
+                        <li data-i18n="app.detail.step1">Send Saudi data isolation brief to CIO</li>
+                        <li data-i18n="app.detail.step2">Book Dubai compliance workshop</li>
+                        <li data-i18n="app.detail.step3">Confirm revised procurement quote</li>
+                      </ul>
+                    </article>
+                    <button type="button" class="detail-ask-button" data-open-ask data-i18n="app.detail.askButton">Ask Sadha about this deal</button>
+                  </aside>
+                </div>
+              </div>
+
+              <div class="app-view" data-app-panel="ask">
+                <div class="app-header">
+                  <div>
+                    <h2 data-i18n="app.ask.title">Ask Sadha</h2>
+                    <p data-i18n="app.ask.subtitle">Ask anything about your deals, lost reasons, or funnel — in English or Arabic. Every answer cites its sources.</p>
+                  </div>
+                </div>
+
+                <div class="ask-workspace">
+                  <div class="ask-empty" data-ask-empty>
+                    <strong data-i18n="app.ask.emptyTitle">Start with a revenue question.</strong>
+                    <span data-i18n="app.ask.emptyText">Sadha will answer from calls, WhatsApp, email, and CRM records with sources attached.</span>
+                  </div>
+                  <div class="ask-message-list" data-ask-messages></div>
+                  <div class="ask-suggestions">
+                    <button type="button" data-ask-prompt-key="app.ask.promptBlocking" data-ask-answer-key="app.ask.answerBlocking" data-ask-sources-key="app.ask.sourcesBlocking">What’s blocking Al Noor Bank?</button>
+                    <button type="button" data-ask-prompt-key="app.ask.promptQuiet" data-ask-answer-key="app.ask.answerQuiet" data-ask-sources-key="app.ask.sourcesQuiet" data-i18n="app.ask.promptQuiet">Which Q2 deals went quiet?</button>
+                    <button type="button" data-ask-prompt-key="app.ask.promptLeak" data-ask-answer-key="app.ask.answerLeak" data-ask-sources-key="app.ask.sourcesLeak" data-i18n="app.ask.promptLeak">Where is the funnel leaking?</button>
+                    <button type="button" data-ask-prompt-key="app.ask.promptLost" data-ask-answer-key="app.ask.answerLost" data-ask-sources-key="app.ask.sourcesLost" data-i18n="app.ask.promptLost">Why did we lose Gulf Retail Co.?</button>
+                  </div>
+                  <form class="ask-input">
+                    <input type="text" value="" placeholder="Ask about any deal, reason, or number..." data-ask-input data-i18n-placeholder="app.ask.placeholder" />
+                    <button type="submit" data-i18n="app.ask.button">Ask</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="app-view" data-app-panel="analytics">
+                <div class="app-header">
+                  <div>
+                    <h2 data-i18n="app.analytics.title">Analytics</h2>
+                    <p data-i18n="app.analytics.subtitle">This quarter, across all channels.</p>
+                  </div>
+                </div>
+
+                <div class="analytics-grid">
+                  <article class="analytics-card funnel-card">
+                    <span class="mini-label" data-i18n="app.analytics.funnel">Funnel — Q3</span>
+                    <div class="funnel-row"><strong data-i18n="app.stage.qualification">Qualification</strong><span data-i18n="app.analytics.funnel1">9 deals · SAR 4.4M</span><i style="--bar: 100%"></i></div>
+                    <div class="funnel-row"><strong data-i18n="app.stage.discovery">Discovery</strong><span data-i18n="app.analytics.funnel2">7 deals · SAR 3.6M</span><i style="--bar: 78%"></i></div>
+                    <div class="funnel-row"><strong data-i18n="app.stage.proposal">Proposal</strong><span data-i18n="app.analytics.funnel3">5 deals · SAR 2.4M</span><i style="--bar: 56%"></i></div>
+                    <div class="funnel-row"><strong data-i18n="app.stage.negotiation">Negotiation</strong><span data-i18n="app.analytics.funnel4">2 deals · SAR 1.0M</span><i style="--bar: 23%"></i></div>
+                    <div class="funnel-row"><strong data-i18n="app.stage.closedWon">Closed Won</strong><span data-i18n="app.analytics.funnel5">1 deal · SAR 0.4M</span><i style="--bar: 12%"></i></div>
+                    <p data-i18n="app.analytics.dropoff">Biggest drop-off: Proposal → Negotiation (-58%). Ask Sadha why →</p>
+                  </article>
+
+                  <article class="analytics-card reasons-card">
+                    <span class="mini-label" data-i18n="app.analytics.lostReasons">Top lost reasons</span>
+                    <div><strong data-i18n="app.health.pricingBudget">Pricing / budget</strong><b>43%</b></div>
+                    <div><strong data-i18n="app.analytics.dataResidency">Data residency</strong><b>27%</b></div>
+                    <div><strong data-i18n="app.analytics.noNextStep">No next step</strong><b>18%</b></div>
+                    <div><strong data-i18n="app.analytics.competitorPressure">Competitor pressure</strong><b>12%</b></div>
+                  </article>
+
+                  <article class="analytics-card insight-card">
+                    <span class="mini-label" data-i18n="app.analytics.insightLabel">Sadha insight</span>
+                    <p data-i18n="app.analytics.insightText">Deals where compliance is answered before week 3 closed 2.1× more often. Two open deals are past that window.</p>
+                  </article>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </section>
@@ -173,12 +311,16 @@
             <div class="dialect-row"><span data-i18n="problem.dialect1">Khaleeji</span><span data-i18n="problem.dialect2">Levantine</span><span data-i18n="problem.dialect3">Egyptian</span><span data-i18n="problem.dialect4">English</span></div>
           </article>
           <article class="bento-card">
-            <span class="mini-label" data-i18n="problem.card2Label">Data sovereignty</span>
-            <h3 data-i18n="problem.card2Title">Strict Regional Compliance.</h3>
+            <span class="mini-label" data-i18n="problem.card2Label">Where deals actually move</span>
+            <h3 data-i18n="problem.card2Title">WhatsApp-native.</h3>
             <p>
-              <span data-i18n="problem.card2Text">Built to align with regional data residency frameworks such as Saudi Arabia's
-              NDMO/SDAIA laws. Local data infrastructure for local enterprises.</span>
+              <span data-i18n="problem.card2Text">In this region, the real negotiation happens in chat. Sadha treats WhatsApp as a first-class revenue channel, not an afterthought.</span>
             </p>
+            <div class="whatsapp-visual" aria-hidden="true">
+              <span data-i18n="problem.chat1">Need procurement approval today</span>
+              <span>تمام, send the updated price</span>
+              <span data-i18n="problem.chat3">Risk captured in timeline</span>
+            </div>
           </article>
           <article class="bento-card">
             <span class="mini-label" data-i18n="problem.card3Label">CRM friction</span>
@@ -188,7 +330,7 @@
               straight into HubSpot and Salesforce.</span>
             </p>
             <div class="crm-visual">
-              <span data-i18n="problem.summary">Summary</span><i></i><span>HubSpot</span><i></i><span>Salesforce</span>
+              <span data-i18n="problem.summary">Summary</span><i></i><span data-i18n="problem.hubspot">HubSpot</span><i></i><span data-i18n="problem.salesforce">Salesforce</span>
             </div>
           </article>
         </div>
@@ -223,44 +365,24 @@
 
         <div class="feature-row reverse">
           <div class="feature-copy">
-            <p class="eyebrow" data-i18n="features.summaryLabel">Executive-ready output</p>
-            <h2 data-i18n="features.summaryTitle">The Post-Call Executive Summary.</h2>
+            <p class="eyebrow" data-i18n="features.summaryLabel">Ask SADHA</p>
+            <h2 data-i18n="features.summaryTitle">Your pipeline can finally answer questions.</h2>
             <p>
-              <span data-i18n="features.summaryText">Every stakeholder leaves with a clean record of what was promised, by whom,
-              and when. Sadha separates your obligations from customer commitments before
-              the deal memory fades.</span>
+              <span data-i18n="features.summaryText">Lost reasons, funnel drop-off, competitor mentions, promises made on a call three weeks ago. Ask in plain English or Arabic and get the answer with receipts.</span>
             </p>
           </div>
-          <div class="feature-panel summary-panel">
-            <div class="panel-header"><span data-i18n="features.panel2Label">Auto-generated after 42 seconds</span><strong data-i18n="features.panel2Badge">Push to CRM</strong></div>
-            <div class="commitments">
-              <div>
-                <h3 data-i18n="features.ourCommitments">Our Commitments</h3>
-                <label><input type="checkbox" checked /> <span data-i18n="features.our1">Send SDAIA compliance pack</span></label>
-                <label><input type="checkbox" checked /> <span data-i18n="features.our2">Share phased pricing model</span></label>
-                <label><input type="checkbox" /> <span data-i18n="features.our3">Confirm Arabic NLP pilot scope</span></label>
+          <div class="feature-panel ask-panel">
+            <div class="panel-header"><span data-i18n="features.panel2Label">Pipeline intelligence</span><strong data-i18n="features.panel2Badge">With receipts</strong></div>
+            <div class="ask-thread">
+              <div class="ask-question" data-i18n="features.askQuestion1">Why did we lose Gulf Retail Co.?</div>
+              <div class="ask-answer">
+                <span data-i18n="features.askAnswer1">Pricing was raised in 4 of 6 touchpoints. On the Mar 12 call the buyer said “السعر أعلى من الميزانية” and no revised quote was ever sent.</span>
               </div>
-              <div>
-                <h3 data-i18n="features.theirCommitments">Their Commitments</h3>
-                <label><input type="checkbox" checked /> <span data-i18n="features.their1">Introduce CIO and legal counsel</span></label>
-                <label><input type="checkbox" /> <span data-i18n="features.their2">Provide procurement timeline</span></label>
-                <label><input type="checkbox" checked /> <span data-i18n="features.their3">Confirm Dubai workshop attendees</span></label>
+              <div class="ask-question" data-i18n="features.askQuestion2">Which Q2 deals went quiet?</div>
+              <div class="ask-answer">
+                <span data-i18n="features.askAnswer2">3 deals have had no contact in 14+ days: Al Noor Bank, Nile Logistics, and Petra Foods. Two have unanswered WhatsApp messages from the buyer.</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section trust-section" id="security">
-        <div class="trust-card">
-          <div>
-            <p class="eyebrow" data-i18n="security.label">Enterprise trust and security</p>
-            <h2 data-i18n="security.title">Bank-grade controls for conversations that cannot leak.</h2>
-          </div>
-          <div class="trust-metrics">
-            <div><strong data-i18n="security.metric1Value">Private</strong><span data-i18n="security.metric1Label">Tenant isolation</span></div>
-            <div><strong>AES-256</strong><span data-i18n="security.metric2Label">At-rest encryption</span></div>
-            <div><strong>GCC</strong><span data-i18n="security.metric3Label">Regional deployment paths</span></div>
           </div>
         </div>
       </section>
@@ -283,13 +405,13 @@
       <img src="assets/sadha-logo-transparent.png" alt="SADHA" />
       <div class="footer-links">
         <a href="#features" data-i18n="nav.features">Features</a>
-        <a href="#security" data-i18n="nav.security">Security</a>
+        <a href="#meeting-intel" data-i18n="nav.security">Dashboard</a>
         <a href="#enterprise" data-i18n="nav.enterprise">Enterprise</a>
         <a href="#access" data-i18n="footer.contact">Contact</a>
       </div>
       <p data-i18n="footer.copy">Copyright 2026 SADHA Intelligence. All rights reserved.</p>
     </footer>
 
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=15"></script>
   </body>
 </html>
