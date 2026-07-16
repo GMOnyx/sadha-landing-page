@@ -2,12 +2,16 @@ create extension if not exists pgcrypto;
 
 create table if not exists public.early_access_requests (
   id uuid primary key default gen_random_uuid(),
+  full_name text,
   email text not null,
   source text not null default 'sadha_landing',
   page_path text,
   created_at timestamptz not null default now(),
   constraint early_access_requests_email_check check (email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$')
 );
+
+alter table if exists public.early_access_requests
+add column if not exists full_name text;
 
 alter table public.early_access_requests enable row level security;
 

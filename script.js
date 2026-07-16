@@ -2,6 +2,9 @@ const nav = document.querySelector("[data-nav]");
 const utterances = Array.from(document.querySelectorAll(".utterance"));
 const form = document.querySelector(".access-form");
 const formStatus = document.querySelector(".form-status");
+const accessModal = document.querySelector("[data-access-modal]");
+const accessModalTriggers = Array.from(document.querySelectorAll("[data-open-access-modal]"));
+const accessModalCloseButtons = Array.from(document.querySelectorAll("[data-close-access-modal]"));
 const languageButtons = Array.from(document.querySelectorAll("[data-lang]"));
 const appTabs = Array.from(document.querySelectorAll("[data-app-tab]"));
 const appPanels = Array.from(document.querySelectorAll("[data-app-panel]"));
@@ -19,6 +22,7 @@ const askTextInput = document.querySelector("[data-ask-input]");
 let selectedDealName = "Al Noor Bank";
 let selectedDealRow = null;
 let thinkingTimer = null;
+let lastFocusedElement = null;
 
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ztm-q3VrZeqqABxCp1b-sQ_jBA-Me9Y";
@@ -259,10 +263,15 @@ const translations = {
     "security.metric3Label": "Regional deployment paths",
     "access.label": "Private enterprise preview",
     "access.title": "Bring absolute visibility to your regional pipeline.",
+    "access.modalTitle": "Request early access",
+    "access.modalText": "Tell us who you are and where to send the private preview invite.",
+    "access.nameLabel": "Name",
+    "access.namePlaceholder": "Your name",
     "access.emailLabel": "Corporate email",
     "access.placeholder": "name@company.com",
     "access.button": "Request Early Access",
     "access.submitting": "Submitting...",
+    "access.closeLabel": "Close early access form",
     "status.supabaseMissing": "Supabase project URL is missing.",
     "status.duplicate": "Request already received. We'll be in touch soon.",
     "status.success": "Request received. We'll be in touch soon.",
@@ -497,10 +506,15 @@ const translations = {
     "security.metric3Label": "مسارات نشر إقليمية",
     "access.label": "معاينة خاصة للمؤسسات",
     "access.title": "امنح خط مبيعاتك الإقليمي رؤية كاملة.",
+    "access.modalTitle": "اطلب الوصول المبكر",
+    "access.modalText": "أخبرنا باسمك والبريد الذي نرسل إليه دعوة المعاينة الخاصة.",
+    "access.nameLabel": "الاسم",
+    "access.namePlaceholder": "اسمك",
     "access.emailLabel": "البريد الإلكتروني للشركة",
     "access.placeholder": "name@company.com",
     "access.button": "اطلب الوصول المبكر",
     "access.submitting": "جار الإرسال...",
+    "access.closeLabel": "إغلاق نموذج الوصول المبكر",
     "status.supabaseMissing": "رابط مشروع Supabase غير موجود.",
     "status.duplicate": "وصلنا طلبك سابقا. سنتواصل معك قريبا.",
     "status.success": "تم استلام الطلب. سنتواصل معك قريبا.",
@@ -853,6 +867,54 @@ window.syncSadhaDashboardLanguage = () => {
 
 syncAskPromptButtons();
 
+const openAccessModal = () => {
+  if (!accessModal) {
+    return;
+  }
+
+  lastFocusedElement = document.activeElement;
+  accessModal.hidden = false;
+  document.body.classList.add("is-modal-open");
+  setFormStatus("");
+
+  window.requestAnimationFrame(() => {
+    accessModal.classList.add("is-open");
+    form?.querySelector('[name="full_name"]')?.focus();
+  });
+};
+
+const closeAccessModal = () => {
+  if (!accessModal) {
+    return;
+  }
+
+  accessModal.classList.remove("is-open");
+  document.body.classList.remove("is-modal-open");
+  setFormStatus("");
+
+  window.setTimeout(() => {
+    accessModal.hidden = true;
+    lastFocusedElement?.focus?.();
+  }, 180);
+};
+
+accessModalTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", (event) => {
+    event.preventDefault();
+    openAccessModal();
+  });
+});
+
+accessModalCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeAccessModal);
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && accessModal?.classList.contains("is-open")) {
+    closeAccessModal();
+  }
+});
+
 const setFormStatus = (messageKey = "", tone = "") => {
   if (!formStatus) {
     return;
@@ -878,14 +940,20 @@ const redirectToThankYou = (email) => {
   window.location.href = `${THANK_YOU_PAGE}?${params.toString()}`;
 };
 
-const submitEarlyAccess = async ({ email, button, input }) => {
+const submitEarlyAccess = async ({ name, email, button, formElement }) => {
   const endpoint = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${EARLY_ACCESS_TABLE}`;
+  const payload = {
+    email,
+    source: REQUEST_SOURCE,
+    page_path: window.location.pathname,
+  };
 
-  setSubmitting(button, true);
-  setFormStatus("");
+  if (name) {
+    payload.full_name = name;
+  }
 
-  try {
-    const response = await fetch(endpoint, {
+  const postSignup = (body) =>
+    fetch(endpoint, {
       method: "POST",
       headers: {
         apikey: SUPABASE_PUBLISHABLE_KEY,
@@ -893,15 +961,22 @@ const submitEarlyAccess = async ({ email, button, input }) => {
         "Content-Type": "application/json",
         Prefer: "return=minimal",
       },
-      body: JSON.stringify({
-        email,
-        source: REQUEST_SOURCE,
-        page_path: window.location.pathname,
-      }),
+      body: JSON.stringify(body),
     });
 
+  setSubmitting(button, true);
+  setFormStatus("");
+
+  try {
+    let response = await postSignup(payload);
+
+    if (!response.ok && response.status === 400 && payload.full_name) {
+      const { full_name, ...emailOnlyPayload } = payload;
+      response = await postSignup(emailOnlyPayload);
+    }
+
     if (response.status === 409) {
-      input.value = "";
+      formElement.reset();
       redirectToThankYou(email);
       return;
     }
@@ -910,7 +985,7 @@ const submitEarlyAccess = async ({ email, button, input }) => {
       throw new Error(`Supabase insert failed with ${response.status}`);
     }
 
-    input.value = "";
+    formElement.reset();
     redirectToThankYou(email);
   } catch (error) {
     console.error(error);
@@ -922,12 +997,21 @@ const submitEarlyAccess = async ({ email, button, input }) => {
 
 form?.addEventListener("submit", (event) => {
   event.preventDefault();
-  const input = form.querySelector("input");
+  const nameInput = form.querySelector('[name="full_name"]');
+  const input = form.querySelector('[name="email"]');
   const button = form.querySelector("button");
+  const name = nameInput.value.trim();
   const email = input.value.trim().toLowerCase();
+
+  if (!name) {
+    nameInput.focus();
+    form.reportValidity();
+    return;
+  }
 
   if (!email) {
     input.focus();
+    form.reportValidity();
     return;
   }
 
@@ -936,5 +1020,5 @@ form?.addEventListener("submit", (event) => {
     return;
   }
 
-  submitEarlyAccess({ email, button, input });
+  submitEarlyAccess({ name, email, button, formElement: form });
 });
