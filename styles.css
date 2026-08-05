@@ -4489,19 +4489,19 @@ html[dir="rtl"] .hero-sticky .hero-actions {
 
 .float-signal small,
 .float-crm small {
-  color: rgba(5, 5, 5, 0.42);
-  font-size: 0.62rem;
+  color: var(--ink);
+  font-size: 0.67rem;
   font-weight: 950;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .float-signal strong,
 .float-crm strong {
   margin-top: 7px;
-  color: var(--ink-soft);
+  color: rgba(5, 5, 5, 0.52);
   font-size: 0.82rem;
-  font-weight: 920;
+  font-weight: 780;
   line-height: 1.28;
 }
 
@@ -4918,5 +4918,423 @@ html[dir="rtl"] .hero-sticky .subhead {
   .float-zoom,
   .float-crm {
     animation: none;
+  }
+}
+
+/* Mobile conversion layout: a readable product loop, not a compressed desktop canvas */
+@media (max-width: 720px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .nav {
+    top: 8px;
+    display: grid;
+    width: calc(100% - 20px);
+    min-height: 56px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .brand {
+    width: 104px;
+    height: 38px;
+  }
+
+  .nav-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-self: end;
+  }
+
+  .nav-cta {
+    width: auto;
+    min-height: 38px;
+    padding: 0 10px;
+    font-size: 0.72rem;
+  }
+
+  .language-toggle {
+    grid-column: auto;
+    grid-row: auto;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 11px;
+  }
+
+  .language-toggle button {
+    min-height: 32px;
+    border-radius: 8px;
+    padding: 0 7px;
+    font-size: 0.67rem;
+  }
+
+  .hero-motion-shell {
+    height: auto;
+    min-height: 0;
+  }
+
+  .hero-sticky {
+    position: relative;
+    display: grid;
+    width: calc(100% - 28px);
+    height: auto;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+    align-items: start;
+    padding: 98px 0 24px;
+    overflow: visible;
+  }
+
+  .hero-sticky .hero-copy {
+    top: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    text-align: left;
+  }
+
+  .hero-sticky .eyebrow {
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+
+  .hero-sticky h1.hero-title {
+    max-width: 360px;
+    margin-top: 12px;
+    font-size: clamp(2.7rem, 12.8vw, 3.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    text-align: left;
+    text-wrap: balance;
+  }
+
+  .hero-sticky .hero-title span,
+  .hero-sticky .hero-title span:first-child,
+  .hero-sticky .hero-title span:last-child {
+    display: block;
+  }
+
+  .hero-sticky .subhead {
+    max-width: 350px;
+    margin: 18px 0 0;
+    font-size: 0.96rem;
+    line-height: 1.45;
+    text-align: left;
+  }
+
+  .hero-sticky .hero-actions,
+  html[dir="rtl"] .hero-sticky .hero-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 9px;
+    justify-content: stretch;
+    margin-top: 20px;
+  }
+
+  .hero-sticky .hero-actions .button {
+    min-height: 48px;
+    padding: 0 9px;
+    font-size: 0.79rem;
+    white-space: nowrap;
+  }
+
+  .hero-sticky .hero-art {
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: auto;
+    margin: 0;
+  }
+
+  .floating-system {
+    display: grid;
+    width: 100%;
+    max-width: 430px;
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "meet zoom"
+      "whatsapp whatsapp"
+      "sadha sadha"
+      "crm crm";
+    gap: 10px;
+    align-items: stretch;
+    margin: 0 auto;
+  }
+
+  .float-signal,
+  .float-sadha,
+  .float-crm {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+  }
+
+  .float-signal {
+    width: auto;
+    min-width: 0;
+    min-height: 66px;
+    border-radius: 15px;
+    padding: 13px;
+  }
+
+  .float-signal small,
+  .float-crm small {
+    font-size: 0.61rem;
+  }
+
+  .float-signal strong,
+  .float-crm strong {
+    margin-top: 5px;
+    font-size: 0.73rem;
+    line-height: 1.25;
+  }
+
+  .float-meet {
+    grid-area: meet;
+    transform: rotate(1deg);
+  }
+
+  .float-zoom {
+    grid-area: zoom;
+    transform: rotate(-1deg);
+  }
+
+  .float-whatsapp {
+    grid-area: whatsapp;
+    transform: rotate(-0.6deg);
+  }
+
+  .float-sadha {
+    grid-area: sadha;
+    left: auto;
+    width: 108px;
+    justify-self: center;
+    padding: 5px 0 0;
+    transform: none;
+  }
+
+  .float-sadha::after {
+    content: "↓";
+    margin-top: 7px;
+    color: rgba(5, 5, 5, 0.34);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .float-sadha-mark,
+  .float-sadha-mark img {
+    width: 102px;
+    height: 102px;
+  }
+
+  .float-crm {
+    grid-area: crm;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    min-height: 68px;
+    border-radius: 16px;
+    padding: 14px 48px 14px 15px;
+    transform: rotate(0.5deg);
+  }
+
+  .float-crm b {
+    right: 14px;
+  }
+
+  .motion-dashboard {
+    display: none;
+  }
+
+  .hero > .product-stage {
+    width: calc(100% - 28px);
+    margin: 0 auto;
+    padding-top: 58px;
+  }
+
+  .product-intro {
+    margin-bottom: 22px;
+    text-align: left;
+  }
+
+  .product-intro h2 {
+    margin-top: 10px;
+    font-size: clamp(2.25rem, 11vw, 3rem);
+    line-height: 0.96;
+    text-align: left;
+    text-wrap: balance;
+  }
+
+  .product-intro > p:last-child {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: left;
+  }
+
+  .dashboard-app {
+    border-radius: 20px;
+  }
+
+  .app-sidebar {
+    display: block;
+    padding: 10px;
+  }
+
+  .app-logo {
+    display: none;
+  }
+
+  .app-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .app-nav button {
+    min-height: 42px;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 5px;
+    font-size: 0.7rem;
+    text-align: center;
+  }
+
+  .app-main {
+    padding: 16px;
+  }
+
+  .app-header h2,
+  .deal-detail-header h2 {
+    font-size: 1.85rem;
+  }
+
+  .deal-row {
+    padding: 14px;
+  }
+
+  .section {
+    width: calc(100% - 28px);
+    padding-top: 64px;
+  }
+
+  .section-heading {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(2.35rem, 11.5vw, 3.2rem);
+    line-height: 0.95;
+    text-align: left;
+  }
+
+  .section-heading .eyebrow {
+    margin-top: 14px;
+  }
+
+  .bento-grid {
+    gap: 12px;
+  }
+
+  .bento-card,
+  .bento-large {
+    min-height: 0;
+    border-radius: 20px;
+    padding: 22px;
+  }
+
+  .bento-card h3 {
+    font-size: 1.65rem;
+  }
+
+  .feature-row,
+  .feature-row.reverse {
+    gap: 24px;
+    padding: 48px 0;
+  }
+
+  .feature-row.reverse .feature-copy {
+    order: 0;
+  }
+
+  .feature-copy h2 {
+    margin-top: 12px;
+    font-size: clamp(2.35rem, 11vw, 3.1rem);
+    line-height: 0.96;
+  }
+
+  .feature-copy p {
+    margin-top: 14px;
+    font-size: 0.96rem;
+    line-height: 1.5;
+  }
+
+  .feature-panel {
+    min-height: 320px;
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .access-card {
+    min-height: 0;
+    border-radius: 24px;
+    padding: 50px 20px;
+  }
+
+  .access-card h2 {
+    font-size: clamp(2.6rem, 12vw, 3.35rem);
+    line-height: 0.95;
+  }
+
+  .access-open-button {
+    width: 100%;
+  }
+
+  .footer {
+    width: calc(100% - 28px);
+    gap: 20px;
+    padding-top: 42px;
+    padding-bottom: 30px;
+  }
+
+  html[dir="rtl"] .hero-sticky .hero-copy,
+  html[dir="rtl"] .hero-sticky .hero-title,
+  html[dir="rtl"] .hero-sticky .subhead,
+  html[dir="rtl"] .product-intro,
+  html[dir="rtl"] .product-intro h2,
+  html[dir="rtl"] .product-intro > p:last-child,
+  html[dir="rtl"] .section-heading,
+  html[dir="rtl"] .section-heading h2 {
+    text-align: right;
+  }
+}
+
+@media (max-width: 370px) {
+  .brand {
+    width: 94px;
+  }
+
+  .nav-cta {
+    padding: 0 8px;
+    font-size: 0.67rem;
+  }
+
+  .language-toggle button {
+    padding: 0 5px;
+  }
+
+  .hero-sticky h1.hero-title {
+    font-size: 2.55rem;
+  }
+
+  .hero-sticky .hero-actions {
+    grid-template-columns: 1fr;
   }
 }
