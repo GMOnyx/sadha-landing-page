@@ -19,6 +19,7 @@ const askMessages = document.querySelector("[data-ask-messages]");
 const askPromptButtons = Array.from(document.querySelectorAll("[data-ask-prompt]"));
 const askInput = document.querySelector(".ask-input");
 const askTextInput = document.querySelector("[data-ask-input]");
+const motionHero = document.querySelector("[data-motion-hero]");
 let selectedDealName = "Al Noor Bank";
 let selectedDealRow = null;
 let thinkingTimer = null;
@@ -33,16 +34,16 @@ const THANK_YOU_PAGE = "thank-you.html";
 
 const translations = {
   en: {
-    "meta.title": "SADHA | Revenue Intelligence for MENA",
+    "meta.title": "SADHA | Conversations Into CRM, Automatically",
     "meta.description":
-      "SADHA is an enterprise revenue intelligence platform built for multi-lingual B2B sales teams across MENA.",
-    "meta.socialDescription": "The Revenue intelligence software built for MENA.",
+      "SADHA captures Zoom, Google Meet, and WhatsApp sales conversations, turns them into usable AI intelligence, and syncs everything directly to your CRM.",
+    "meta.socialDescription": "Calls and WhatsApp become structured CRM intelligence—automatically.",
     "nav.homeLabel": "SADHA home",
     "nav.languageLabel": "Language",
-    "nav.features": "Features",
-    "nav.security": "Dashboard",
-    "nav.enterprise": "Enterprise",
-    "nav.cta": "Request Early Access",
+    "nav.features": "What you get",
+    "nav.security": "Product",
+    "nav.enterprise": "Why SADHA",
+    "nav.cta": "Get Early Access",
     "hero.stream1": "بس نحتاج data residency قبل التوقيع",
     "hero.stream2": "Pricing needs procurement clarity",
     "hero.stream3": "Can we include Dubai legal next week?",
@@ -50,38 +51,71 @@ const translations = {
     "hero.output1": "Deal risk: Data residency",
     "hero.output2": "Commitment: Compliance workshop",
     "hero.output3": "CRM: Close date updated",
-    "hero.eyebrow": "SADHA meeting intelligence",
-    "hero.titleMuted": "The Revenue intelligence",
-    "hero.titleStrong": "software built for MENA",
-    "hero.subhead": "English-Arabic sales calls, decoded into revenue actions.",
-    "hero.primary": "Request Early Access",
-    "hero.secondary": "View Intelligence",
+    "hero.eyebrow": "Calls + WhatsApp → CRM",
+    "hero.titleMuted": "Every conversation.",
+    "hero.titleStrong": "In your CRM.",
+    "hero.subhead":
+      "SADHA transcribes calls, understands WhatsApp, and updates your CRM automatically.",
+    "hero.primary": "Get Early Access",
+    "hero.secondary": "See it in action",
+    "hero.microcopy": "Built for sales teams where the deal lives in WhatsApp.",
+    "heroVisual.live": "Live deal signals",
+    "heroVisual.meetSignal": "VP Finance confirmed the budget.",
+    "heroVisual.meetMeta": "09:42 · transcript",
+    "heroVisual.whatsappMeta": "10:18 · buyer message",
+    "heroVisual.resultTitle": "Deal record updated automatically.",
+    "heroVisual.resultText": "Risk flagged · Next step added · Close date updated",
+    "heroVisual.sources": "sources connected",
+    "heroVisual.manual": "manual fields",
+    "heroVisual.confidence": "sync confidence",
+    "heroVisual.chats": "Chats captured",
+    "heroVisual.calls": "Calls transcribed",
+    "heroVisual.understands": "Understands and structures",
+    "heroVisual.crmUpdated": "CRM updated automatically",
+    "heroVisual.crmFields": "Notes · risks · next steps",
+    "heroVisual.whatsappSignal": "Need KSA data residency",
+    "heroVisual.meetSignalShort": "Budget confirmed",
+    "heroVisual.zoomSignal": "4 action items",
+    "motionDashboard.label": "Unified deal record",
+    "motionDashboard.synced": "Synced to CRM",
+    "motionDashboard.insight": "Risk flagged · Next step added",
+    "integrations.label": "Connects the tools your team already uses",
+    "productPreview.label": "The complete deal record",
+    "productPreview.title": "See what your CRM was missing.",
+    "productPreview.text":
+      "Calls, WhatsApp, risks, commitments, and next steps — connected to the right opportunity and ready to act on.",
+    "pipeline.capture": "Conversations",
+    "pipeline.understand": "SADHA AI",
+    "pipeline.sync": "CRM",
+    "pipeline.live": "Live",
     "pipeline.whatsappTitle": "WhatsApp",
-    "pipeline.whatsapp": "where deals talk",
-    "pipeline.meetTitle": "Meet / Zoom",
-    "pipeline.meet": "where deals present",
-    "pipeline.emailTitle": "Email",
-    "pipeline.email": "where deals stall",
-    "pipeline.crmTitle": "CRM",
-    "pipeline.crm": "where deals get forgotten",
-    "pipeline.callsTitle": "Calls",
-    "pipeline.calls": "where deals decide",
-    "pipeline.engine": "SADHA NLP",
-    "pipeline.truthTitle": "No lead unaccounted for.",
-    "pipeline.truthText":
-      "One visible timeline for every touchpoint, commitment, and deal risk.",
+    "pipeline.whatsapp": "buyer chats and voice notes",
+    "pipeline.zoomTitle": "Zoom",
+    "pipeline.zoom": "sales calls and demos",
+    "pipeline.meetTitle": "Google Meet",
+    "pipeline.meet": "discovery and follow-ups",
+    "pipeline.engine": "SADHA AI",
+    "pipeline.summaries": "Summaries",
+    "pipeline.risks": "Deal risks",
+    "pipeline.nextSteps": "Next steps",
+    "pipeline.crmRecord": "CRM record",
+    "pipeline.synced": "CRM updated",
+    "pipeline.meetingSummary": "Meeting summary",
+    "pipeline.decisionRisk": "Decision risk",
+    "pipeline.followUp": "Next follow-up",
+    "pipeline.truthText": "Notes · risks · next steps",
     "app.nav.deals": "Deals",
     "app.nav.ask": "Ask Sadha",
     "app.nav.analytics": "Analytics",
     "app.connected": "Connected",
     "app.connected.whatsapp": "WhatsApp Business",
     "app.connected.meet": "Google Meet",
+    "app.connected.zoom": "Zoom",
     "app.connected.hubspot": "HubSpot",
-    "app.connected.gmail": "Gmail — connect",
     "app.user.role": "Head of Sales",
     "app.deals.title": "Deals",
     "app.deals.subtitle":
-      "Every deal, with everything it said — across WhatsApp, meetings, email and CRM.",
+      "Every call and WhatsApp message, understood and synced to the right CRM record.",
     "app.deals.pipeline": "Pipeline: SAR 2.9M · 4 open",
     "app.location.riyadh": "Riyadh, KSA",
     "app.location.dubai": "Dubai, UAE",
@@ -103,9 +137,9 @@ const translations = {
     "app.health.won": "Won",
     "app.channel.whatsapp2d": "WhatsApp · 2d ago",
     "app.channel.meetYesterday": "Meet · yesterday",
-    "app.channel.email16d": "Email · 16d ago",
+    "app.channel.zoom16d": "Zoom · 16d ago",
     "app.channel.whatsapp14d": "WhatsApp · 14d ago",
-    "app.channel.email31d": "Email · 31d ago",
+    "app.channel.whatsapp31d": "WhatsApp · 31d ago",
     "app.channel.crmSynced": "CRM · synced",
     "app.detail.back": "← All deals",
     "app.detail.timeline": "Unified timeline",
@@ -116,10 +150,10 @@ const translations = {
     "app.detail.meetText":
       "60-min expansion review — 3 pricing objections, VP Finance moved from observer to decision path. Competitor mention: Clari.",
     "app.detail.meetMeta": "Wed 10:00 · full transcript · 4 action items",
-    "app.detail.emailTag": "Email",
-    "app.detail.emailText":
+    "app.detail.zoomTag": "Zoom",
+    "app.detail.zoomText":
       "Procurement asked for staged CAPEX pricing and the security whitepaper.",
-    "app.detail.emailMeta": "Thu 09:14 · reply drafted by Sadha, pending your review",
+    "app.detail.zoomMeta": "Thu 09:14 · full transcript · pricing objection captured",
     "app.detail.crmTag": "CRM",
     "app.detail.crmText": "Stage → Negotiation. Close date auto-updated to Aug 15.",
     "app.detail.crmMeta": "Synced to HubSpot · confidence 94%",
@@ -133,18 +167,18 @@ const translations = {
     "app.detail.askButton": "Ask Sadha about this deal",
     "app.ask.title": "Ask Sadha",
     "app.ask.subtitle":
-      "Ask anything about your deals, lost reasons, or funnel — in English or Arabic. Every answer cites its sources.",
+      "Ask anything about your deals in English or Arabic. Every answer cites the call, chat, and CRM record behind it.",
     "app.ask.emptyTitle": "Start with a revenue question.",
     "app.ask.emptyText":
-      "Sadha will answer from calls, WhatsApp, email, and CRM records with sources attached.",
+      "Sadha will answer from Zoom, Meet, WhatsApp, and CRM records with sources attached.",
     "app.ask.promptBlocking": "What’s blocking {deal}?",
     "app.ask.answerBlocking":
-      "{deal} is blocked by the highest-risk commitment in its timeline. Sadha found the blocker by connecting WhatsApp, meeting notes, email, and CRM movement into one deal record.",
+      "{deal} is blocked by the highest-risk commitment in its timeline. Sadha found it by connecting WhatsApp, Zoom, Meet, and CRM movement into one deal record.",
     "app.ask.sourcesBlocking": "sources: unified timeline · WhatsApp · CRM",
     "app.ask.promptQuiet": "Which Q2 deals went quiet?",
     "app.ask.answerQuiet":
       "Three deals have had no contact in 14+ days: Nile Logistics, Petra Foods, and Marjan Hospitality. Two also have unanswered WhatsApp messages from the buyer.",
-    "app.ask.sourcesQuiet": "sources: CRM activity · WhatsApp Business · Gmail",
+    "app.ask.sourcesQuiet": "sources: CRM activity · WhatsApp Business · Zoom",
     "app.ask.promptLeak": "Where is the funnel leaking?",
     "app.ask.answerLeak":
       "The biggest drop-off is Proposal → Negotiation. Compliance/data-residency and late pricing revisions appear in most stalled opportunities at that stage.",
@@ -152,12 +186,12 @@ const translations = {
     "app.ask.promptLost": "Why did we lose Gulf Retail Co.?",
     "app.ask.answerLost":
       "Pricing was raised in 4 of 6 touchpoints. On the Mar 12 call the buyer said the quote was above budget, and no revised offer was ever sent.",
-    "app.ask.sourcesLost": "sources: Meet Mar 12 · Email Mar 18 · CRM closed-lost note",
+    "app.ask.sourcesLost": "sources: Meet Mar 12 · WhatsApp Mar 18 · CRM closed-lost note",
     "app.ask.placeholder": "Ask about any deal, reason, or number...",
     "app.ask.button": "Ask",
     "app.ask.thinking": "Sadha is reading the pipeline",
     "app.ask.defaultAnswer":
-      "Sadha would answer this by checking every touchpoint tied to the deal, then citing the calls, WhatsApp messages, emails, and CRM updates behind the recommendation.",
+      "Sadha would answer this by checking every call and WhatsApp message tied to the deal, then citing the CRM updates behind the recommendation.",
     "app.ask.defaultSources": "sources: connected revenue timeline",
     "app.analytics.title": "Analytics",
     "app.analytics.subtitle": "This quarter, across all channels.",
@@ -202,41 +236,47 @@ const translations = {
     "actions.item2": "Book Dubai compliance workshop",
     "actions.item3": "Update Salesforce close date",
     "actions.confidence": "CRM sync confidence",
-    "problem.title": "Western platforms hear the words. Sadha understands the market.",
-    "problem.eyebrow": "Why regional teams need native intelligence",
-    "problem.card1Label": "The dialect gap",
-    "problem.card1Title": "The Code-Switching Nightmare.",
+    "problem.title": "Two blind spots are costing you pipeline.",
+    "problem.eyebrow": "Why CRM data breaks",
+    "problem.card1Label": "01 / Calls",
+    "problem.card1Title": "Calls become memory. Memory becomes CRM.",
     "problem.card1Text":
-      "Western transcription fails when sales reps fluidly mix Khaleeji, Levantine, or Egyptian Arabic with English. Sadha decodes it natively.",
-    "problem.dialect1": "Khaleeji",
-    "problem.dialect2": "Levantine",
-    "problem.dialect3": "Egyptian",
-    "problem.dialect4": "English",
-    "problem.card2Label": "Where deals actually move",
-    "problem.card2Title": "WhatsApp-native.",
+      "After every call, reps decide what to remember, what to log, and what to skip. Your forecast inherits every omission.",
+    "problem.callEnded": "Call ended",
+    "problem.fromMemory": "from memory",
+    "problem.crmUpdate": "Incomplete CRM",
+    "problem.dialect1": "60-min call",
+    "problem.dialect2": "4 CRM fields",
+    "problem.dialect3": "1 missed blocker",
+    "problem.dialect4": "Rep memory",
+    "problem.card2Label": "02 / WhatsApp",
+    "problem.card2Title": "The real deal never reaches CRM.",
     "problem.card2Text":
-      "In this region, the real negotiation happens in chat. Sadha treats WhatsApp as a first-class revenue channel, not an afterthought.",
+      "Pricing, objections, approvals, and commitments live in chat. Without SADHA, managers never see the full buying journey.",
     "problem.chat1": "Need procurement approval today",
-    "problem.chat3": "Risk captured in timeline",
-    "problem.card3Label": "CRM friction",
-    "problem.card3Title": "Zero-Click CRM Logging.",
+    "problem.chat3": "Risk: procurement approval",
+    "problem.chatNext": "Next step: send revised price",
+    "problem.card3Label": "The fix",
+    "problem.card3Title": "Capture every conversation. Update every deal.",
     "problem.card3Text":
-      "Sadha automatically maps call summaries, customer commitments, and next steps straight into HubSpot and Salesforce.",
-    "problem.summary": "Summary",
+      "SADHA connects calls and WhatsApp to the right opportunity, then writes structured intelligence directly into your CRM.",
+    "problem.summary": "Calls",
+    "problem.commitment": "WhatsApp",
+    "problem.crmFields": "CRM updated",
     "problem.hubspot": "HubSpot",
     "problem.salesforce": "Salesforce",
-    "features.xrayLabel": "Manager visibility",
-    "features.xrayTitle": "The X-Ray Call Timeline.",
+    "features.xrayLabel": "Know every deal",
+    "features.xrayTitle": "Managers see the truth without chasing reps.",
     "features.xrayText":
-      "Scan a 60-minute meeting in 60 seconds. Sadha turns every sales call into a readable signal map for talk ratios, pricing pressure, risks, and competitor mentions.",
+      "Review a 60-minute call in 60 seconds. See objections, commitments, pricing pressure, and who owes the next step.",
     "features.panel1Label": "Call X-Ray",
     "features.panel1Badge": "60s review",
     "features.metric1": "Rep talk time",
     "features.metric2": "Client talk time",
     "features.metric3": "Pricing flags",
     "features.metric4": "Competitors",
-    "features.summaryLabel": "Ask SADHA",
-    "features.summaryTitle": "Your pipeline can finally answer questions.",
+    "features.summaryLabel": "Ask the pipeline",
+    "features.summaryTitle": "Answers with receipts, not opinions.",
     "features.summaryText":
       "Lost reasons, funnel drop-off, competitor mentions, promises made on a call three weeks ago. Ask in plain English or Arabic and get the answer with receipts.",
     "features.panel2Label": "Pipeline intelligence",
@@ -261,15 +301,15 @@ const translations = {
     "security.metric1Label": "Tenant isolation",
     "security.metric2Label": "At-rest encryption",
     "security.metric3Label": "Regional deployment paths",
-    "access.label": "Private enterprise preview",
-    "access.title": "Bring absolute visibility to your regional pipeline.",
-    "access.modalTitle": "Request early access",
-    "access.modalText": "Tell us who you are and where to send the private preview invite.",
+    "access.label": "Ready to fix your CRM data?",
+    "access.title": "Stop managing deals from half the story.",
+    "access.modalTitle": "Get early access",
+    "access.modalText": "Enter your work email and we’ll send you the private preview details.",
     "access.nameLabel": "Name",
     "access.namePlaceholder": "Your name",
     "access.emailLabel": "Corporate email",
     "access.placeholder": "name@company.com",
-    "access.button": "Request Early Access",
+    "access.button": "Get Early Access",
     "access.submitting": "Submitting...",
     "access.closeLabel": "Close early access form",
     "status.supabaseMissing": "Supabase project URL is missing.",
@@ -280,17 +320,17 @@ const translations = {
     "footer.copy": "Copyright 2026 SADHA Intelligence. All rights reserved.",
   },
   ar: {
-    "meta.title": "صدى | ذكاء الإيرادات للشرق الأوسط وشمال أفريقيا",
+    "meta.title": "صدى | كل محادثة مبيعات، متزامنة مع إدارة العملاء",
     "meta.description":
-      "صدى منصة ذكاء إيرادات للمؤسسات، مصممة لفرق المبيعات متعددة اللغات في الشرق الأوسط وشمال أفريقيا.",
+      "يلتقط صدى محادثات المبيعات في زوم وجوجل ميت وواتساب، ويحوّلها إلى معلومات قابلة للاستخدام بالذكاء الاصطناعي، ثم يزامنها مباشرة مع نظام إدارة العملاء.",
     "meta.socialDescription":
-      "منصة ذكاء الإيرادات المصممة للشرق الأوسط وشمال أفريقيا.",
+      "المكالمات وواتساب تتحول تلقائيا إلى معلومات منظمة داخل إدارة العملاء.",
     "nav.homeLabel": "العودة إلى الصفحة الرئيسية لصدى",
     "nav.languageLabel": "اختيار اللغة",
-    "nav.features": "المزايا",
-    "nav.security": "لوحة التحكم",
-    "nav.enterprise": "للمؤسسات",
-    "nav.cta": "اطلب الوصول المبكر",
+    "nav.features": "ما تحصل عليه",
+    "nav.security": "المنتج",
+    "nav.enterprise": "لماذا صدى",
+    "nav.cta": "احصل على وصول مبكر",
     "hero.stream1": "بس نحتاج إقامة البيانات قبل التوقيع",
     "hero.stream2": "التسعير يحتاج وضوحا للمشتريات",
     "hero.stream3": "هل نضيف الفريق القانوني في دبي الأسبوع القادم؟",
@@ -298,37 +338,71 @@ const translations = {
     "hero.output1": "خطر الصفقة: إقامة البيانات",
     "hero.output2": "التزام: ورشة امتثال",
     "hero.output3": "إدارة العملاء: تحديث تاريخ الإغلاق",
-    "hero.eyebrow": "صدى لذكاء الاجتماعات",
-    "hero.titleMuted": "صدى",
-    "hero.titleStrong": "منصة تحول المكالمات إلى إجراءات إيرادات واضحة",
-    "hero.subhead": "",
-    "hero.primary": "اطلب الوصول المبكر",
-    "hero.secondary": "شاهد الذكاء",
+    "hero.eyebrow": "المكالمات + واتساب ← إدارة العملاء",
+    "hero.titleMuted": "كل محادثة.",
+    "hero.titleStrong": "داخل إدارة العملاء.",
+    "hero.subhead":
+      "يفرغ صدى المكالمات ويفهم واتساب ويحدث إدارة العملاء تلقائيا.",
+    "hero.primary": "احصل على وصول مبكر",
+    "hero.secondary": "شاهد المنتج",
+    "hero.microcopy": "مصمم لفرق المبيعات التي تعيش صفقاتها في واتساب.",
+    "heroVisual.live": "إشارات الصفقة المباشرة",
+    "heroVisual.meetSignal": "أكد نائب رئيس المالية الميزانية.",
+    "heroVisual.meetMeta": "09:42 · النص الكامل",
+    "heroVisual.whatsappMeta": "10:18 · رسالة المشتري",
+    "heroVisual.resultTitle": "تم تحديث سجل الصفقة تلقائيا.",
+    "heroVisual.resultText": "رصد الخطر · إضافة الخطوة التالية · تحديث تاريخ الإغلاق",
+    "heroVisual.sources": "مصدران متصلان",
+    "heroVisual.manual": "حقول يدوية",
+    "heroVisual.confidence": "ثقة المزامنة",
+    "heroVisual.chats": "التقاط المحادثات",
+    "heroVisual.calls": "تفريغ المكالمات",
+    "heroVisual.understands": "يفهم وينظم",
+    "heroVisual.crmUpdated": "تحديث إدارة العملاء تلقائيا",
+    "heroVisual.crmFields": "ملاحظات · مخاطر · خطوات تالية",
+    "heroVisual.whatsappSignal": "نحتاج إقامة البيانات في السعودية",
+    "heroVisual.meetSignalShort": "تم تأكيد الميزانية",
+    "heroVisual.zoomSignal": "4 مهام",
+    "motionDashboard.label": "سجل الصفقة الموحد",
+    "motionDashboard.synced": "متزامن مع إدارة العملاء",
+    "motionDashboard.insight": "رصد الخطر · إضافة الخطوة التالية",
+    "integrations.label": "يتصل بالأدوات التي يستخدمها فريقك بالفعل",
+    "productPreview.label": "سجل الصفقة الكامل",
+    "productPreview.title": "شاهد ما كانت تفوته إدارة العملاء.",
+    "productPreview.text":
+      "المكالمات وواتساب والمخاطر والالتزامات والخطوات التالية — مرتبطة بالفرصة الصحيحة وجاهزة للتنفيذ.",
+    "pipeline.capture": "المحادثات",
+    "pipeline.understand": "ذكاء صدى",
+    "pipeline.sync": "إدارة العملاء",
+    "pipeline.live": "مباشر",
     "pipeline.whatsappTitle": "واتساب",
-    "pipeline.whatsapp": "حيث تبدأ الصفقات",
-    "pipeline.meetTitle": "اجتماع / زوم",
-    "pipeline.meet": "حيث تُعرض الصفقات",
-    "pipeline.emailTitle": "البريد",
-    "pipeline.email": "حيث تتعطل الصفقات",
-    "pipeline.crmTitle": "إدارة العملاء",
-    "pipeline.crm": "حيث تُنسى الصفقات",
-    "pipeline.callsTitle": "المكالمات",
-    "pipeline.calls": "حيث تُحسم الصفقات",
-    "pipeline.engine": "محرك صدى اللغوي",
-    "pipeline.truthTitle": "لا عميل محتمل بلا متابعة.",
-    "pipeline.truthText": "خط زمني واحد لكل تواصل، والتزام، ومخاطر صفقة.",
+    "pipeline.whatsapp": "محادثات المشتري والرسائل الصوتية",
+    "pipeline.zoomTitle": "زوم",
+    "pipeline.zoom": "مكالمات المبيعات والعروض",
+    "pipeline.meetTitle": "جوجل ميت",
+    "pipeline.meet": "الاكتشاف والمتابعات",
+    "pipeline.engine": "ذكاء صدى",
+    "pipeline.summaries": "الملخصات",
+    "pipeline.risks": "مخاطر الصفقة",
+    "pipeline.nextSteps": "الخطوات التالية",
+    "pipeline.crmRecord": "سجل إدارة العملاء",
+    "pipeline.synced": "تم تحديث إدارة العملاء",
+    "pipeline.meetingSummary": "ملخص الاجتماع",
+    "pipeline.decisionRisk": "مخاطر القرار",
+    "pipeline.followUp": "المتابعة التالية",
+    "pipeline.truthText": "ملاحظات · مخاطر · خطوات تالية",
     "app.nav.deals": "الصفقات",
     "app.nav.ask": "اسأل صدى",
     "app.nav.analytics": "التحليلات",
     "app.connected": "متصل",
     "app.connected.whatsapp": "واتساب للأعمال",
     "app.connected.meet": "جوجل ميت",
+    "app.connected.zoom": "زوم",
     "app.connected.hubspot": "هاب سبوت",
-    "app.connected.gmail": "جيميل — ربط",
     "app.user.role": "رئيس المبيعات",
     "app.deals.title": "الصفقات",
     "app.deals.subtitle":
-      "كل صفقة، بكل ما قيل عنها، عبر واتساب والاجتماعات والبريد وإدارة علاقات العملاء.",
+      "كل مكالمة ورسالة واتساب، مفهومة ومتزامنة مع سجل الصفقة الصحيح.",
     "app.deals.pipeline": "خط المبيعات: 2.9M SAR · 4 مفتوحة",
     "app.location.riyadh": "الرياض، السعودية",
     "app.location.dubai": "دبي، الإمارات",
@@ -350,9 +424,9 @@ const translations = {
     "app.health.won": "ربحت",
     "app.channel.whatsapp2d": "واتساب · قبل يومين",
     "app.channel.meetYesterday": "اجتماع · أمس",
-    "app.channel.email16d": "بريد · قبل 16 يوما",
+    "app.channel.zoom16d": "زوم · قبل 16 يوما",
     "app.channel.whatsapp14d": "واتساب · قبل 14 يوما",
-    "app.channel.email31d": "بريد · قبل 31 يوما",
+    "app.channel.whatsapp31d": "واتساب · قبل 31 يوما",
     "app.channel.crmSynced": "إدارة العملاء · تمت المزامنة",
     "app.detail.back": "→ كل الصفقات",
     "app.detail.timeline": "الخط الزمني الموحد",
@@ -362,10 +436,10 @@ const translations = {
     "app.detail.meetText":
       "مراجعة توسع لمدة 60 دقيقة — 3 اعتراضات على التسعير، وانتقال نائب المالية إلى مسار القرار. ذُكر منافس: Clari.",
     "app.detail.meetMeta": "الأربعاء 10:00 · النص الكامل · 4 مهام",
-    "app.detail.emailTag": "البريد",
-    "app.detail.emailText":
+    "app.detail.zoomTag": "زوم",
+    "app.detail.zoomText":
       "طلبت المشتريات تسعيرا مرحليا لـ CAPEX والورقة البيضاء الأمنية.",
-    "app.detail.emailMeta": "الخميس 09:14 · رد صاغته صدى بانتظار مراجعتك",
+    "app.detail.zoomMeta": "الخميس 09:14 · النص الكامل · رصد اعتراض على التسعير",
     "app.detail.crmTag": "إدارة العملاء",
     "app.detail.crmText": "المرحلة ← تفاوض. تم تحديث تاريخ الإغلاق إلى 15 أغسطس.",
     "app.detail.crmMeta": "تمت المزامنة مع هاب سبوت · الثقة 94%",
@@ -379,18 +453,18 @@ const translations = {
     "app.detail.askButton": "اسأل صدى عن هذه الصفقة",
     "app.ask.title": "اسأل صدى",
     "app.ask.subtitle":
-      "اسأل عن الصفقات أو أسباب الخسارة أو القمع بالعربية أو الإنجليزية. كل إجابة تذكر مصادرها.",
+      "اسأل عن صفقاتك بالعربية أو الإنجليزية. كل إجابة تستشهد بالمكالمة والمحادثة وسجل إدارة العملاء.",
     "app.ask.emptyTitle": "ابدأ بسؤال عن الإيرادات.",
     "app.ask.emptyText":
-      "ستجيب صدى من المكالمات وواتساب والبريد وإدارة علاقات العملاء مع المصادر.",
+      "ستجيب صدى من زوم وجوجل ميت وواتساب وإدارة علاقات العملاء مع المصادر.",
     "app.ask.promptBlocking": "ما الذي يعيق {deal}؟",
     "app.ask.answerBlocking":
-      "{deal} متوقفة عند أعلى التزام خطورة في خطها الزمني. ربطت صدى واتساب وملاحظات الاجتماعات والبريد وحركة إدارة علاقات العملاء في سجل صفقة واحد للوصول إلى السبب.",
+      "{deal} متوقفة عند أعلى التزام خطورة في خطها الزمني. ربطت صدى واتساب وزوم وجوجل ميت وحركة إدارة علاقات العملاء في سجل صفقة واحد للوصول إلى السبب.",
     "app.ask.sourcesBlocking": "المصادر: الخط الزمني الموحد · واتساب · إدارة العملاء",
     "app.ask.promptQuiet": "أي صفقات في الربع الثاني أصبحت صامتة؟",
     "app.ask.answerQuiet":
       "ثلاث صفقات لم يحدث معها تواصل منذ أكثر من 14 يوما: Nile Logistics وPetra Foods وMarjan Hospitality. واثنتان لديهما رسائل واتساب غير مجابة من المشتري.",
-    "app.ask.sourcesQuiet": "المصادر: نشاط إدارة العملاء · واتساب للأعمال · جيميل",
+    "app.ask.sourcesQuiet": "المصادر: نشاط إدارة العملاء · واتساب للأعمال · زوم",
     "app.ask.promptLeak": "أين يتسرب القمع؟",
     "app.ask.answerLeak":
       "أكبر انخفاض يحدث من العرض إلى التفاوض. تظهر مسائل الامتثال وإقامة البيانات وتأخر تعديلات التسعير في معظم الفرص المتوقفة في هذه المرحلة.",
@@ -398,12 +472,12 @@ const translations = {
     "app.ask.promptLost": "لماذا خسرنا Gulf Retail Co.؟",
     "app.ask.answerLost":
       "تم رفع موضوع التسعير في 4 من أصل 6 نقاط تواصل. في مكالمة 12 مارس قال المشتري إن العرض فوق الميزانية، ولم يتم إرسال عرض معدل.",
-    "app.ask.sourcesLost": "المصادر: اجتماع 12 مارس · بريد 18 مارس · ملاحظة إدارة العملاء",
+    "app.ask.sourcesLost": "المصادر: اجتماع 12 مارس · واتساب 18 مارس · ملاحظة إدارة العملاء",
     "app.ask.placeholder": "اسأل عن أي صفقة أو سبب أو رقم...",
     "app.ask.button": "اسأل",
     "app.ask.thinking": "تقرأ صدى خط المبيعات",
     "app.ask.defaultAnswer":
-      "ستجيب صدى عبر فحص كل نقطة تواصل مرتبطة بالصفقة، ثم تذكر المكالمات ورسائل واتساب والبريد وتحديثات إدارة العملاء التي تدعم التوصية.",
+      "ستجيب صدى عبر فحص كل مكالمة ورسالة واتساب مرتبطة بالصفقة، ثم تذكر تحديثات إدارة العملاء التي تدعم التوصية.",
     "app.ask.defaultSources": "المصادر: خط الإيرادات المتصل",
     "app.analytics.title": "التحليلات",
     "app.analytics.subtitle": "هذا الربع، عبر كل القنوات.",
@@ -445,41 +519,47 @@ const translations = {
     "actions.item2": "حجز ورشة امتثال في دبي",
     "actions.item3": "تحديث تاريخ الإغلاق في سيلزفورس",
     "actions.confidence": "ثقة مزامنة إدارة العملاء",
-    "problem.title": "المنصات الغربية تسمع الكلمات. صدى يفهم السوق.",
-    "problem.eyebrow": "لماذا تحتاج الفرق الإقليمية إلى ذكاء محلي",
-    "problem.card1Label": "فجوة اللهجات",
-    "problem.card1Title": "معضلة التنقل بين اللغات.",
+    "problem.title": "نقطتان عمياء تكلفانك صفقات.",
+    "problem.eyebrow": "لماذا تفشل بيانات إدارة العملاء",
+    "problem.card1Label": "01 / المكالمات",
+    "problem.card1Title": "المكالمات تصبح ذاكرة. والذاكرة تصبح بيانات.",
     "problem.card1Text":
-      "تتعثر أدوات التفريغ الغربية عندما يمزج مندوبو المبيعات بين الخليجي أو الشامي أو المصري والإنجليزية بسلاسة. صدى يفك هذا السياق محليا.",
-    "problem.dialect1": "خليجي",
-    "problem.dialect2": "شامي",
-    "problem.dialect3": "مصري",
-    "problem.dialect4": "إنجليزي",
-    "problem.card2Label": "حيث تتحرك الصفقات فعليا",
-    "problem.card2Title": "مصمم لواتساب.",
+      "بعد كل مكالمة، يقرر المندوب ما يتذكره وما يسجله وما يتجاهله. توقعاتك ترث كل معلومة مفقودة.",
+    "problem.callEnded": "انتهت المكالمة",
+    "problem.fromMemory": "من الذاكرة",
+    "problem.crmUpdate": "سجل غير مكتمل",
+    "problem.dialect1": "مكالمة 60 دقيقة",
+    "problem.dialect2": "4 حقول CRM",
+    "problem.dialect3": "عائق واحد مفقود",
+    "problem.dialect4": "ذاكرة المندوب",
+    "problem.card2Label": "02 / واتساب",
+    "problem.card2Title": "الصفقة الحقيقية لا تصل إلى إدارة العملاء.",
     "problem.card2Text":
-      "في هذه المنطقة، يحدث التفاوض الحقيقي داخل المحادثات. يتعامل صدى مع واتساب كقناة إيرادات أساسية، وليس كفكرة لاحقة.",
+      "التسعير والاعتراضات والموافقات والالتزامات تعيش في المحادثات. بدون صدى، لا يرى المديرون رحلة الشراء كاملة.",
     "problem.chat1": "نحتاج موافقة المشتريات اليوم",
-    "problem.chat3": "تم التقاط الخطر في الخط الزمني",
-    "problem.card3Label": "احتكاك إدارة العملاء",
-    "problem.card3Title": "تسجيل إدارة العملاء بلا نقرات.",
+    "problem.chat3": "الخطر: موافقة المشتريات",
+    "problem.chatNext": "الخطوة التالية: إرسال السعر المعدل",
+    "problem.card3Label": "الحل",
+    "problem.card3Title": "التقط كل محادثة. حدث كل صفقة.",
     "problem.card3Text":
-      "يربط صدى ملخصات المكالمات، والتزامات العملاء، والخطوات التالية مباشرة داخل هاب سبوت وسيلزفورس.",
-    "problem.summary": "الملخص",
+      "يربط صدى المكالمات وواتساب بالفرصة الصحيحة، ثم يكتب المعلومات المنظمة مباشرة داخل إدارة العملاء.",
+    "problem.summary": "المكالمات",
+    "problem.commitment": "واتساب",
+    "problem.crmFields": "تم تحديث إدارة العملاء",
     "problem.hubspot": "هاب سبوت",
     "problem.salesforce": "سيلزفورس",
-    "features.xrayLabel": "رؤية للمديرين",
-    "features.xrayTitle": "خط زمني شفاف للمكالمة.",
+    "features.xrayLabel": "اعرف كل صفقة",
+    "features.xrayTitle": "يرى المديرون الحقيقة دون ملاحقة المندوبين.",
     "features.xrayText":
-      "راجع اجتماعا من 60 دقيقة خلال 60 ثانية. يحول صدى كل مكالمة مبيعات إلى خريطة إشارات واضحة لنسب الحديث، وضغط التسعير، والمخاطر، وذكر المنافسين.",
+      "راجع مكالمة من 60 دقيقة خلال 60 ثانية. شاهد الاعتراضات والالتزامات وضغط التسعير ومن يملك الخطوة التالية.",
     "features.panel1Label": "تحليل المكالمة",
     "features.panel1Badge": "مراجعة 60 ثانية",
     "features.metric1": "وقت حديث المندوب",
     "features.metric2": "وقت حديث العميل",
     "features.metric3": "إشارات التسعير",
     "features.metric4": "منافسون",
-    "features.summaryLabel": "اسأل صدى",
-    "features.summaryTitle": "خط مبيعاتك يستطيع أخيرا أن يجيب.",
+    "features.summaryLabel": "اسأل خط المبيعات",
+    "features.summaryTitle": "إجابات بالأدلة، لا بالآراء.",
     "features.summaryText":
       "أسباب الخسارة، انخفاض القمع، ذكر المنافسين، والوعود التي قيلت في مكالمة قبل ثلاثة أسابيع. اسأل بالعربية أو الإنجليزية واحصل على الإجابة مع الدليل.",
     "features.panel2Label": "ذكاء خط المبيعات",
@@ -504,15 +584,15 @@ const translations = {
     "security.metric1Label": "عزل لكل مستأجر",
     "security.metric2Label": "تشفير البيانات المخزنة",
     "security.metric3Label": "مسارات نشر إقليمية",
-    "access.label": "معاينة خاصة للمؤسسات",
-    "access.title": "امنح خط مبيعاتك الإقليمي رؤية كاملة.",
-    "access.modalTitle": "اطلب الوصول المبكر",
-    "access.modalText": "أخبرنا باسمك والبريد الذي نرسل إليه دعوة المعاينة الخاصة.",
+    "access.label": "جاهز لإصلاح بيانات إدارة العملاء؟",
+    "access.title": "توقف عن إدارة الصفقات بنصف القصة.",
+    "access.modalTitle": "احصل على وصول مبكر",
+    "access.modalText": "أدخل بريد العمل وسنرسل لك تفاصيل المعاينة الخاصة.",
     "access.nameLabel": "الاسم",
     "access.namePlaceholder": "اسمك",
     "access.emailLabel": "البريد الإلكتروني للشركة",
     "access.placeholder": "name@company.com",
-    "access.button": "اطلب الوصول المبكر",
+    "access.button": "احصل على وصول مبكر",
     "access.submitting": "جار الإرسال...",
     "access.closeLabel": "إغلاق نموذج الوصول المبكر",
     "status.supabaseMissing": "رابط مشروع Supabase غير موجود.",
@@ -867,6 +947,12 @@ window.syncSadhaDashboardLanguage = () => {
 
 syncAskPromptButtons();
 
+const trackEvent = (eventName, parameters = {}) => {
+  if (typeof window.gtag === "function") {
+    window.gtag("event", eventName, parameters);
+  }
+};
+
 const openAccessModal = () => {
   if (!accessModal) {
     return;
@@ -879,7 +965,7 @@ const openAccessModal = () => {
 
   window.requestAnimationFrame(() => {
     accessModal.classList.add("is-open");
-    form?.querySelector('[name="full_name"]')?.focus();
+    form?.querySelector('[name="email"]')?.focus();
   });
 };
 
@@ -901,6 +987,14 @@ const closeAccessModal = () => {
 accessModalTriggers.forEach((trigger) => {
   trigger.addEventListener("click", (event) => {
     event.preventDefault();
+    const location = trigger.closest(".hero-copy")
+      ? "hero"
+      : trigger.closest(".access-card")
+        ? "final_cta"
+        : trigger.closest(".nav")
+          ? "navigation"
+          : "footer";
+    trackEvent("early_access_cta_click", { cta_location: location });
     openAccessModal();
   });
 });
@@ -986,6 +1080,10 @@ const submitEarlyAccess = async ({ name, email, button, formElement }) => {
     }
 
     formElement.reset();
+    trackEvent("generate_lead", {
+      lead_source: REQUEST_SOURCE,
+      transport_type: "beacon",
+    });
     redirectToThankYou(email);
   } catch (error) {
     console.error(error);
@@ -997,17 +1095,10 @@ const submitEarlyAccess = async ({ name, email, button, formElement }) => {
 
 form?.addEventListener("submit", (event) => {
   event.preventDefault();
-  const nameInput = form.querySelector('[name="full_name"]');
   const input = form.querySelector('[name="email"]');
   const button = form.querySelector("button");
-  const name = nameInput.value.trim();
+  const name = "";
   const email = input.value.trim().toLowerCase();
-
-  if (!name) {
-    nameInput.focus();
-    form.reportValidity();
-    return;
-  }
 
   if (!email) {
     input.focus();
@@ -1022,3 +1113,72 @@ form?.addEventListener("submit", (event) => {
 
   submitEarlyAccess({ name, email, button, formElement: form });
 });
+
+let heroMotionFrame = null;
+
+const clampMotion = (value, min = 0, max = 1) =>
+  Math.min(max, Math.max(min, value));
+
+const updateHeroMotion = () => {
+  heroMotionFrame = null;
+
+  if (!motionHero) {
+    return;
+  }
+
+  const staticLayout =
+    window.innerWidth <= 1060 ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (staticLayout) {
+    motionHero.style.setProperty("--hero-progress", "0");
+    motionHero.style.setProperty("--float-opacity", "1");
+    motionHero.style.setProperty("--dashboard-progress", "0");
+    motionHero.style.setProperty("--dashboard-y", "34px");
+    motionHero.style.setProperty("--copy-opacity", "1");
+    motionHero.style.setProperty("--copy-y", "0px");
+    return;
+  }
+
+  const rect = motionHero.getBoundingClientRect();
+  const travel = Math.max(motionHero.offsetHeight - window.innerHeight, 1);
+  const progress = clampMotion(-rect.top / travel);
+  const dashboardProgress = clampMotion((progress - 0.3) / 0.44);
+  const floatOpacity = clampMotion(1 - progress * 1.65);
+
+  motionHero.style.setProperty("--hero-progress", progress.toFixed(3));
+  motionHero.style.setProperty("--float-opacity", floatOpacity.toFixed(3));
+  motionHero.style.setProperty(
+    "--dashboard-progress",
+    dashboardProgress.toFixed(3),
+  );
+  motionHero.style.setProperty(
+    "--dashboard-y",
+    `${((1 - dashboardProgress) * 34).toFixed(1)}px`,
+  );
+  motionHero.style.setProperty(
+    "--copy-opacity",
+    (1 - dashboardProgress * 0.25).toFixed(3),
+  );
+  motionHero.style.setProperty("--copy-y", `${(-18 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--whatsapp-x", `${(170 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--whatsapp-y", `${(-105 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--meet-x", `${(25 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--meet-y", `${(155 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--zoom-x", `${(-165 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--zoom-y", `${(28 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--sadha-x", `${(0 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--sadha-y", `${(38 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--crm-x", `${(-118 * progress).toFixed(1)}px`);
+  motionHero.style.setProperty("--crm-y", `${(-120 * progress).toFixed(1)}px`);
+};
+
+const requestHeroMotionUpdate = () => {
+  if (!heroMotionFrame) {
+    heroMotionFrame = window.requestAnimationFrame(updateHeroMotion);
+  }
+};
+
+window.addEventListener("scroll", requestHeroMotionUpdate, { passive: true });
+window.addEventListener("resize", requestHeroMotionUpdate);
+requestHeroMotionUpdate();
