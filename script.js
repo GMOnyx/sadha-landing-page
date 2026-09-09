@@ -34,10 +34,10 @@ const THANK_YOU_PAGE = "thank-you.html";
 
 const translations = {
   en: {
-    "meta.title": "SADHA | Conversations Into CRM, Automatically",
+    "meta.title": "SADHA | Revenue Intelligence Built for MENA",
     "meta.description":
-      "SADHA captures Zoom, Google Meet, and WhatsApp sales conversations, turns them into usable AI intelligence, and syncs everything directly to your CRM.",
-    "meta.socialDescription": "Calls and WhatsApp become structured CRM intelligence—automatically.",
+      "Revenue intelligence built for MENA. SADHA turns sales calls and WhatsApp conversations into actionable CRM intelligence—automatically.",
+    "meta.socialDescription": "Know what’s happening in every deal. Turn calls and WhatsApp into actionable CRM intelligence—automatically.",
     "nav.homeLabel": "SADHA home",
     "nav.languageLabel": "Language",
     "nav.features": "What you get",
@@ -52,10 +52,10 @@ const translations = {
     "hero.output2": "Commitment: Compliance workshop",
     "hero.output3": "CRM: Close date updated",
     "hero.eyebrow": "Calls + WhatsApp → CRM",
-    "hero.titleMuted": "Every conversation.",
-    "hero.titleStrong": "In your CRM.",
+    "hero.titleMuted": "The Revenue Intelligence",
+    "hero.titleStrong": "built for MENA",
     "hero.subhead":
-      "SADHA transcribes calls, understands WhatsApp, and updates your CRM automatically.",
+      "Know what’s happening in every deal. SADHA turns calls and WhatsApp into actionable CRM intelligence—automatically.",
     "hero.primary": "Get Early Access",
     "hero.secondary": "See it in action",
     "hero.microcopy": "Built for sales teams where the deal lives in WhatsApp.",
@@ -320,11 +320,11 @@ const translations = {
     "footer.copy": "Copyright 2026 SADHA Intelligence. All rights reserved.",
   },
   ar: {
-    "meta.title": "صدى | كل محادثة مبيعات، متزامنة مع إدارة العملاء",
+    "meta.title": "صدى | ذكاء الإيرادات المصمم لمنطقة الشرق الأوسط وشمال أفريقيا",
     "meta.description":
-      "يلتقط صدى محادثات المبيعات في زوم وجوجل ميت وواتساب، ويحوّلها إلى معلومات قابلة للاستخدام بالذكاء الاصطناعي، ثم يزامنها مباشرة مع نظام إدارة العملاء.",
+      "ذكاء الإيرادات المصمم لمنطقة الشرق الأوسط وشمال أفريقيا. يحوّل صدى مكالمات المبيعات ومحادثات واتساب إلى ذكاء عملي داخل إدارة العملاء تلقائيا.",
     "meta.socialDescription":
-      "المكالمات وواتساب تتحول تلقائيا إلى معلومات منظمة داخل إدارة العملاء.",
+      "اعرف ما يحدث في كل صفقة. حوّل المكالمات وواتساب إلى ذكاء عملي داخل إدارة العملاء تلقائيا.",
     "nav.homeLabel": "العودة إلى الصفحة الرئيسية لصدى",
     "nav.languageLabel": "اختيار اللغة",
     "nav.features": "ما تحصل عليه",
@@ -339,10 +339,10 @@ const translations = {
     "hero.output2": "التزام: ورشة امتثال",
     "hero.output3": "إدارة العملاء: تحديث تاريخ الإغلاق",
     "hero.eyebrow": "المكالمات + واتساب ← إدارة العملاء",
-    "hero.titleMuted": "كل محادثة.",
-    "hero.titleStrong": "داخل إدارة العملاء.",
+    "hero.titleMuted": "ذكاء الإيرادات",
+    "hero.titleStrong": "المصمم لمنطقة الشرق الأوسط وشمال أفريقيا",
     "hero.subhead":
-      "يفرغ صدى المكالمات ويفهم واتساب ويحدث إدارة العملاء تلقائيا.",
+      "اعرف ما يحدث في كل صفقة. يحوّل صدى المكالمات وواتساب إلى ذكاء عملي داخل إدارة العملاء تلقائيا.",
     "hero.primary": "احصل على وصول مبكر",
     "hero.secondary": "شاهد المنتج",
     "hero.microcopy": "مصمم لفرق المبيعات التي تعيش صفقاتها في واتساب.",

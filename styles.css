@@ -4427,26 +4427,47 @@ html[dir="rtl"] .hero-copy {
 .hero-sticky .hero-title,
 .hero-sticky .hero h1.hero-title,
 .hero-sticky h1.hero-title {
+  width: max-content;
   max-width: 500px;
   margin: 16px 0 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.5rem, 4.4vw, 4.7rem);
+  font-size: clamp(3.6rem, 4.4vw, 4.75rem);
   font-weight: 500;
-  line-height: 0.96;
+  line-height: 0.91;
+  letter-spacing: -0.045em;
   text-align: left;
   text-transform: none;
 }
 
-.hero-sticky .hero-title span,
-.hero-sticky .hero-title span:first-child,
+.hero-sticky .hero-title span {
+  display: block;
+}
+
+.hero-sticky .hero-title span:first-child {
+  width: auto;
+  max-width: 100%;
+  margin-bottom: 7px;
+  color: rgba(5, 5, 5, 0.46);
+  font-size: 0.66em;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+html[lang="en"] .hero-sticky .hero-title span:first-child {
+  white-space: nowrap;
+}
+
 .hero-sticky .hero-title span:last-child {
-  display: inline;
   color: var(--ink);
 }
 
 .hero-sticky .subhead {
-  max-width: 450px;
-  margin: 24px 0 0;
+  max-width: 490px;
+  margin: 26px 0 0;
+  color: rgba(5, 5, 5, 0.66);
+  font-size: 1.04rem;
+  font-weight: 580;
+  line-height: 1.5;
   text-align: left;
 }
 
@@ -5006,8 +5027,8 @@ html[dir="rtl"] .hero-sticky .subhead {
   .hero-sticky h1.hero-title {
     max-width: 360px;
     margin-top: 12px;
-    font-size: clamp(2.7rem, 12.8vw, 3.2rem);
-    line-height: 0.92;
+    font-size: clamp(2.85rem, 12.5vw, 3.25rem);
+    line-height: 0.91;
     letter-spacing: -0.045em;
     text-align: left;
     text-wrap: balance;
@@ -5017,6 +5038,11 @@ html[dir="rtl"] .hero-sticky .subhead {
   .hero-sticky .hero-title span:first-child,
   .hero-sticky .hero-title span:last-child {
     display: block;
+  }
+
+  .hero-sticky .hero-title span:first-child {
+    margin-bottom: 7px;
+    font-size: 0.72em;
   }
 
   .hero-sticky .subhead {
@@ -5331,7 +5357,7 @@ html[dir="rtl"] .hero-sticky .subhead {
   }
 
   .hero-sticky h1.hero-title {
-    font-size: 2.55rem;
+    font-size: 2.65rem;
   }
 
   .hero-sticky .hero-actions {
