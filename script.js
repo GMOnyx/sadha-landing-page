@@ -1,10 +1,10 @@
 const nav = document.querySelector("[data-nav]");
 const utterances = Array.from(document.querySelectorAll(".utterance"));
-const form = document.querySelector(".access-form");
-const formStatus = document.querySelector(".form-status");
-const accessModal = document.querySelector("[data-access-modal]");
-const accessModalTriggers = Array.from(document.querySelectorAll("[data-open-access-modal]"));
-const accessModalCloseButtons = Array.from(document.querySelectorAll("[data-close-access-modal]"));
+const demoCtaLinks = Array.from(document.querySelectorAll("[data-demo-cta]"));
+const demoModal = document.querySelector("[data-demo-modal]");
+const demoModalCloseButtons = Array.from(document.querySelectorAll("[data-close-demo-modal]"));
+const demoForm = document.querySelector("[data-demo-form]");
+const demoFormStatus = document.querySelector("[data-demo-form-status]");
 const languageButtons = Array.from(document.querySelectorAll("[data-lang]"));
 const appTabs = Array.from(document.querySelectorAll("[data-app-tab]"));
 const appPanels = Array.from(document.querySelectorAll("[data-app-panel]"));
@@ -25,12 +25,12 @@ let selectedDealRow = null;
 let thinkingTimer = null;
 let lastFocusedElement = null;
 
+const LANGUAGE_STORAGE_KEY = "sadha-language";
+const CALENDLY_URL = "https://calendly.com/abdarrahman2345/30min";
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ztm-q3VrZeqqABxCp1b-sQ_jBA-Me9Y";
-const EARLY_ACCESS_TABLE = "early_access_requests";
-const REQUEST_SOURCE = "sadha_landing";
-const LANGUAGE_STORAGE_KEY = "sadha-language";
-const THANK_YOU_PAGE = "thank-you.html";
+const LEADS_TABLE = "early_access_requests";
+const LEAD_SOURCE = "sadha_landing";
 
 const translations = {
   en: {
@@ -43,7 +43,7 @@ const translations = {
     "nav.features": "What you get",
     "nav.security": "Product",
     "nav.enterprise": "Why SADHA",
-    "nav.cta": "Get Early Access",
+    "nav.cta": "Book a Demo",
     "hero.stream1": "بس نحتاج data residency قبل التوقيع",
     "hero.stream2": "Pricing needs procurement clarity",
     "hero.stream3": "Can we include Dubai legal next week?",
@@ -56,7 +56,7 @@ const translations = {
     "hero.titleStrong": "built for MENA",
     "hero.subhead":
       "Know what’s happening in every deal. SADHA turns calls and WhatsApp into actionable CRM intelligence—automatically.",
-    "hero.primary": "Get Early Access",
+    "hero.primary": "Book a Demo",
     "hero.secondary": "See it in action",
     "hero.microcopy": "Built for sales teams where the deal lives in WhatsApp.",
     "heroVisual.live": "Live deal signals",
@@ -303,20 +303,15 @@ const translations = {
     "security.metric3Label": "Regional deployment paths",
     "access.label": "Ready to fix your CRM data?",
     "access.title": "Stop managing deals from half the story.",
-    "access.modalTitle": "Get early access",
-    "access.modalText": "Enter your work email and we’ll send you the private preview details.",
-    "access.nameLabel": "Name",
-    "access.namePlaceholder": "Your name",
+    "access.modalTitle": "Book a demo",
+    "access.modalText": "Enter your work email to continue to demo scheduling.",
     "access.emailLabel": "Corporate email",
     "access.placeholder": "name@company.com",
-    "access.button": "Get Early Access",
-    "access.submitting": "Submitting...",
-    "access.closeLabel": "Close early access form",
-    "status.supabaseMissing": "Supabase project URL is missing.",
-    "status.duplicate": "Request already received. We'll be in touch soon.",
-    "status.success": "Request received. We'll be in touch soon.",
-    "status.error": "Something went wrong. Please try again.",
-    "footer.contact": "Contact",
+    "access.closeLabel": "Close demo form",
+    "access.button": "Book a Demo",
+    "access.submitting": "Saving your email...",
+    "status.error": "We couldn't save your email. Please try again.",
+    "footer.contact": "Book a Demo",
     "footer.copy": "Copyright 2026 SADHA Intelligence. All rights reserved.",
   },
   ar: {
@@ -330,7 +325,7 @@ const translations = {
     "nav.features": "ما تحصل عليه",
     "nav.security": "المنتج",
     "nav.enterprise": "لماذا صدى",
-    "nav.cta": "احصل على وصول مبكر",
+    "nav.cta": "احجز عرضا توضيحيا",
     "hero.stream1": "بس نحتاج إقامة البيانات قبل التوقيع",
     "hero.stream2": "التسعير يحتاج وضوحا للمشتريات",
     "hero.stream3": "هل نضيف الفريق القانوني في دبي الأسبوع القادم؟",
@@ -343,7 +338,7 @@ const translations = {
     "hero.titleStrong": "المصمم لمنطقة الشرق الأوسط وشمال أفريقيا",
     "hero.subhead":
       "اعرف ما يحدث في كل صفقة. يحوّل صدى المكالمات وواتساب إلى ذكاء عملي داخل إدارة العملاء تلقائيا.",
-    "hero.primary": "احصل على وصول مبكر",
+    "hero.primary": "احجز عرضا توضيحيا",
     "hero.secondary": "شاهد المنتج",
     "hero.microcopy": "مصمم لفرق المبيعات التي تعيش صفقاتها في واتساب.",
     "heroVisual.live": "إشارات الصفقة المباشرة",
@@ -586,20 +581,15 @@ const translations = {
     "security.metric3Label": "مسارات نشر إقليمية",
     "access.label": "جاهز لإصلاح بيانات إدارة العملاء؟",
     "access.title": "توقف عن إدارة الصفقات بنصف القصة.",
-    "access.modalTitle": "احصل على وصول مبكر",
-    "access.modalText": "أدخل بريد العمل وسنرسل لك تفاصيل المعاينة الخاصة.",
-    "access.nameLabel": "الاسم",
-    "access.namePlaceholder": "اسمك",
+    "access.modalTitle": "احجز عرضا توضيحيا",
+    "access.modalText": "أدخل بريد العمل للانتقال إلى اختيار موعد العرض التوضيحي.",
     "access.emailLabel": "البريد الإلكتروني للشركة",
     "access.placeholder": "name@company.com",
-    "access.button": "احصل على وصول مبكر",
-    "access.submitting": "جار الإرسال...",
-    "access.closeLabel": "إغلاق نموذج الوصول المبكر",
-    "status.supabaseMissing": "رابط مشروع Supabase غير موجود.",
-    "status.duplicate": "وصلنا طلبك سابقا. سنتواصل معك قريبا.",
-    "status.success": "تم استلام الطلب. سنتواصل معك قريبا.",
-    "status.error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
-    "footer.contact": "تواصل معنا",
+    "access.closeLabel": "إغلاق نموذج حجز العرض",
+    "access.button": "احجز عرضا توضيحيا",
+    "access.submitting": "جار حفظ بريدك...",
+    "status.error": "تعذر حفظ بريدك. يرجى المحاولة مرة أخرى.",
+    "footer.contact": "احجز عرضا توضيحيا",
     "footer.copy": "حقوق النشر 2026 صدى. جميع الحقوق محفوظة.",
   },
 };
@@ -703,13 +693,13 @@ const applyLanguage = (language, { persist = false } = {}) => {
   setMetaContent('meta[name="twitter:title"]', t("meta.title"));
   setMetaContent('meta[name="twitter:description"]', t("meta.socialDescription"));
 
-  if (formStatus?.dataset.statusKey) {
-    formStatus.textContent = t(formStatus.dataset.statusKey);
+  if (demoFormStatus?.dataset.statusKey) {
+    demoFormStatus.textContent = t(demoFormStatus.dataset.statusKey);
   }
 
-  const submitButton = form?.querySelector("button");
-  if (submitButton && !submitButton.disabled) {
-    submitButton.textContent = t("access.button");
+  const demoSubmitButton = demoForm?.querySelector('button[type="submit"]');
+  if (demoSubmitButton && !demoSubmitButton.disabled) {
+    demoSubmitButton.textContent = t("access.button");
   }
 
   window.syncSadhaDashboardLanguage?.();
@@ -953,101 +943,100 @@ const trackEvent = (eventName, parameters = {}) => {
   }
 };
 
-const openAccessModal = () => {
-  if (!accessModal) {
+const setDemoFormStatus = (messageKey = "", tone = "") => {
+  if (!demoFormStatus) {
     return;
   }
 
-  lastFocusedElement = document.activeElement;
-  accessModal.hidden = false;
-  document.body.classList.add("is-modal-open");
-  setFormStatus("");
-
-  window.requestAnimationFrame(() => {
-    accessModal.classList.add("is-open");
-    form?.querySelector('[name="email"]')?.focus();
-  });
+  demoFormStatus.dataset.statusKey = messageKey;
+  demoFormStatus.textContent = messageKey ? t(messageKey) : "";
+  demoFormStatus.classList.toggle("is-error", tone === "error");
 };
 
-const closeAccessModal = () => {
-  if (!accessModal) {
-    return;
-  }
-
-  accessModal.classList.remove("is-open");
-  document.body.classList.remove("is-modal-open");
-  setFormStatus("");
-
-  window.setTimeout(() => {
-    accessModal.hidden = true;
-    lastFocusedElement?.focus?.();
-  }, 180);
-};
-
-accessModalTriggers.forEach((trigger) => {
-  trigger.addEventListener("click", (event) => {
-    event.preventDefault();
-    const location = trigger.closest(".hero-copy")
-      ? "hero"
-      : trigger.closest(".access-card")
-        ? "final_cta"
-        : trigger.closest(".nav")
-          ? "navigation"
-          : "footer";
-    trackEvent("early_access_cta_click", { cta_location: location });
-    openAccessModal();
-  });
-});
-
-accessModalCloseButtons.forEach((button) => {
-  button.addEventListener("click", closeAccessModal);
-});
-
-window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && accessModal?.classList.contains("is-open")) {
-    closeAccessModal();
-  }
-});
-
-const setFormStatus = (messageKey = "", tone = "") => {
-  if (!formStatus) {
-    return;
-  }
-
-  formStatus.dataset.statusKey = messageKey;
-  formStatus.textContent = messageKey ? t(messageKey) : "";
-  formStatus.classList.toggle("is-success", tone === "success");
-  formStatus.classList.toggle("is-error", tone === "error");
-};
-
-const setSubmitting = (button, isSubmitting) => {
+const setDemoSubmitting = (button, isSubmitting) => {
   button.disabled = isSubmitting;
   button.textContent = t(isSubmitting ? "access.submitting" : "access.button");
 };
 
-const redirectToThankYou = (email) => {
-  const params = new URLSearchParams({
-    email,
-    lang: currentLanguage,
-  });
-
-  window.location.href = `${THANK_YOU_PAGE}?${params.toString()}`;
-};
-
-const submitEarlyAccess = async ({ name, email, button, formElement }) => {
-  const endpoint = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/${EARLY_ACCESS_TABLE}`;
-  const payload = {
-    email,
-    source: REQUEST_SOURCE,
-    page_path: window.location.pathname,
-  };
-
-  if (name) {
-    payload.full_name = name;
+const closeDemoModal = () => {
+  if (!demoModal) {
+    return;
   }
 
-  const postSignup = (body) =>
-    fetch(endpoint, {
+  demoModal.classList.remove("is-open");
+  document.body.classList.remove("is-modal-open");
+  setDemoFormStatus("");
+
+  window.setTimeout(() => {
+    demoModal.hidden = true;
+    lastFocusedElement?.focus?.();
+  }, 180);
+};
+
+const openDemoModal = () => {
+  if (!demoModal) {
+    return;
+  }
+
+  lastFocusedElement = document.activeElement;
+  demoModal.hidden = false;
+  document.body.classList.add("is-modal-open");
+  setDemoFormStatus("");
+
+  window.requestAnimationFrame(() => {
+    demoModal.classList.add("is-open");
+    demoForm?.querySelector('[name="email"]')?.focus();
+  });
+};
+
+demoCtaLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const location = link.closest(".hero-copy")
+      ? "hero"
+      : link.closest(".access-card")
+        ? "final_cta"
+        : link.closest(".nav")
+          ? "navigation"
+          : "footer";
+    trackEvent("book_demo_cta_click", { cta_location: location });
+
+    if (link.matches("[data-open-demo-modal]") && demoModal) {
+      event.preventDefault();
+      openDemoModal();
+    }
+  });
+});
+
+demoModalCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeDemoModal);
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && demoModal?.classList.contains("is-open")) {
+    closeDemoModal();
+  }
+});
+
+demoForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const emailInput = demoForm.querySelector('[name="email"]');
+  const submitButton = demoForm.querySelector('button[type="submit"]');
+  const email = emailInput.value.trim().toLowerCase();
+  if (!email) {
+    emailInput.focus();
+    demoForm.reportValidity();
+    return;
+  }
+
+  const endpoint = `${SUPABASE_URL}/rest/v1/${LEADS_TABLE}`;
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 12000);
+  setDemoSubmitting(submitButton, true);
+  setDemoFormStatus("");
+
+  try {
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         apikey: SUPABASE_PUBLISHABLE_KEY,
@@ -1055,63 +1044,31 @@ const submitEarlyAccess = async ({ name, email, button, formElement }) => {
         "Content-Type": "application/json",
         Prefer: "return=minimal",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        email,
+        source: LEAD_SOURCE,
+        page_path: window.location.pathname,
+      }),
+      signal: controller.signal,
     });
 
-  setSubmitting(button, true);
-  setFormStatus("");
-
-  try {
-    let response = await postSignup(payload);
-
-    if (!response.ok && response.status === 400 && payload.full_name) {
-      const { full_name, ...emailOnlyPayload } = payload;
-      response = await postSignup(emailOnlyPayload);
+    if (!response.ok && response.status !== 409) {
+      throw new Error(`Lead capture failed with ${response.status}`);
     }
 
-    if (response.status === 409) {
-      formElement.reset();
-      redirectToThankYou(email);
-      return;
-    }
-
-    if (!response.ok) {
-      throw new Error(`Supabase insert failed with ${response.status}`);
-    }
-
-    formElement.reset();
-    trackEvent("generate_lead", {
-      lead_source: REQUEST_SOURCE,
-      transport_type: "beacon",
-    });
-    redirectToThankYou(email);
+    const bookingUrl = new URL(CALENDLY_URL);
+    bookingUrl.searchParams.set("email", email);
+    bookingUrl.searchParams.set("utm_source", LEAD_SOURCE);
+    trackEvent("generate_lead", { lead_source: LEAD_SOURCE });
+    trackEvent("book_demo_form_submit", { form_location: "demo_modal" });
+    window.location.assign(bookingUrl.toString());
   } catch (error) {
     console.error(error);
-    setFormStatus("status.error", "error");
+    setDemoFormStatus("status.error", "error");
   } finally {
-    setSubmitting(button, false);
+    window.clearTimeout(timeoutId);
+    setDemoSubmitting(submitButton, false);
   }
-};
-
-form?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const input = form.querySelector('[name="email"]');
-  const button = form.querySelector("button");
-  const name = "";
-  const email = input.value.trim().toLowerCase();
-
-  if (!email) {
-    input.focus();
-    form.reportValidity();
-    return;
-  }
-
-  if (!SUPABASE_URL) {
-    setFormStatus("status.supabaseMissing", "error");
-    return;
-  }
-
-  submitEarlyAccess({ name, email, button, formElement: form });
 });
 
 let heroMotionFrame = null;

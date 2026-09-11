@@ -4407,7 +4407,7 @@ html[dir="rtl"] .hero-copy {
   position: relative;
   top: -68px;
   align-self: center;
-  max-width: 500px;
+  max-width: 550px;
   margin: 0;
   text-align: left;
   opacity: var(--copy-opacity);
@@ -4428,10 +4428,10 @@ html[dir="rtl"] .hero-copy {
 .hero-sticky .hero h1.hero-title,
 .hero-sticky h1.hero-title {
   width: max-content;
-  max-width: 500px;
+  max-width: 550px;
   margin: 16px 0 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.6rem, 4.4vw, 4.75rem);
+  font-size: clamp(3.9rem, 5vw, 5.15rem);
   font-weight: 500;
   line-height: 0.91;
   letter-spacing: -0.045em;
@@ -4448,7 +4448,7 @@ html[dir="rtl"] .hero-copy {
   max-width: 100%;
   margin-bottom: 7px;
   color: rgba(5, 5, 5, 0.46);
-  font-size: 0.66em;
+  font-size: 0.74em;
   line-height: 1;
   letter-spacing: -0.035em;
 }
@@ -5027,7 +5027,7 @@ html[dir="rtl"] .hero-sticky .subhead {
   .hero-sticky h1.hero-title {
     max-width: 360px;
     margin-top: 12px;
-    font-size: clamp(2.85rem, 12.5vw, 3.25rem);
+    font-size: clamp(3rem, 13vw, 3.5rem);
     line-height: 0.91;
     letter-spacing: -0.045em;
     text-align: left;
@@ -5042,7 +5042,7 @@ html[dir="rtl"] .hero-sticky .subhead {
 
   .hero-sticky .hero-title span:first-child {
     margin-bottom: 7px;
-    font-size: 0.72em;
+    font-size: clamp(2.25rem, 10.5vw, 2.65rem);
   }
 
   .hero-sticky .subhead {
@@ -5357,7 +5357,7 @@ html[dir="rtl"] .hero-sticky .subhead {
   }
 
   .hero-sticky h1.hero-title {
-    font-size: 2.65rem;
+    font-size: 2.85rem;
   }
 
   .hero-sticky .hero-actions {

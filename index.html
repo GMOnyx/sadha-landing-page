@@ -37,7 +37,7 @@
     <meta name="theme-color" content="#f4f0e8" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="styles.css?v=55" />
+    <link rel="stylesheet" href="styles.css?v=56" />
   </head>
   <body>
     <header class="nav" data-nav>
@@ -50,7 +50,7 @@
         <a href="#enterprise" data-i18n="nav.enterprise">Why SADHA</a>
       </nav>
       <div class="nav-actions">
-        <a class="nav-cta" href="#request-access" data-open-access-modal data-i18n="nav.cta">Get Early Access</a>
+        <a class="nav-cta" href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="nav.cta">Book a Demo</a>
         <div class="language-toggle" role="radiogroup" aria-label="Language" data-i18n-aria-label="nav.languageLabel">
           <button type="button" data-lang="en" aria-pressed="true">EN</button>
           <button type="button" data-lang="ar" aria-pressed="false">عربي</button>
@@ -106,7 +106,7 @@
                 <span data-i18n="hero.subhead">Know what’s happening in every deal. SADHA turns calls and WhatsApp into actionable CRM intelligence—automatically.</span>
               </p>
               <div class="hero-actions">
-                <a class="button button-primary" href="#request-access" data-open-access-modal data-i18n="hero.primary">Get Early Access</a>
+                <a class="button button-primary" href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="hero.primary">Book a Demo</a>
                 <a class="button button-ghost" href="#meeting-intel" data-i18n="hero.secondary">See it in action</a>
               </div>
             </div>
@@ -431,7 +431,7 @@
         <div class="access-card">
           <p class="eyebrow" data-i18n="access.label">Ready to fix your CRM data?</p>
           <h2 data-i18n="access.title">Stop managing deals from half the story.</h2>
-          <button class="button button-primary access-open-button" type="button" data-open-access-modal data-i18n="access.button">Get Early Access</button>
+          <a class="button button-primary access-open-button" href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="access.button">Book a Demo</a>
         </div>
       </section>
     </main>
@@ -442,27 +442,27 @@
         <a href="#features" data-i18n="nav.features">What you get</a>
         <a href="#meeting-intel" data-i18n="nav.security">Product</a>
         <a href="#enterprise" data-i18n="nav.enterprise">Why SADHA</a>
-        <a href="#request-access" data-open-access-modal data-i18n="footer.contact">Contact</a>
+        <a href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="footer.contact">Book a Demo</a>
       </div>
       <p data-i18n="footer.copy">Copyright 2026 SADHA Intelligence. All rights reserved.</p>
     </footer>
 
-    <div class="access-modal" data-access-modal hidden>
-      <button class="access-modal-backdrop" type="button" data-close-access-modal aria-label="Close early access form" data-i18n-aria-label="access.closeLabel"></button>
-      <section class="access-dialog" role="dialog" aria-modal="true" aria-labelledby="access-modal-title">
-        <button class="access-modal-close" type="button" data-close-access-modal aria-label="Close early access form" data-i18n-aria-label="access.closeLabel">×</button>
-        <p class="eyebrow" data-i18n="access.label">Private enterprise preview</p>
-        <h2 id="access-modal-title" data-i18n="access.modalTitle">Get early access</h2>
-        <p data-i18n="access.modalText">Enter your work email and we’ll send you the private preview details.</p>
-        <form class="access-form access-modal-form">
-          <label for="access-email" data-i18n="access.emailLabel">Corporate email</label>
-          <input id="access-email" name="email" type="email" placeholder="name@company.com" data-i18n-placeholder="access.placeholder" autocomplete="email" required />
-          <button type="submit" data-i18n="access.button">Get Early Access</button>
+    <div class="access-modal" id="demo-modal" data-demo-modal hidden>
+      <button class="access-modal-backdrop" type="button" data-close-demo-modal aria-label="Close demo form" data-i18n-aria-label="access.closeLabel"></button>
+      <section class="access-dialog" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+        <button class="access-modal-close" type="button" data-close-demo-modal aria-label="Close demo form" data-i18n-aria-label="access.closeLabel">×</button>
+        <p class="eyebrow" data-i18n="access.label">Ready to fix your CRM data?</p>
+        <h2 id="demo-modal-title" data-i18n="access.modalTitle">Book a demo</h2>
+        <p data-i18n="access.modalText">Enter your work email to continue to demo scheduling.</p>
+        <form class="access-form access-modal-form" data-demo-form>
+          <label for="demo-email" data-i18n="access.emailLabel">Corporate email</label>
+          <input id="demo-email" name="email" type="email" placeholder="name@company.com" data-i18n-placeholder="access.placeholder" autocomplete="email" inputmode="email" required />
+          <button type="submit" data-i18n="access.button">Book a Demo</button>
         </form>
-        <p class="form-status" role="status" aria-live="polite"></p>
+        <p class="form-status" data-demo-form-status role="status" aria-live="polite"></p>
       </section>
     </div>
 
-    <script src="script.js?v=28"></script>
+    <script src="script.js?v=32"></script>
   </body>
 </html>
