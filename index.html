@@ -37,7 +37,7 @@
     <meta name="theme-color" content="#f4f0e8" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="styles.css?v=56" />
+    <link rel="stylesheet" href="styles.css?v=57" />
   </head>
   <body>
     <header class="nav" data-nav>
@@ -50,7 +50,7 @@
         <a href="#enterprise" data-i18n="nav.enterprise">Why SADHA</a>
       </nav>
       <div class="nav-actions">
-        <a class="nav-cta" href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="nav.cta">Book a Demo</a>
+        <a class="nav-cta" href="#demo-modal" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="nav.cta">Book a Demo</a>
         <div class="language-toggle" role="radiogroup" aria-label="Language" data-i18n-aria-label="nav.languageLabel">
           <button type="button" data-lang="en" aria-pressed="true">EN</button>
           <button type="button" data-lang="ar" aria-pressed="false">عربي</button>
@@ -106,7 +106,7 @@
                 <span data-i18n="hero.subhead">Know what’s happening in every deal. SADHA turns calls and WhatsApp into actionable CRM intelligence—automatically.</span>
               </p>
               <div class="hero-actions">
-                <a class="button button-primary" href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="hero.primary">Book a Demo</a>
+                <a class="button button-primary" href="#demo-modal" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="hero.primary">Book a Demo</a>
                 <a class="button button-ghost" href="#meeting-intel" data-i18n="hero.secondary">See it in action</a>
               </div>
             </div>
@@ -431,7 +431,7 @@
         <div class="access-card">
           <p class="eyebrow" data-i18n="access.label">Ready to fix your CRM data?</p>
           <h2 data-i18n="access.title">Stop managing deals from half the story.</h2>
-          <a class="button button-primary access-open-button" href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="access.button">Book a Demo</a>
+          <a class="button button-primary access-open-button" href="#demo-modal" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="access.button">Book a Demo</a>
         </div>
       </section>
     </main>
@@ -442,27 +442,72 @@
         <a href="#features" data-i18n="nav.features">What you get</a>
         <a href="#meeting-intel" data-i18n="nav.security">Product</a>
         <a href="#enterprise" data-i18n="nav.enterprise">Why SADHA</a>
-        <a href="https://calendly.com/abdarrahman2345/30min" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="footer.contact">Book a Demo</a>
+        <a href="#demo-modal" data-demo-cta data-open-demo-modal aria-haspopup="dialog" aria-controls="demo-modal" data-i18n="footer.contact">Book a Demo</a>
       </div>
       <p data-i18n="footer.copy">Copyright 2026 SADHA Intelligence. All rights reserved.</p>
     </footer>
 
     <div class="access-modal" id="demo-modal" data-demo-modal hidden>
-      <button class="access-modal-backdrop" type="button" data-close-demo-modal aria-label="Close demo form" data-i18n-aria-label="access.closeLabel"></button>
-      <section class="access-dialog" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <button class="access-modal-backdrop" type="button" tabindex="-1" data-close-demo-modal aria-label="Close demo form" data-i18n-aria-label="access.closeLabel"></button>
+      <section class="access-dialog booking-dialog" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
         <button class="access-modal-close" type="button" data-close-demo-modal aria-label="Close demo form" data-i18n-aria-label="access.closeLabel">×</button>
-        <p class="eyebrow" data-i18n="access.label">Ready to fix your CRM data?</p>
-        <h2 id="demo-modal-title" data-i18n="access.modalTitle">Book a demo</h2>
-        <p data-i18n="access.modalText">Enter your work email to continue to demo scheduling.</p>
-        <form class="access-form access-modal-form" data-demo-form>
-          <label for="demo-email" data-i18n="access.emailLabel">Corporate email</label>
-          <input id="demo-email" name="email" type="email" placeholder="name@company.com" data-i18n-placeholder="access.placeholder" autocomplete="email" inputmode="email" required />
-          <button type="submit" data-i18n="access.button">Book a Demo</button>
-        </form>
-        <p class="form-status" data-demo-form-status role="status" aria-live="polite"></p>
+        <div data-booking-form-view>
+          <p class="eyebrow" data-i18n="access.label">Ready to fix your CRM data?</p>
+          <h2 id="demo-modal-title" data-i18n="access.modalTitle">Book a demo</h2>
+          <p data-i18n="access.modalText">Choose a 30-minute time and tell us where to reach you.</p>
+
+          <form class="booking-form" data-demo-form>
+            <div class="booking-grid">
+              <div class="booking-schedule">
+                <div class="booking-meta">
+                  <span data-i18n="booking.duration">30-minute demo</span>
+                  <label for="booking-timezone">
+                    <span data-i18n="booking.timezoneLabel">Time zone</span>
+                    <select id="booking-timezone" data-booking-timezone></select>
+                  </label>
+                </div>
+
+                <fieldset class="booking-fieldset">
+                  <legend data-i18n="booking.dateLabel">Choose a date</legend>
+                  <div class="booking-date-list" data-booking-dates></div>
+                </fieldset>
+
+                <fieldset class="booking-fieldset">
+                  <legend data-i18n="booking.timeLabel">Choose a time</legend>
+                  <div class="booking-time-list" data-booking-times>
+                    <p class="booking-empty" data-i18n="booking.chooseDateFirst">Choose a date to see available times.</p>
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="booking-details">
+                <label for="demo-name" data-i18n="booking.nameLabel">Your name</label>
+                <input id="demo-name" name="name" type="text" autocomplete="name" required />
+
+                <label for="demo-email" data-i18n="access.emailLabel">Work email</label>
+                <input id="demo-email" name="email" type="email" placeholder="name@company.com" data-i18n-placeholder="access.placeholder" autocomplete="email" inputmode="email" required />
+
+                <label for="demo-company" data-i18n="booking.companyLabel">Company</label>
+                <input id="demo-company" name="company" type="text" autocomplete="organization" required />
+
+                <div class="booking-selection" data-booking-selection hidden></div>
+                <button class="booking-submit" type="submit" data-i18n="access.button">Book a Demo</button>
+                <p class="form-status" data-demo-form-status role="status" aria-live="polite"></p>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="booking-success" data-booking-success hidden>
+          <span class="booking-success-mark" aria-hidden="true">✓</span>
+          <p class="eyebrow" data-i18n="booking.successLabel">Demo booked</p>
+          <h2 data-i18n="booking.successTitle">You’re all set.</h2>
+          <p data-booking-success-copy></p>
+          <button class="button button-primary" type="button" data-close-demo-modal data-i18n="booking.done">Done</button>
+        </div>
       </section>
     </div>
 
-    <script src="script.js?v=32"></script>
+    <script src="script.js?v=35"></script>
   </body>
 </html>

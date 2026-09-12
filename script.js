@@ -5,6 +5,13 @@ const demoModal = document.querySelector("[data-demo-modal]");
 const demoModalCloseButtons = Array.from(document.querySelectorAll("[data-close-demo-modal]"));
 const demoForm = document.querySelector("[data-demo-form]");
 const demoFormStatus = document.querySelector("[data-demo-form-status]");
+const bookingFormView = document.querySelector("[data-booking-form-view]");
+const bookingSuccess = document.querySelector("[data-booking-success]");
+const bookingSuccessCopy = document.querySelector("[data-booking-success-copy]");
+const bookingDateList = document.querySelector("[data-booking-dates]");
+const bookingTimeList = document.querySelector("[data-booking-times]");
+const bookingTimezoneSelect = document.querySelector("[data-booking-timezone]");
+const bookingSelection = document.querySelector("[data-booking-selection]");
 const languageButtons = Array.from(document.querySelectorAll("[data-lang]"));
 const appTabs = Array.from(document.querySelectorAll("[data-app-tab]"));
 const appPanels = Array.from(document.querySelectorAll("[data-app-panel]"));
@@ -24,13 +31,63 @@ let selectedDealName = "Al Noor Bank";
 let selectedDealRow = null;
 let thinkingTimer = null;
 let lastFocusedElement = null;
+let bookingSlots = [];
+let selectedBookingDateKey = "";
+let selectedBookingStart = "";
+let bookedSlotStarts = new Set();
+let bookingsTableAvailable = null;
+let pendingNotificationBookingKey = "";
 
 const LANGUAGE_STORAGE_KEY = "sadha-language";
-const CALENDLY_URL = "https://calendly.com/abdarrahman2345/30min";
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ztm-q3VrZeqqABxCp1b-sQ_jBA-Me9Y";
 const LEADS_TABLE = "early_access_requests";
+const BOOKINGS_TABLE = "demo_bookings";
 const LEAD_SOURCE = "sadha_landing";
+const BOOKING_NOTIFICATION_ENDPOINT = "https://formsubmit.co/ajax/a842aa4f84d35dc04c4313ffd8c46e5a";
+const OWNER_TIME_ZONE = "Asia/Dubai";
+const OWNER_UTC_OFFSET_HOURS = 4;
+const BOOKING_DURATION_MINUTES = 30;
+const BOOKING_START_HOUR = 10;
+const BOOKING_END_HOUR = 17;
+const BOOKING_DAYS_AHEAD = 21;
+const MINIMUM_BOOKING_NOTICE_MS = 2 * 60 * 60 * 1000;
+const BOOKING_TIME_ZONES = [
+  "Asia/Dubai",
+  "Asia/Riyadh",
+  "Asia/Qatar",
+  "Asia/Kuwait",
+  "Asia/Bahrain",
+  "Africa/Cairo",
+  "Asia/Amman",
+  "Asia/Beirut",
+  "Europe/London",
+  "Europe/Paris",
+  "Asia/Kolkata",
+  "Asia/Singapore",
+  "America/New_York",
+  "America/Los_Angeles",
+];
+const PERSONAL_EMAIL_DOMAINS = new Set([
+  "aol.com",
+  "fastmail.com",
+  "gmail.com",
+  "googlemail.com",
+  "hey.com",
+  "icloud.com",
+  "mail.com",
+  "me.com",
+  "proton.me",
+  "protonmail.com",
+  "yandex.com",
+  "yandex.ru",
+  "zoho.com",
+]);
+const PERSONAL_EMAIL_PATTERNS = [
+  /^(?:hotmail|live|msn|outlook)\./,
+  /^(?:rocketmail|yahoo|ymail)\./,
+  /^gmx\./,
+];
 
 const translations = {
   en: {
@@ -304,13 +361,28 @@ const translations = {
     "access.label": "Ready to fix your CRM data?",
     "access.title": "Stop managing deals from half the story.",
     "access.modalTitle": "Book a demo",
-    "access.modalText": "Enter your work email to continue to demo scheduling.",
-    "access.emailLabel": "Corporate email",
+    "access.modalText": "Choose a 30-minute time and tell us where to reach you.",
+    "access.emailLabel": "Work email",
     "access.placeholder": "name@company.com",
     "access.closeLabel": "Close demo form",
     "access.button": "Book a Demo",
-    "access.submitting": "Saving your email...",
-    "status.error": "We couldn't save your email. Please try again.",
+    "access.submitting": "Booking your demo...",
+    "booking.duration": "30-minute demo",
+    "booking.timezoneLabel": "Time zone",
+    "booking.dateLabel": "Choose a date",
+    "booking.timeLabel": "Choose a time",
+    "booking.chooseDateFirst": "Choose a date to see available times.",
+    "booking.noTimes": "No times remain on this date.",
+    "booking.nameLabel": "Your name",
+    "booking.companyLabel": "Company",
+    "booking.slotRequired": "Choose an available time to continue.",
+    "booking.slotTaken": "That time was just booked. Please choose another.",
+    "booking.successLabel": "Demo booked",
+    "booking.successTitle": "You’re all set.",
+    "booking.successCopy": "Your demo is booked for {time}. We’ll send the meeting details to {email}.",
+    "booking.done": "Done",
+    "status.workEmailRequired": "Please use your work email, not a personal address.",
+    "status.error": "We couldn't complete the booking. Please try again.",
     "footer.contact": "Book a Demo",
     "footer.copy": "Copyright 2026 SADHA Intelligence. All rights reserved.",
   },
@@ -582,13 +654,28 @@ const translations = {
     "access.label": "جاهز لإصلاح بيانات إدارة العملاء؟",
     "access.title": "توقف عن إدارة الصفقات بنصف القصة.",
     "access.modalTitle": "احجز عرضا توضيحيا",
-    "access.modalText": "أدخل بريد العمل للانتقال إلى اختيار موعد العرض التوضيحي.",
-    "access.emailLabel": "البريد الإلكتروني للشركة",
+    "access.modalText": "اختر موعدا لمدة 30 دقيقة وأخبرنا بكيفية التواصل معك.",
+    "access.emailLabel": "بريد العمل",
     "access.placeholder": "name@company.com",
     "access.closeLabel": "إغلاق نموذج حجز العرض",
     "access.button": "احجز عرضا توضيحيا",
-    "access.submitting": "جار حفظ بريدك...",
-    "status.error": "تعذر حفظ بريدك. يرجى المحاولة مرة أخرى.",
+    "access.submitting": "جار حجز العرض...",
+    "booking.duration": "عرض لمدة 30 دقيقة",
+    "booking.timezoneLabel": "المنطقة الزمنية",
+    "booking.dateLabel": "اختر التاريخ",
+    "booking.timeLabel": "اختر الوقت",
+    "booking.chooseDateFirst": "اختر تاريخا لعرض الأوقات المتاحة.",
+    "booking.noTimes": "لا توجد أوقات متاحة في هذا التاريخ.",
+    "booking.nameLabel": "اسمك",
+    "booking.companyLabel": "الشركة",
+    "booking.slotRequired": "اختر وقتا متاحا للمتابعة.",
+    "booking.slotTaken": "تم حجز هذا الوقت للتو. يرجى اختيار وقت آخر.",
+    "booking.successLabel": "تم حجز العرض",
+    "booking.successTitle": "تم كل شيء.",
+    "booking.successCopy": "تم حجز العرض في {time}. سنرسل تفاصيل الاجتماع إلى {email}.",
+    "booking.done": "تم",
+    "status.workEmailRequired": "يرجى استخدام بريد العمل بدلا من البريد الشخصي.",
+    "status.error": "تعذر إكمال الحجز. يرجى المحاولة مرة أخرى.",
     "footer.contact": "احجز عرضا توضيحيا",
     "footer.copy": "حقوق النشر 2026 صدى. جميع الحقوق محفوظة.",
   },
@@ -703,6 +790,7 @@ const applyLanguage = (language, { persist = false } = {}) => {
   }
 
   window.syncSadhaDashboardLanguage?.();
+  window.renderSadhaBooking?.();
 
   if (persist) {
     setStoredLanguage(language);
@@ -956,6 +1044,412 @@ const setDemoFormStatus = (messageKey = "", tone = "") => {
 const setDemoSubmitting = (button, isSubmitting) => {
   button.disabled = isSubmitting;
   button.textContent = t(isSubmitting ? "access.submitting" : "access.button");
+  demoForm?.setAttribute("aria-busy", String(isSubmitting));
+};
+
+const getBookingLocale = () => (currentLanguage === "ar" ? "ar-AE" : "en-GB");
+
+const getZonedDateParts = (date, timeZone) =>
+  Object.fromEntries(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+      .formatToParts(date)
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, Number(part.value)]),
+  );
+
+const getDateKeyInZone = (date, timeZone) => {
+  const { year, month, day } = getZonedDateParts(date, timeZone);
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+};
+
+const formatInZone = (date, timeZone, options) =>
+  new Intl.DateTimeFormat(getBookingLocale(), {
+    timeZone,
+    ...options,
+  }).format(date);
+
+const formatBookingMoment = (date, timeZone) =>
+  formatInZone(date, timeZone, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+const getTimeZoneOptionLabel = (timeZone) => {
+  const place = timeZone.split("/").pop().replaceAll("_", " ");
+  const offset = new Intl.DateTimeFormat("en", {
+    timeZone,
+    timeZoneName: "shortOffset",
+  })
+    .formatToParts(new Date())
+    .find((part) => part.type === "timeZoneName")?.value;
+  return offset ? `${place} (${offset})` : place;
+};
+
+const populateBookingTimeZones = () => {
+  if (!bookingTimezoneSelect) {
+    return;
+  }
+
+  const detectedTimeZone =
+    Intl.DateTimeFormat().resolvedOptions().timeZone || OWNER_TIME_ZONE;
+  const currentValue = bookingTimezoneSelect.value || detectedTimeZone;
+  const timeZones = [...new Set([detectedTimeZone, ...BOOKING_TIME_ZONES])];
+  bookingTimezoneSelect.replaceChildren();
+
+  timeZones.forEach((timeZone) => {
+    const option = document.createElement("option");
+    option.value = timeZone;
+    option.textContent = getTimeZoneOptionLabel(timeZone);
+    bookingTimezoneSelect.append(option);
+  });
+
+  bookingTimezoneSelect.value = timeZones.includes(currentValue)
+    ? currentValue
+    : detectedTimeZone;
+};
+
+const generateBookingSlots = () => {
+  const now = new Date();
+  const { year, month, day } = getZonedDateParts(now, OWNER_TIME_ZONE);
+  const firstDay = Date.UTC(year, month - 1, day);
+  const slots = [];
+
+  for (let offset = 0; offset < BOOKING_DAYS_AHEAD; offset += 1) {
+    const calendarDay = new Date(firstDay + offset * 86400000);
+    const weekday = calendarDay.getUTCDay();
+    if (weekday === 0 || weekday === 6) {
+      continue;
+    }
+
+    for (
+      let minuteOfDay = BOOKING_START_HOUR * 60;
+      minuteOfDay < BOOKING_END_HOUR * 60;
+      minuteOfDay += BOOKING_DURATION_MINUTES
+    ) {
+      const startAt = new Date(
+        Date.UTC(
+          calendarDay.getUTCFullYear(),
+          calendarDay.getUTCMonth(),
+          calendarDay.getUTCDate(),
+          Math.floor(minuteOfDay / 60) - OWNER_UTC_OFFSET_HOURS,
+          minuteOfDay % 60,
+        ),
+      );
+
+      if (startAt.getTime() > now.getTime() + MINIMUM_BOOKING_NOTICE_MS) {
+        slots.push(startAt);
+      }
+    }
+  }
+
+  return slots;
+};
+
+const getVisibleBookingSlots = () =>
+  bookingSlots.filter((slot) => !bookedSlotStarts.has(slot.toISOString()));
+
+const renderBookingSelection = () => {
+  if (!bookingSelection) {
+    return;
+  }
+
+  if (!selectedBookingStart) {
+    bookingSelection.hidden = true;
+    bookingSelection.textContent = "";
+    return;
+  }
+
+  const timeZone = bookingTimezoneSelect?.value || OWNER_TIME_ZONE;
+  bookingSelection.textContent = formatBookingMoment(
+    new Date(selectedBookingStart),
+    timeZone,
+  );
+  bookingSelection.hidden = false;
+};
+
+const renderBookingTimes = (groupedSlots) => {
+  if (!bookingTimeList) {
+    return;
+  }
+
+  bookingTimeList.replaceChildren();
+  const timeZone = bookingTimezoneSelect?.value || OWNER_TIME_ZONE;
+  const slotsForDate = groupedSlots.get(selectedBookingDateKey) || [];
+
+  if (!slotsForDate.length) {
+    const empty = document.createElement("p");
+    empty.className = "booking-empty";
+    empty.textContent = t(selectedBookingDateKey ? "booking.noTimes" : "booking.chooseDateFirst");
+    bookingTimeList.append(empty);
+    renderBookingSelection();
+    return;
+  }
+
+  slotsForDate.forEach((slot) => {
+    const iso = slot.toISOString();
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "booking-time-option";
+    button.textContent = formatInZone(slot, timeZone, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    button.setAttribute("aria-pressed", String(iso === selectedBookingStart));
+    button.classList.toggle("is-selected", iso === selectedBookingStart);
+    button.addEventListener("click", () => {
+      selectedBookingStart = iso;
+      setDemoFormStatus("");
+      renderBookingTimes(groupedSlots);
+      renderBookingSelection();
+    });
+    bookingTimeList.append(button);
+  });
+
+  renderBookingSelection();
+};
+
+const renderBookingPicker = () => {
+  if (!bookingDateList || !bookingTimezoneSelect) {
+    return;
+  }
+
+  const timeZone = bookingTimezoneSelect.value || OWNER_TIME_ZONE;
+  const groupedSlots = new Map();
+  getVisibleBookingSlots().forEach((slot) => {
+    const dateKey = getDateKeyInZone(slot, timeZone);
+    if (!groupedSlots.has(dateKey)) {
+      groupedSlots.set(dateKey, []);
+    }
+    groupedSlots.get(dateKey).push(slot);
+  });
+
+  const dateKeys = [...groupedSlots.keys()];
+  if (!dateKeys.includes(selectedBookingDateKey)) {
+    selectedBookingDateKey = dateKeys[0] || "";
+  }
+
+  if (
+    selectedBookingStart &&
+    getDateKeyInZone(new Date(selectedBookingStart), timeZone) !==
+      selectedBookingDateKey
+  ) {
+    selectedBookingStart = "";
+  }
+
+  bookingDateList.replaceChildren();
+  dateKeys.forEach((dateKey) => {
+    const representativeSlot = groupedSlots.get(dateKey)[0];
+    const button = document.createElement("button");
+    const weekday = document.createElement("small");
+    const day = document.createElement("strong");
+    const month = document.createElement("span");
+
+    button.type = "button";
+    button.className = "booking-date-option";
+    button.setAttribute("aria-pressed", String(dateKey === selectedBookingDateKey));
+    button.classList.toggle("is-selected", dateKey === selectedBookingDateKey);
+    weekday.textContent = formatInZone(representativeSlot, timeZone, {
+      weekday: "short",
+    });
+    day.textContent = formatInZone(representativeSlot, timeZone, {
+      day: "numeric",
+    });
+    month.textContent = formatInZone(representativeSlot, timeZone, {
+      month: "short",
+    });
+    button.append(weekday, day, month);
+    button.addEventListener("click", () => {
+      selectedBookingDateKey = dateKey;
+      selectedBookingStart = "";
+      setDemoFormStatus("");
+      renderBookingPicker();
+    });
+    bookingDateList.append(button);
+  });
+
+  renderBookingTimes(groupedSlots);
+};
+
+const loadBookedDemoSlots = async () => {
+  if (!bookingSlots.length || bookingsTableAvailable === false) {
+    return;
+  }
+
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_booked_demo_slots`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      range_start: bookingSlots[0].toISOString(),
+      range_end: new Date(
+        bookingSlots.at(-1).getTime() + BOOKING_DURATION_MINUTES * 60000,
+      ).toISOString(),
+    }),
+  });
+
+  if (response.status === 404) {
+    bookingsTableAvailable = false;
+    return;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Availability lookup failed with ${response.status}`);
+  }
+
+  const bookedSlots = await response.json();
+  bookingsTableAvailable = true;
+  bookedSlotStarts = new Set(bookedSlots.map((row) => new Date(row.slot_start).toISOString()));
+  renderBookingPicker();
+};
+
+const insertLeadFallback = async (
+  { name, email, company, slotStart, timeZone },
+  signal,
+) => {
+  const bookingDetails = new URLSearchParams({
+    demo: slotStart,
+    timezone: timeZone,
+    company,
+  });
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${LEADS_TABLE}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      full_name: name,
+      email,
+      source: LEAD_SOURCE,
+      page_path: `${window.location.pathname}#${bookingDetails.toString()}`,
+    }),
+    signal,
+  });
+
+  if (!response.ok && response.status !== 409) {
+    throw new Error(`Lead capture failed with ${response.status}`);
+  }
+};
+
+const reserveDemoSlot = async (booking, signal) => {
+  if (bookingsTableAvailable === false) {
+    await insertLeadFallback(booking, signal);
+    return;
+  }
+
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${BOOKINGS_TABLE}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      full_name: booking.name,
+      email: booking.email,
+      company: booking.company,
+      slot_start: booking.slotStart,
+      duration_minutes: BOOKING_DURATION_MINUTES,
+      visitor_timezone: booking.timeZone,
+      owner_timezone: OWNER_TIME_ZONE,
+      source: LEAD_SOURCE,
+    }),
+    signal,
+  });
+
+  if (response.status === 404) {
+    bookingsTableAvailable = false;
+    await insertLeadFallback(booking, signal);
+    return;
+  }
+
+  bookingsTableAvailable = true;
+  if (response.status === 409) {
+    const error = new Error("Booking slot unavailable");
+    error.code = "SLOT_TAKEN";
+    throw error;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Booking insert failed with ${response.status}`);
+  }
+};
+
+const sendBookingNotification = async (booking, signal) => {
+  const slot = new Date(booking.slotStart);
+  const localTime = formatBookingMoment(slot, booking.timeZone);
+  const dubaiTime = formatBookingMoment(slot, OWNER_TIME_ZONE);
+  const response = await fetch(BOOKING_NOTIFICATION_ENDPOINT, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      _subject: `New SADHA demo booking — ${dubaiTime}`,
+      _template: "table",
+      _captcha: "false",
+      name: booking.name,
+      email: booking.email,
+      company: booking.company,
+      duration: `${BOOKING_DURATION_MINUTES} minutes`,
+      visitor_time: localTime,
+      visitor_timezone: booking.timeZone,
+      dubai_time: dubaiTime,
+      utc_time: booking.slotStart,
+    }),
+    signal,
+  });
+
+  const result = await response.json().catch(() => null);
+  if (
+    !response.ok ||
+    result?.success === false ||
+    String(result?.success).toLowerCase() === "false"
+  ) {
+    throw new Error("Booking notification failed");
+  }
+};
+
+const showBookingSuccess = (booking) => {
+  const time = formatBookingMoment(
+    new Date(booking.slotStart),
+    booking.timeZone,
+  );
+  bookingFormView.hidden = true;
+  bookingSuccess.hidden = false;
+  bookingSuccessCopy.textContent = tFormat("booking.successCopy", {
+    time,
+    email: booking.email,
+  });
+  bookingSuccess.querySelector("button")?.focus();
+};
+
+const resetBookingFlow = () => {
+  demoForm?.reset();
+  bookingFormView.hidden = false;
+  bookingSuccess.hidden = true;
+  selectedBookingStart = "";
+  selectedBookingDateKey = "";
+  pendingNotificationBookingKey = "";
+  populateBookingTimeZones();
+  bookingSlots = generateBookingSlots();
+  setDemoFormStatus("");
+  renderBookingPicker();
 };
 
 const closeDemoModal = () => {
@@ -979,13 +1473,14 @@ const openDemoModal = () => {
   }
 
   lastFocusedElement = document.activeElement;
+  resetBookingFlow();
   demoModal.hidden = false;
   document.body.classList.add("is-modal-open");
-  setDemoFormStatus("");
+  loadBookedDemoSlots().catch((error) => console.warn(error));
 
   window.requestAnimationFrame(() => {
     demoModal.classList.add("is-open");
-    demoForm?.querySelector('[name="email"]')?.focus();
+    bookingDateList?.querySelector("button")?.focus();
   });
 };
 
@@ -1012,8 +1507,31 @@ demoModalCloseButtons.forEach((button) => {
 });
 
 window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && demoModal?.classList.contains("is-open")) {
+  if (!demoModal?.classList.contains("is-open")) {
+    return;
+  }
+
+  if (event.key === "Escape") {
     closeDemoModal();
+    return;
+  }
+
+  if (event.key === "Tab") {
+    const focusable = Array.from(
+      demoModal.querySelectorAll(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), a[href]',
+      ),
+    ).filter((element) => element.offsetParent !== null && element.tabIndex >= 0);
+    const first = focusable[0];
+    const last = focusable.at(-1);
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
   }
 });
 
@@ -1021,55 +1539,108 @@ demoForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const emailInput = demoForm.querySelector('[name="email"]');
+  const nameInput = demoForm.querySelector('[name="name"]');
+  const companyInput = demoForm.querySelector('[name="company"]');
   const submitButton = demoForm.querySelector('button[type="submit"]');
+  const name = nameInput.value.trim();
   const email = emailInput.value.trim().toLowerCase();
-  if (!email) {
-    emailInput.focus();
+  const company = companyInput.value.trim();
+  const timeZone = bookingTimezoneSelect.value || OWNER_TIME_ZONE;
+
+  if (!selectedBookingStart) {
+    setDemoFormStatus("booking.slotRequired", "error");
+    bookingTimeList?.querySelector("button")?.focus();
+    return;
+  }
+
+  if (!name || !email || !company) {
     demoForm.reportValidity();
     return;
   }
 
-  const endpoint = `${SUPABASE_URL}/rest/v1/${LEADS_TABLE}`;
+  const emailDomain = email.split("@").pop();
+  const isPersonalEmail =
+    PERSONAL_EMAIL_DOMAINS.has(emailDomain) ||
+    PERSONAL_EMAIL_PATTERNS.some((pattern) => pattern.test(emailDomain));
+
+  if (isPersonalEmail) {
+    const message = t("status.workEmailRequired");
+    emailInput.setCustomValidity(message);
+    setDemoFormStatus("status.workEmailRequired", "error");
+    emailInput.focus();
+    emailInput.reportValidity();
+    return;
+  }
+
+  emailInput.setCustomValidity("");
+
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 12000);
   setDemoSubmitting(submitButton, true);
   setDemoFormStatus("");
+  const booking = {
+    name,
+    email,
+    company,
+    slotStart: selectedBookingStart,
+    timeZone,
+  };
+  const bookingKey = `${email}|${selectedBookingStart}`;
 
   try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        apikey: SUPABASE_PUBLISHABLE_KEY,
-        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify({
-        email,
-        source: LEAD_SOURCE,
-        page_path: window.location.pathname,
-      }),
-      signal: controller.signal,
-    });
-
-    if (!response.ok && response.status !== 409) {
-      throw new Error(`Lead capture failed with ${response.status}`);
+    if (pendingNotificationBookingKey !== bookingKey) {
+      await reserveDemoSlot(booking, controller.signal);
+      pendingNotificationBookingKey = bookingKey;
     }
-
-    const bookingUrl = new URL(CALENDLY_URL);
-    bookingUrl.searchParams.set("email", email);
-    bookingUrl.searchParams.set("utm_source", LEAD_SOURCE);
+    await sendBookingNotification(booking, controller.signal);
+    pendingNotificationBookingKey = "";
     trackEvent("generate_lead", { lead_source: LEAD_SOURCE });
-    trackEvent("book_demo_form_submit", { form_location: "demo_modal" });
-    window.location.assign(bookingUrl.toString());
+    trackEvent("book_demo_scheduled", {
+      form_location: "demo_modal",
+      visitor_timezone: timeZone,
+    });
+    showBookingSuccess(booking);
   } catch (error) {
     console.error(error);
-    setDemoFormStatus("status.error", "error");
+    if (error.code === "SLOT_TAKEN") {
+      bookedSlotStarts.add(selectedBookingStart);
+      selectedBookingStart = "";
+      renderBookingPicker();
+      setDemoFormStatus("booking.slotTaken", "error");
+    } else {
+      setDemoFormStatus("status.error", "error");
+    }
   } finally {
     window.clearTimeout(timeoutId);
     setDemoSubmitting(submitButton, false);
   }
 });
+
+demoForm?.querySelector('[name="email"]')?.addEventListener("input", (event) => {
+  event.currentTarget.setCustomValidity("");
+  setDemoFormStatus("");
+});
+
+demoForm?.querySelectorAll("input").forEach((input) => {
+  input.addEventListener("input", () => setDemoFormStatus(""));
+});
+
+bookingTimezoneSelect?.addEventListener("change", () => {
+  if (selectedBookingStart) {
+    selectedBookingDateKey = getDateKeyInZone(
+      new Date(selectedBookingStart),
+      bookingTimezoneSelect.value,
+    );
+  } else {
+    selectedBookingDateKey = "";
+  }
+  renderBookingPicker();
+});
+
+window.renderSadhaBooking = () => {
+  populateBookingTimeZones();
+  renderBookingPicker();
+};
 
 let heroMotionFrame = null;
 
