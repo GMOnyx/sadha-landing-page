@@ -5026,7 +5026,8 @@ html[dir="rtl"] .hero-sticky .subhead {
   }
 
   .hero-sticky h1.hero-title {
-    max-width: 360px;
+    width: 100%;
+    max-width: 100%;
     margin-top: 12px;
     font-size: clamp(3rem, 13vw, 3.5rem);
     line-height: 0.91;
@@ -5044,6 +5045,10 @@ html[dir="rtl"] .hero-sticky .subhead {
   .hero-sticky .hero-title span:first-child {
     margin-bottom: 7px;
     font-size: clamp(2.25rem, 10.5vw, 2.65rem);
+  }
+
+  html[lang="en"] .hero-sticky .hero-title span:first-child {
+    white-space: normal;
   }
 
   .hero-sticky .subhead {
