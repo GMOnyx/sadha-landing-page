@@ -5368,20 +5368,162 @@ html[dir="rtl"] .hero-sticky .subhead {
 
 /* In-modal demo booking */
 .booking-dialog {
-  width: min(920px, 100%);
+  width: min(560px, 100%);
   max-height: calc(100svh - 40px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
+  transition:
+    width 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.booking-dialog.is-scheduling {
+  width: min(920px, 100%);
 }
 
 .booking-dialog h2 {
-  max-width: 720px;
-  font-size: clamp(2.7rem, 5vw, 4.6rem);
+  max-width: 680px;
+  font-size: clamp(2.7rem, 4.4vw, 4rem);
+}
+
+.booking-dialog.is-scheduling h2 {
+  font-size: clamp(2.45rem, 3.4vw, 3.15rem);
+}
+
+.booking-dialog.is-scheduling .booking-intro h2 {
+  display: none;
+}
+
+.booking-dialog.is-scheduling .booking-email-form {
+  margin-top: 0;
+}
+
+.booking-dialog .access-modal-close {
+  z-index: 5;
+}
+
+.booking-intro {
+  max-width: 680px;
+}
+
+.booking-email-form {
+  margin-top: 24px;
+}
+
+.booking-email-form > label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.booking-email-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 9px;
+}
+
+.booking-email-form.is-complete .booking-email-row {
+  grid-template-columns: 1fr;
+}
+
+.booking-email-row input {
+  min-width: 0;
+  min-height: 54px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  padding: 0 15px;
+  outline: none;
+  background: rgba(244, 240, 232, 0.72);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.booking-email-row input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(5, 5, 5, 0.08);
+}
+
+.booking-email-row input[readonly] {
+  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.booking-email-row button {
+  min-height: 54px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+  padding: 0 20px;
+  background: var(--ink);
+  color: var(--paper-bright);
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.booking-email-row button:disabled {
+  cursor: wait;
+  opacity: 0.66;
+}
+
+.booking-email-form .form-status {
+  min-height: 20px;
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+}
+
+.booking-scheduler {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(5, 5, 5, 0.12);
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 220ms ease,
+    transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.booking-scheduler.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.booking-scheduler-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.booking-scheduler-heading .eyebrow {
+  margin: 0 0 5px;
+}
+
+.booking-scheduler-heading h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1;
+}
+
+.booking-change-email {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .booking-form {
-  margin-top: 26px;
+  margin-top: 18px;
 }
 
 .booking-grid {
@@ -5607,7 +5749,8 @@ html[dir="rtl"] .hero-sticky .subhead {
 }
 
 .booking-success[hidden],
-[data-booking-form-view][hidden] {
+[data-booking-form-view][hidden],
+[data-booking-scheduler][hidden] {
   display: none;
 }
 
@@ -5658,12 +5801,28 @@ html[dir="rtl"] .booking-selection::before {
 
   .booking-dialog h2 {
     max-width: calc(100% - 42px);
-    font-size: clamp(2.35rem, 12vw, 3.4rem);
+    font-size: clamp(2.2rem, 10vw, 2.8rem);
   }
 
-  .booking-dialog > [data-booking-form-view] > p:not(.eyebrow) {
+  .booking-dialog.is-scheduling h2 {
+    font-size: clamp(2.2rem, 10vw, 2.8rem);
+  }
+
+  .booking-intro > p:not(.eyebrow) {
     max-width: 92%;
     font-size: 0.92rem;
+  }
+
+  .booking-email-row {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-email-row button {
+    width: 100%;
+  }
+
+  .booking-scheduler-heading {
+    align-items: start;
   }
 
   .booking-form {

@@ -3,6 +3,12 @@ const utterances = Array.from(document.querySelectorAll(".utterance"));
 const demoCtaLinks = Array.from(document.querySelectorAll("[data-demo-cta]"));
 const demoModal = document.querySelector("[data-demo-modal]");
 const demoModalCloseButtons = Array.from(document.querySelectorAll("[data-close-demo-modal]"));
+const bookingDialog = document.querySelector("[data-booking-dialog]");
+const bookingEmailForm = document.querySelector("[data-booking-email-form]");
+const bookingEmailInput = bookingEmailForm?.querySelector('[name="email"]');
+const bookingEmailStatus = document.querySelector("[data-booking-email-status]");
+const bookingScheduler = document.querySelector("[data-booking-scheduler]");
+const changeBookingEmailButton = document.querySelector("[data-change-booking-email]");
 const demoForm = document.querySelector("[data-demo-form]");
 const demoFormStatus = document.querySelector("[data-demo-form-status]");
 const bookingFormView = document.querySelector("[data-booking-form-view]");
@@ -44,6 +50,9 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ztm-q3VrZeqqABxCp1b-sQ_jBA-Me9Y
 const LEADS_TABLE = "early_access_requests";
 const BOOKINGS_TABLE = "demo_bookings";
 const LEAD_SOURCE = "sadha_landing";
+const IS_LOCAL_PREVIEW =
+  window.location.protocol === "file:" ||
+  ["127.0.0.1", "localhost"].includes(window.location.hostname);
 const BOOKING_NOTIFICATION_ENDPOINT = "https://formsubmit.co/ajax/a842aa4f84d35dc04c4313ffd8c46e5a";
 const OWNER_TIME_ZONE = "Asia/Dubai";
 const OWNER_UTC_OFFSET_HOURS = 4;
@@ -360,14 +369,18 @@ const translations = {
     "security.metric3Label": "Regional deployment paths",
     "access.label": "Ready to fix your CRM data?",
     "access.title": "Stop managing deals from half the story.",
-    "access.modalTitle": "Book a demo",
-    "access.modalText": "Choose a 30-minute time and tell us where to reach you.",
+    "access.modalTitle": "Ready to transform your pipeline?",
     "access.emailLabel": "Work email",
     "access.placeholder": "name@company.com",
+    "access.emailContinue": "Continue",
+    "access.emailLoading": "Loading times...",
     "access.closeLabel": "Close demo form",
     "access.button": "Book a Demo",
     "access.submitting": "Booking your demo...",
     "booking.duration": "30-minute demo",
+    "booking.nextStep": "Next step",
+    "booking.scheduleTitle": "Choose a time",
+    "booking.changeEmail": "Change email",
     "booking.timezoneLabel": "Time zone",
     "booking.dateLabel": "Choose a date",
     "booking.timeLabel": "Choose a time",
@@ -653,14 +666,18 @@ const translations = {
     "security.metric3Label": "مسارات نشر إقليمية",
     "access.label": "جاهز لإصلاح بيانات إدارة العملاء؟",
     "access.title": "توقف عن إدارة الصفقات بنصف القصة.",
-    "access.modalTitle": "احجز عرضا توضيحيا",
-    "access.modalText": "اختر موعدا لمدة 30 دقيقة وأخبرنا بكيفية التواصل معك.",
+    "access.modalTitle": "جاهز لإحداث نقلة في مسار مبيعاتك؟",
     "access.emailLabel": "بريد العمل",
     "access.placeholder": "name@company.com",
+    "access.emailContinue": "متابعة",
+    "access.emailLoading": "جار تحميل المواعيد...",
     "access.closeLabel": "إغلاق نموذج حجز العرض",
     "access.button": "احجز عرضا توضيحيا",
     "access.submitting": "جار حجز العرض...",
     "booking.duration": "عرض لمدة 30 دقيقة",
+    "booking.nextStep": "الخطوة التالية",
+    "booking.scheduleTitle": "اختر موعدا",
+    "booking.changeEmail": "تغيير البريد",
     "booking.timezoneLabel": "المنطقة الزمنية",
     "booking.dateLabel": "اختر التاريخ",
     "booking.timeLabel": "اختر الوقت",
@@ -1041,6 +1058,32 @@ const setDemoFormStatus = (messageKey = "", tone = "") => {
   demoFormStatus.classList.toggle("is-error", tone === "error");
 };
 
+const setBookingEmailStatus = (messageKey = "", tone = "") => {
+  if (!bookingEmailStatus) {
+    return;
+  }
+
+  bookingEmailStatus.dataset.statusKey = messageKey;
+  bookingEmailStatus.textContent = messageKey ? t(messageKey) : "";
+  bookingEmailStatus.classList.toggle("is-error", tone === "error");
+};
+
+const isPersonalEmailAddress = (email) => {
+  const emailDomain = email.split("@").pop();
+  return (
+    PERSONAL_EMAIL_DOMAINS.has(emailDomain) ||
+    PERSONAL_EMAIL_PATTERNS.some((pattern) => pattern.test(emailDomain))
+  );
+};
+
+const setBookingEmailSubmitting = (button, isSubmitting) => {
+  button.disabled = isSubmitting;
+  button.textContent = t(
+    isSubmitting ? "access.emailLoading" : "access.emailContinue",
+  );
+  bookingEmailForm?.setAttribute("aria-busy", String(isSubmitting));
+};
+
 const setDemoSubmitting = (button, isSubmitting) => {
   button.disabled = isSubmitting;
   button.textContent = t(isSubmitting ? "access.submitting" : "access.button");
@@ -1313,6 +1356,32 @@ const loadBookedDemoSlots = async () => {
   renderBookingPicker();
 };
 
+const captureDemoLead = async (email, signal) => {
+  if (IS_LOCAL_PREVIEW) {
+    return;
+  }
+
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${LEADS_TABLE}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      email,
+      source: LEAD_SOURCE,
+      page_path: `${window.location.pathname}#demo-email-captured`,
+    }),
+    signal,
+  });
+
+  if (!response.ok && response.status !== 409) {
+    throw new Error(`Lead capture failed with ${response.status}`);
+  }
+};
+
 const insertLeadFallback = async (
   { name, email, company, slotStart, timeZone },
   signal,
@@ -1345,6 +1414,10 @@ const insertLeadFallback = async (
 };
 
 const reserveDemoSlot = async (booking, signal) => {
+  if (IS_LOCAL_PREVIEW) {
+    return;
+  }
+
   if (bookingsTableAvailable === false) {
     await insertLeadFallback(booking, signal);
     return;
@@ -1390,6 +1463,10 @@ const reserveDemoSlot = async (booking, signal) => {
 };
 
 const sendBookingNotification = async (booking, signal) => {
+  if (IS_LOCAL_PREVIEW) {
+    return;
+  }
+
   const slot = new Date(booking.slotStart);
   const localTime = formatBookingMoment(slot, booking.timeZone);
   const dubaiTime = formatBookingMoment(slot, OWNER_TIME_ZONE);
@@ -1440,14 +1517,26 @@ const showBookingSuccess = (booking) => {
 };
 
 const resetBookingFlow = () => {
+  bookingEmailForm?.reset();
+  bookingEmailForm?.classList.remove("is-complete");
+  const emailSubmitButton = bookingEmailForm?.querySelector('button[type="submit"]');
+  if (emailSubmitButton) {
+    emailSubmitButton.hidden = false;
+  }
   demoForm?.reset();
   bookingFormView.hidden = false;
   bookingSuccess.hidden = true;
+  bookingScheduler.hidden = true;
+  bookingScheduler.classList.remove("is-visible");
+  bookingDialog.classList.remove("is-scheduling");
+  bookingEmailInput.readOnly = false;
   selectedBookingStart = "";
   selectedBookingDateKey = "";
   pendingNotificationBookingKey = "";
   populateBookingTimeZones();
   bookingSlots = generateBookingSlots();
+  bookingDialog.scrollTop = 0;
+  setBookingEmailStatus("");
   setDemoFormStatus("");
   renderBookingPicker();
 };
@@ -1476,11 +1565,10 @@ const openDemoModal = () => {
   resetBookingFlow();
   demoModal.hidden = false;
   document.body.classList.add("is-modal-open");
-  loadBookedDemoSlots().catch((error) => console.warn(error));
 
   window.requestAnimationFrame(() => {
     demoModal.classList.add("is-open");
-    bookingDateList?.querySelector("button")?.focus();
+    bookingEmailInput?.focus();
   });
 };
 
@@ -1535,15 +1623,82 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
+bookingEmailForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const submitButton = bookingEmailForm.querySelector('button[type="submit"]');
+  const email = bookingEmailInput.value.trim().toLowerCase();
+
+  if (!email) {
+    bookingEmailForm.reportValidity();
+    return;
+  }
+
+  if (isPersonalEmailAddress(email)) {
+    const message = t("status.workEmailRequired");
+    bookingEmailInput.setCustomValidity(message);
+    setBookingEmailStatus("status.workEmailRequired", "error");
+    bookingEmailInput.focus();
+    bookingEmailInput.reportValidity();
+    return;
+  }
+
+  bookingEmailInput.setCustomValidity("");
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 12000);
+  setBookingEmailSubmitting(submitButton, true);
+  setBookingEmailStatus("");
+
+  try {
+    await captureDemoLead(email, controller.signal);
+    bookingEmailInput.value = email;
+    bookingEmailInput.readOnly = true;
+    bookingEmailForm.classList.add("is-complete");
+    submitButton.hidden = true;
+    bookingDialog.classList.add("is-scheduling");
+    bookingScheduler.hidden = false;
+    trackEvent("generate_lead", {
+      lead_source: LEAD_SOURCE,
+      form_step: "email",
+    });
+
+    window.requestAnimationFrame(() => {
+      bookingScheduler.classList.add("is-visible");
+      bookingDialog.scrollTop = 0;
+    });
+    loadBookedDemoSlots().catch((error) => console.warn(error));
+  } catch (error) {
+    console.error(error);
+    setBookingEmailStatus("status.error", "error");
+  } finally {
+    window.clearTimeout(timeoutId);
+    setBookingEmailSubmitting(submitButton, false);
+  }
+});
+
+changeBookingEmailButton?.addEventListener("click", () => {
+  bookingScheduler.classList.remove("is-visible");
+  bookingScheduler.hidden = true;
+  bookingDialog.classList.remove("is-scheduling");
+  bookingEmailInput.readOnly = false;
+  bookingEmailForm.classList.remove("is-complete");
+  bookingEmailForm.querySelector('button[type="submit"]').hidden = false;
+  selectedBookingStart = "";
+  selectedBookingDateKey = "";
+  setDemoFormStatus("");
+  renderBookingPicker();
+  bookingEmailInput.focus();
+  bookingEmailInput.select();
+});
+
 demoForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const emailInput = demoForm.querySelector('[name="email"]');
   const nameInput = demoForm.querySelector('[name="name"]');
   const companyInput = demoForm.querySelector('[name="company"]');
   const submitButton = demoForm.querySelector('button[type="submit"]');
   const name = nameInput.value.trim();
-  const email = emailInput.value.trim().toLowerCase();
+  const email = bookingEmailInput.value.trim().toLowerCase();
   const company = companyInput.value.trim();
   const timeZone = bookingTimezoneSelect.value || OWNER_TIME_ZONE;
 
@@ -1558,21 +1713,17 @@ demoForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const emailDomain = email.split("@").pop();
-  const isPersonalEmail =
-    PERSONAL_EMAIL_DOMAINS.has(emailDomain) ||
-    PERSONAL_EMAIL_PATTERNS.some((pattern) => pattern.test(emailDomain));
-
-  if (isPersonalEmail) {
+  if (isPersonalEmailAddress(email)) {
     const message = t("status.workEmailRequired");
-    emailInput.setCustomValidity(message);
+    bookingEmailInput.setCustomValidity(message);
     setDemoFormStatus("status.workEmailRequired", "error");
-    emailInput.focus();
-    emailInput.reportValidity();
+    bookingEmailInput.readOnly = false;
+    bookingEmailInput.focus();
+    bookingEmailInput.reportValidity();
     return;
   }
 
-  emailInput.setCustomValidity("");
+  bookingEmailInput.setCustomValidity("");
 
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 12000);
@@ -1594,7 +1745,6 @@ demoForm?.addEventListener("submit", async (event) => {
     }
     await sendBookingNotification(booking, controller.signal);
     pendingNotificationBookingKey = "";
-    trackEvent("generate_lead", { lead_source: LEAD_SOURCE });
     trackEvent("book_demo_scheduled", {
       form_location: "demo_modal",
       visitor_timezone: timeZone,
@@ -1616,9 +1766,9 @@ demoForm?.addEventListener("submit", async (event) => {
   }
 });
 
-demoForm?.querySelector('[name="email"]')?.addEventListener("input", (event) => {
+bookingEmailInput?.addEventListener("input", (event) => {
   event.currentTarget.setCustomValidity("");
-  setDemoFormStatus("");
+  setBookingEmailStatus("");
 });
 
 demoForm?.querySelectorAll("input").forEach((input) => {
