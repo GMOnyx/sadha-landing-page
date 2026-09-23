@@ -1509,6 +1509,10 @@ const showBookingSuccess = (booking) => {
   );
   bookingFormView.hidden = true;
   bookingSuccess.hidden = false;
+  bookingDialog.classList.remove("is-scheduling");
+  bookingDialog.classList.add("is-success");
+  bookingDialog.setAttribute("aria-labelledby", "booking-success-title");
+  bookingDialog.scrollTop = 0;
   bookingSuccessCopy.textContent = tFormat("booking.successCopy", {
     time,
     email: booking.email,
@@ -1529,6 +1533,8 @@ const resetBookingFlow = () => {
   bookingScheduler.hidden = true;
   bookingScheduler.classList.remove("is-visible");
   bookingDialog.classList.remove("is-scheduling");
+  bookingDialog.classList.remove("is-success");
+  bookingDialog.setAttribute("aria-labelledby", "demo-modal-title");
   bookingEmailInput.readOnly = false;
   selectedBookingStart = "";
   selectedBookingDateKey = "";

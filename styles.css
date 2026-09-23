@@ -4449,7 +4449,7 @@ html[dir="rtl"] .hero-copy {
   max-width: 100%;
   margin-bottom: 7px;
   color: rgba(5, 5, 5, 0.46);
-  font-size: 0.74em;
+  font-size: clamp(2.55rem, 3vw, 3rem);
   line-height: 1;
   letter-spacing: -0.035em;
 }
@@ -4807,7 +4807,7 @@ html[dir="rtl"] .hero-sticky .subhead {
   text-align: right;
 }
 
-@media (max-width: 1060px) {
+@media (max-width: 1180px) {
   .hero-motion-shell {
     height: auto;
     min-height: 0;
@@ -5388,6 +5388,10 @@ html[dir="rtl"] .hero-sticky .subhead {
   width: min(920px, 100%);
 }
 
+.booking-dialog.is-success {
+  width: min(720px, 100%);
+}
+
 .booking-dialog h2 {
   max-width: 680px;
   font-size: clamp(2.7rem, 4.4vw, 4rem);
@@ -5749,6 +5753,10 @@ html[dir="rtl"] .hero-sticky .subhead {
 }
 
 .booking-success {
+  display: grid;
+  min-height: min(520px, calc(100svh - 104px));
+  align-content: center;
+  justify-items: center;
   padding: 54px 24px 38px;
   text-align: center;
 }
@@ -5774,11 +5782,15 @@ html[dir="rtl"] .hero-sticky .subhead {
 
 .booking-success h2 {
   margin-inline: auto;
+  text-align: center;
 }
 
-.booking-success p:not(.eyebrow) {
+.booking-dialog .booking-success p[data-booking-success-copy] {
+  width: 100%;
   max-width: 540px;
-  margin-inline: auto;
+  margin: 16px auto 0;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .booking-success .button {
@@ -5863,6 +5875,7 @@ html[dir="rtl"] .booking-selection::before {
   }
 
   .booking-success {
+    min-height: min(430px, calc(100svh - 56px));
     padding: 44px 8px 28px;
   }
 }
