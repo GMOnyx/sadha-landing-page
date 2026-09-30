@@ -59,6 +59,28 @@ const formatMoment = (slot: Date, timeZone: string) =>
     timeZoneName: "short",
   }).format(slot);
 
+const DEFAULT_FROM_EMAIL =
+  "Abdarrahman from Sadha <abdarrahman@sadha.ai>";
+const plainEmailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const namedEmailPattern =
+  /^[^<>\r\n]+<[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}>$/i;
+
+const getFromEmail = () => {
+  const configured = Deno.env.get("RESEND_FROM_EMAIL")?.trim() || "";
+  const unquoted = configured.length >= 2 &&
+      ((configured.startsWith('"') && configured.endsWith('"')) ||
+        (configured.startsWith("'") && configured.endsWith("'")))
+    ? configured.slice(1, -1).trim()
+    : configured;
+  if (plainEmailPattern.test(unquoted) || namedEmailPattern.test(unquoted)) {
+    return unquoted;
+  }
+  if (configured) {
+    console.warn("Invalid RESEND_FROM_EMAIL; using the default Sadha sender");
+  }
+  return DEFAULT_FROM_EMAIL;
+};
+
 const buildGoogleCalendarUrl = (booking: BookingEmailInput) => {
   const start = new Date(booking.slotStart);
   const end = new Date(start.getTime() + BOOKING_DURATION_MINUTES * 60_000);
@@ -124,7 +146,7 @@ const sendEmail = async (
 };
 
 export const sendBookingEmails = async (booking: BookingEmailInput) => {
-  const from = Deno.env.get("RESEND_FROM_EMAIL") || "Sadha <demos@sadha.ai>";
+  const from = getFromEmail();
   const hostEmails = (Deno.env.get("SADHA_HOST_EMAILS") || "")
     .split(",")
     .map((email) => email.trim())

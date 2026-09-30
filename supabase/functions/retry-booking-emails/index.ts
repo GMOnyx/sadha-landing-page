@@ -26,6 +26,9 @@ Deno.serve(async (request) => {
       "id,full_name,email,company,slot_start,visitor_timezone,meeting_url,google_event_url,google_event_id,notification_attempts,last_notification_attempt_at",
     )
     .eq("status", "booked")
+    .eq("calendar_status", "created")
+    .not("meeting_url", "is", null)
+    .not("google_event_id", "is", null)
     .in("notification_status", ["pending", "failed", "not_configured"])
     .lt("notification_attempts", 5)
     .or(
