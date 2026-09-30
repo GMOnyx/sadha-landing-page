@@ -130,6 +130,7 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
     .map((email) => email.trim())
     .filter(Boolean);
   const slot = new Date(booking.slotStart);
+  const firstName = booking.name.trim().split(/\s+/)[0] || booking.name;
   const visitorMoment = formatMoment(slot, booking.timeZone);
   const dubaiMoment = formatMoment(slot, OWNER_TIME_ZONE);
   const calendarUrl = buildGoogleCalendarUrl(booking);
@@ -137,11 +138,14 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
   const attendeeHtml = `
     <div style="background:#f4f0e8;padding:32px 16px;font-family:Arial,sans-serif;color:#111">
       <div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #ded8cc;border-radius:20px;padding:36px">
-        <p style="margin:0 0 12px;color:#77736c;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">SADHA demo confirmed</p>
-        <h1 style="margin:0 0 20px;font-size:34px;line-height:1.05">You’re all set, ${
-    escapeHtml(booking.name)
+        <p style="margin:0 0 12px;color:#77736c;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">A note from our founder</p>
+        <h1 style="margin:0 0 24px;font-size:34px;line-height:1.08">Looking forward to meeting you, ${
+    escapeHtml(firstName)
   }.</h1>
-        <p style="font-size:17px;line-height:1.55;margin:0 0 24px">We’ll show you how SADHA turns calls and WhatsApp conversations into CRM intelligence.</p>
+        <p style="font-size:17px;line-height:1.6;margin:0 0 16px">Thank you for booking time with me—I really appreciate it. I’m looking forward to meeting you and learning how ${
+    escapeHtml(booking.company)
+  } handles customer conversations today.</p>
+        <p style="font-size:17px;line-height:1.6;margin:0 0 24px">I’ll keep our conversation focused on your workflow, the problems you want to solve, and whether SADHA is genuinely a good fit for your team.</p>
         <div style="background:#f7f4ee;border-radius:14px;padding:20px;margin-bottom:24px">
           <strong style="display:block;font-size:18px;margin-bottom:8px">${
     escapeHtml(visitorMoment)
@@ -155,11 +159,17 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
         <a href="${
     escapeHtml(calendarUrl)
   }" style="display:inline-block;color:#111;text-decoration:none;border:1px solid #111;border-radius:10px;padding:14px 22px;font-weight:700">Add to Google Calendar</a>
+        <p style="font-size:17px;line-height:1.55;margin:24px 0 0">See you soon,<br><strong>Abdarrahman</strong><br><span style="color:#777">Founder, SADHA</span></p>
         <p style="color:#777;font-size:13px;line-height:1.5;margin:24px 0 0">Using Outlook, Apple Calendar, or another corporate calendar? Open the attached <strong>sadha-demo.ics</strong> file. The date, time, and meeting link are also shown above in case attachments are blocked.</p>
       </div>
     </div>`;
   const attendeeText = [
-    `Your SADHA demo is confirmed, ${booking.name}.`,
+    `Hi ${firstName},`,
+    "",
+    "Thank you for booking time with me—I really appreciate it. I’m looking forward to meeting you and learning how " +
+    `${booking.company} handles customer conversations today.`,
+    "",
+    "I’ll keep our conversation focused on your workflow, the problems you want to solve, and whether SADHA is genuinely a good fit for your team.",
     "",
     visitorMoment,
     `Dubai: ${dubaiMoment}`,
@@ -168,6 +178,10 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
     `Add to Google Calendar: ${calendarUrl}`,
     "",
     "An .ics calendar file is attached for Outlook, Apple Calendar, and other calendar apps.",
+    "",
+    "See you soon,",
+    "Abdarrahman",
+    "Founder, SADHA",
   ].join("\n");
   const ics = buildIcs(booking);
 
@@ -176,7 +190,7 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
       from,
       to: [booking.email],
       reply_to: hostEmails[0] || booking.organizerEmail,
-      subject: `Your SADHA demo is booked — ${visitorMoment}`,
+      subject: `Thanks for booking, ${firstName} — Abdarrahman from SADHA`,
       html: attendeeHtml,
       text: attendeeText,
       attachments: [{ filename: "sadha-demo.ics", content: toBase64(ics) }],
