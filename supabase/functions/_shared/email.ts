@@ -64,9 +64,9 @@ const buildGoogleCalendarUrl = (booking: BookingEmailInput) => {
   const end = new Date(start.getTime() + BOOKING_DURATION_MINUTES * 60_000);
   const params = new URLSearchParams({
     action: "TEMPLATE",
-    text: "SADHA demo",
+    text: "Sadha demo",
     dates: `${formatIcsUtc(start)}/${formatIcsUtc(end)}`,
-    details: `SADHA revenue intelligence demo\n\nJoin: ${booking.meetingUrl}`,
+    details: `Sadha revenue intelligence demo\n\nJoin: ${booking.meetingUrl}`,
     location: booking.meetingUrl,
   });
   return `https://calendar.google.com/calendar/render?${params}`;
@@ -86,13 +86,13 @@ const buildIcs = (booking: BookingEmailInput) => {
     `DTSTAMP:${formatIcsUtc(new Date())}`,
     `DTSTART:${formatIcsUtc(start)}`,
     `DTEND:${formatIcsUtc(end)}`,
-    "SUMMARY:SADHA demo",
+    "SUMMARY:Sadha demo",
     `DESCRIPTION:${
-      escapeIcs(`SADHA revenue intelligence demo\nJoin: ${booking.meetingUrl}`)
+      escapeIcs(`Sadha revenue intelligence demo\nJoin: ${booking.meetingUrl}`)
     }`,
     `LOCATION:${escapeIcs(booking.meetingUrl)}`,
     `URL:${escapeIcs(booking.meetingUrl)}`,
-    `ORGANIZER;CN=SADHA:mailto:${booking.organizerEmail}`,
+    `ORGANIZER;CN=Sadha:mailto:${booking.organizerEmail}`,
     `ATTENDEE;CN=${escapeIcs(booking.name)};RSVP=TRUE:mailto:${booking.email}`,
     "STATUS:CONFIRMED",
     "END:VEVENT",
@@ -124,7 +124,7 @@ const sendEmail = async (
 };
 
 export const sendBookingEmails = async (booking: BookingEmailInput) => {
-  const from = Deno.env.get("RESEND_FROM_EMAIL") || "SADHA <demos@sadha.ai>";
+  const from = Deno.env.get("RESEND_FROM_EMAIL") || "Sadha <demos@sadha.ai>";
   const hostEmails = (Deno.env.get("SADHA_HOST_EMAILS") || "")
     .split(",")
     .map((email) => email.trim())
@@ -142,10 +142,10 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
         <h1 style="margin:0 0 24px;font-size:34px;line-height:1.08">Looking forward to meeting you, ${
     escapeHtml(firstName)
   }.</h1>
-        <p style="font-size:17px;line-height:1.6;margin:0 0 16px">Thank you for booking time with me—I really appreciate it. I’m looking forward to meeting you and learning how ${
+        <p style="font-size:17px;line-height:1.6;margin:0 0 16px">Thank you for booking time with me, I really appreciate it. I’m looking forward to meeting you and learning how ${
     escapeHtml(booking.company)
   } handles customer conversations today.</p>
-        <p style="font-size:17px;line-height:1.6;margin:0 0 24px">I’ll keep our conversation focused on your workflow, the problems you want to solve, and whether SADHA is genuinely a good fit for your team.</p>
+        <p style="font-size:17px;line-height:1.6;margin:0 0 24px">I’ll keep our conversation focused on your workflow, the problems you want to solve, and whether Sadha is genuinely a good fit for your team.</p>
         <div style="background:#f7f4ee;border-radius:14px;padding:20px;margin-bottom:24px">
           <strong style="display:block;font-size:18px;margin-bottom:8px">${
     escapeHtml(visitorMoment)
@@ -159,17 +159,17 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
         <a href="${
     escapeHtml(calendarUrl)
   }" style="display:inline-block;color:#111;text-decoration:none;border:1px solid #111;border-radius:10px;padding:14px 22px;font-weight:700">Add to Google Calendar</a>
-        <p style="font-size:17px;line-height:1.55;margin:24px 0 0">See you soon,<br><strong>Abdarrahman</strong><br><span style="color:#777">Founder, SADHA</span></p>
+        <p style="font-size:17px;line-height:1.55;margin:24px 0 0">See you soon,<br><strong>Abdarrahman</strong><br><span style="color:#777">Founder, Sadha</span></p>
         <p style="color:#777;font-size:13px;line-height:1.5;margin:24px 0 0">Using Outlook, Apple Calendar, or another corporate calendar? Open the attached <strong>sadha-demo.ics</strong> file. The date, time, and meeting link are also shown above in case attachments are blocked.</p>
       </div>
     </div>`;
   const attendeeText = [
     `Hi ${firstName},`,
     "",
-    "Thank you for booking time with me—I really appreciate it. I’m looking forward to meeting you and learning how " +
+    "Thank you for booking time with me, I really appreciate it. I’m looking forward to meeting you and learning how " +
     `${booking.company} handles customer conversations today.`,
     "",
-    "I’ll keep our conversation focused on your workflow, the problems you want to solve, and whether SADHA is genuinely a good fit for your team.",
+    "I’ll keep our conversation focused on your workflow, the problems you want to solve, and whether Sadha is genuinely a good fit for your team.",
     "",
     visitorMoment,
     `Dubai: ${dubaiMoment}`,
@@ -181,7 +181,7 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
     "",
     "See you soon,",
     "Abdarrahman",
-    "Founder, SADHA",
+    "Founder, Sadha",
   ].join("\n");
   const ics = buildIcs(booking);
 
@@ -190,7 +190,7 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
       from,
       to: [booking.email],
       reply_to: hostEmails[0] || booking.organizerEmail,
-      subject: `Thanks for booking, ${firstName} — Abdarrahman from SADHA`,
+      subject: `Thanks for booking, ${firstName} — Abdarrahman from Sadha`,
       html: attendeeHtml,
       text: attendeeText,
       attachments: [{ filename: "sadha-demo.ics", content: toBase64(ics) }],
@@ -206,8 +206,8 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
         from,
         to: hostEmails,
         reply_to: booking.email,
-        subject: `New SADHA demo — ${booking.company} — ${dubaiMoment}`,
-        html: `<h2>New SADHA demo booked</h2><p><strong>${
+        subject: `New Sadha demo — ${booking.company} — ${dubaiMoment}`,
+        html: `<h2>New Sadha demo booked</h2><p><strong>${
           escapeHtml(booking.name)
         }</strong> from <strong>${escapeHtml(booking.company)}</strong></p><p>${
           escapeHtml(dubaiMoment)
@@ -215,7 +215,7 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
           escapeHtml(booking.email)
         }">${escapeHtml(booking.email)}</a></p>`,
         text:
-          `New SADHA demo booked\n${booking.name} — ${booking.company}\n${booking.email}\n${dubaiMoment}\n${booking.meetingUrl}`,
+          `New Sadha demo booked\n${booking.name} — ${booking.company}\n${booking.email}\n${dubaiMoment}\n${booking.meetingUrl}`,
         tags: [{ name: "booking_id", value: booking.id.replaceAll("-", "") }],
       },
       `booking-owner-alert/${booking.id}`,
