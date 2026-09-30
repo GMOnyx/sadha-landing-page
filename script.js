@@ -13,6 +13,8 @@ const demoForm = document.querySelector("[data-demo-form]");
 const demoFormStatus = document.querySelector("[data-demo-form-status]");
 const bookingFormView = document.querySelector("[data-booking-form-view]");
 const bookingSuccess = document.querySelector("[data-booking-success]");
+const bookingSuccessLabel = bookingSuccess?.querySelector(".eyebrow");
+const bookingSuccessTitle = document.querySelector("#booking-success-title");
 const bookingSuccessCopy = document.querySelector("[data-booking-success-copy]");
 const bookingDateList = document.querySelector("[data-booking-dates]");
 const bookingTimeList = document.querySelector("[data-booking-times]");
@@ -42,7 +44,6 @@ let selectedBookingDateKey = "";
 let selectedBookingStart = "";
 let bookedSlotStarts = new Set();
 let bookingsTableAvailable = null;
-let pendingNotificationBookingKey = "";
 
 const LANGUAGE_STORAGE_KEY = "sadha-language";
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
@@ -392,7 +393,10 @@ const translations = {
     "booking.slotTaken": "That time was just booked. Please choose another.",
     "booking.successLabel": "Demo booked",
     "booking.successTitle": "You’re all set.",
-    "booking.successCopy": "Your demo is booked for {time}. We’ll send the meeting details to {email}.",
+    "booking.successCopy": "Your demo is reserved for {time}. We’ll send the meeting link to {email}.",
+    "booking.requestLabel": "Request received",
+    "booking.requestTitle": "We’ve got your details.",
+    "booking.requestCopy": "Your work email is saved. We’ll contact you at {email} to schedule your demo.",
     "booking.done": "Done",
     "status.workEmailRequired": "Please use your work email, not a personal address.",
     "status.error": "We couldn't complete the booking. Please try again.",
@@ -689,7 +693,10 @@ const translations = {
     "booking.slotTaken": "تم حجز هذا الوقت للتو. يرجى اختيار وقت آخر.",
     "booking.successLabel": "تم حجز العرض",
     "booking.successTitle": "تم كل شيء.",
-    "booking.successCopy": "تم حجز العرض في {time}. سنرسل تفاصيل الاجتماع إلى {email}.",
+    "booking.successCopy": "تم حجز العرض في {time}. سنرسل رابط الاجتماع إلى {email}.",
+    "booking.requestLabel": "تم استلام الطلب",
+    "booking.requestTitle": "تم حفظ بياناتك.",
+    "booking.requestCopy": "تم حفظ بريد العمل. سنتواصل معك على {email} لتحديد موعد العرض.",
     "booking.done": "تم",
     "status.workEmailRequired": "يرجى استخدام بريد العمل بدلا من البريد الشخصي.",
     "status.error": "تعذر إكمال الحجز. يرجى المحاولة مرة أخرى.",
@@ -1382,45 +1389,13 @@ const captureDemoLead = async (email, signal) => {
   }
 };
 
-const insertLeadFallback = async (
-  { name, email, company, slotStart, timeZone },
-  signal,
-) => {
-  const bookingDetails = new URLSearchParams({
-    demo: slotStart,
-    timezone: timeZone,
-    company,
-  });
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${LEADS_TABLE}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_PUBLISHABLE_KEY,
-      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify({
-      full_name: name,
-      email,
-      source: LEAD_SOURCE,
-      page_path: `${window.location.pathname}#${bookingDetails.toString()}`,
-    }),
-    signal,
-  });
-
-  if (!response.ok && response.status !== 409) {
-    throw new Error(`Lead capture failed with ${response.status}`);
-  }
-};
-
 const reserveDemoSlot = async (booking, signal) => {
   if (IS_LOCAL_PREVIEW) {
-    return;
+    return { confirmed: true };
   }
 
   if (bookingsTableAvailable === false) {
-    await insertLeadFallback(booking, signal);
-    return;
+    return { confirmed: false };
   }
 
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${BOOKINGS_TABLE}`, {
@@ -1446,8 +1421,7 @@ const reserveDemoSlot = async (booking, signal) => {
 
   if (response.status === 404) {
     bookingsTableAvailable = false;
-    await insertLeadFallback(booking, signal);
-    return;
+    return { confirmed: false };
   }
 
   bookingsTableAvailable = true;
@@ -1460,6 +1434,8 @@ const reserveDemoSlot = async (booking, signal) => {
   if (!response.ok) {
     throw new Error(`Booking insert failed with ${response.status}`);
   }
+
+  return { confirmed: true };
 };
 
 const sendBookingNotification = async (booking, signal) => {
@@ -1489,6 +1465,7 @@ const sendBookingNotification = async (booking, signal) => {
       dubai_time: dubaiTime,
       utc_time: booking.slotStart,
     }),
+    keepalive: true,
     signal,
   });
 
@@ -1502,7 +1479,25 @@ const sendBookingNotification = async (booking, signal) => {
   }
 };
 
-const showBookingSuccess = (booking) => {
+const notifyBookingOwner = async (booking) => {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 7000);
+
+  try {
+    await sendBookingNotification(booking, controller.signal);
+    return true;
+  } catch (error) {
+    console.warn("Booking saved but owner notification failed.", error);
+    trackEvent("book_demo_notification_failed", {
+      form_location: "demo_modal",
+    });
+    return false;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+};
+
+const showBookingOutcome = (booking, confirmed) => {
   const time = formatBookingMoment(
     new Date(booking.slotStart),
     booking.timeZone,
@@ -1513,10 +1508,15 @@ const showBookingSuccess = (booking) => {
   bookingDialog.classList.add("is-success");
   bookingDialog.setAttribute("aria-labelledby", "booking-success-title");
   bookingDialog.scrollTop = 0;
-  bookingSuccessCopy.textContent = tFormat("booking.successCopy", {
-    time,
-    email: booking.email,
-  });
+  bookingSuccessLabel.textContent = t(
+    confirmed ? "booking.successLabel" : "booking.requestLabel",
+  );
+  bookingSuccessTitle.textContent = t(
+    confirmed ? "booking.successTitle" : "booking.requestTitle",
+  );
+  bookingSuccessCopy.textContent = confirmed
+    ? tFormat("booking.successCopy", { time, email: booking.email })
+    : tFormat("booking.requestCopy", { email: booking.email });
   bookingSuccess.querySelector("button")?.focus();
 };
 
@@ -1538,7 +1538,6 @@ const resetBookingFlow = () => {
   bookingEmailInput.readOnly = false;
   selectedBookingStart = "";
   selectedBookingDateKey = "";
-  pendingNotificationBookingKey = "";
   populateBookingTimeZones();
   bookingSlots = generateBookingSlots();
   bookingDialog.scrollTop = 0;
@@ -1742,20 +1741,18 @@ demoForm?.addEventListener("submit", async (event) => {
     slotStart: selectedBookingStart,
     timeZone,
   };
-  const bookingKey = `${email}|${selectedBookingStart}`;
 
   try {
-    if (pendingNotificationBookingKey !== bookingKey) {
-      await reserveDemoSlot(booking, controller.signal);
-      pendingNotificationBookingKey = bookingKey;
-    }
-    await sendBookingNotification(booking, controller.signal);
-    pendingNotificationBookingKey = "";
-    trackEvent("book_demo_scheduled", {
+    const reservation = await reserveDemoSlot(booking, controller.signal);
+    const eventName = reservation.confirmed
+      ? "book_demo_scheduled"
+      : "book_demo_request_captured";
+    trackEvent(eventName, {
       form_location: "demo_modal",
       visitor_timezone: timeZone,
     });
-    showBookingSuccess(booking);
+    showBookingOutcome(booking, reservation.confirmed);
+    void notifyBookingOwner(booking);
   } catch (error) {
     console.error(error);
     if (error.code === "SLOT_TAKEN") {
@@ -1764,7 +1761,11 @@ demoForm?.addEventListener("submit", async (event) => {
       renderBookingPicker();
       setDemoFormStatus("booking.slotTaken", "error");
     } else {
-      setDemoFormStatus("status.error", "error");
+      trackEvent("book_demo_reservation_failed", {
+        form_location: "demo_modal",
+      });
+      showBookingOutcome(booking, false);
+      void notifyBookingOwner(booking);
     }
   } finally {
     window.clearTimeout(timeoutId);
