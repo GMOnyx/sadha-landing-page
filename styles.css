@@ -5793,10 +5793,25 @@ html[dir="rtl"] .hero-sticky .subhead {
   text-wrap: balance;
 }
 
+.booking-success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.booking-success-actions [hidden] {
+  display: none;
+}
+
 .booking-success .button {
   min-width: 150px;
-  margin-top: 24px;
-  border: 0;
+  margin-top: 0;
+}
+
+.booking-success .button-primary {
+  border-color: var(--ink);
 }
 
 html[dir="rtl"] .booking-selection::before {
@@ -5877,6 +5892,11 @@ html[dir="rtl"] .booking-selection::before {
   .booking-success {
     min-height: min(430px, calc(100svh - 56px));
     padding: 44px 8px 28px;
+  }
+
+  .booking-success-actions,
+  .booking-success .button {
+    width: 100%;
   }
 }
 

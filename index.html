@@ -44,7 +44,7 @@
     <meta name="theme-color" content="#f4f0e8" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="styles.css?v=62" />
+    <link rel="stylesheet" href="styles.css?v=64" />
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
@@ -530,11 +530,14 @@
           <p class="eyebrow" data-i18n="booking.successLabel">Demo booked</p>
           <h2 id="booking-success-title" data-i18n="booking.successTitle">You’re all set.</h2>
           <p data-booking-success-copy></p>
-          <button class="button button-primary" type="button" data-close-demo-modal data-i18n="booking.done">Done</button>
+          <div class="booking-success-actions">
+            <a class="button button-primary" href="#" target="_blank" rel="noopener" data-booking-meeting-link hidden data-i18n="booking.joinMeeting">Join Google Meet</a>
+            <button class="button button-ghost" type="button" data-close-demo-modal data-i18n="booking.done">Done</button>
+          </div>
         </div>
       </section>
     </div>
 
-    <script src="script.js?v=42"></script>
+    <script src="script.js?v=45"></script>
   </body>
 </html>
