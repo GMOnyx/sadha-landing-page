@@ -326,7 +326,7 @@ export const sendBookingRequestEmails = async (
           escapeHtml(booking.company)
         }</strong> requested a demo.</p><p>${
           escapeHtml(dubaiMoment)
-        }</p><p>Their time is reserved, but the Google Calendar event was not created. Please send the meeting details manually if the automatic retry has not recovered it.</p><p>Contact: <a href="mailto:${
+        }</p><p>Their time is reserved, but the Google Calendar event was not created. Please send the meeting details manually.</p><p>Contact: <a href="mailto:${
           escapeHtml(booking.email)
         }">${escapeHtml(booking.email)}</a></p>`,
         text:
