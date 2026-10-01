@@ -117,34 +117,19 @@ export const createCalendarEvent = async (booking: {
 }) => {
   const accessToken = await getAccessToken();
   const { primary: calendarId } = getCalendarIds();
-  const hostEmails = (Deno.env.get("SADHA_HOST_EMAILS") || "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
-  const organizerEmail = (Deno.env.get("GOOGLE_ORGANIZER_EMAIL") || "")
-    .trim()
-    .toLowerCase();
-  const attendees = [
-    ...new Set([booking.email.toLowerCase(), ...hostEmails]),
-  ]
-    .filter((email) => email !== organizerEmail)
-    .map((email) => ({ email }));
   const eventId = `sadha${booking.id.replaceAll("-", "")}`;
   const endpoint =
     `https://www.googleapis.com/calendar/v3/calendars/${
       encodeURIComponent(calendarId)
     }/events` +
-    "?conferenceDataVersion=1&sendUpdates=all";
+    "?conferenceDataVersion=1&sendUpdates=none";
   const eventBody = {
     id: eventId,
-    summary: `SADHA demo — ${booking.company}`,
+    summary: `Sadha demo — ${booking.company}`,
     description:
-      `SADHA revenue intelligence demo\n\nContact: ${booking.name} (${booking.email})\nCompany: ${booking.company}`,
+      `Sadha revenue intelligence demo\n\nContact: ${booking.name} (${booking.email})\nCompany: ${booking.company}`,
     start: { dateTime: booking.slotStart, timeZone: "UTC" },
     end: { dateTime: getBookingEnd(booking.slotStart), timeZone: "UTC" },
-    attendees,
-    guestsCanInviteOthers: false,
-    guestsCanModify: false,
     conferenceData: {
       createRequest: {
         requestId: booking.id,
@@ -176,7 +161,10 @@ export const createCalendarEvent = async (booking: {
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       console.error("Google event creation failed", response.status, data);
-      throw new Error("GOOGLE_EVENT_CREATE_FAILED");
+      const reason = data?.error?.errors?.[0]?.reason || "unknown";
+      throw new Error(
+        `GOOGLE_EVENT_CREATE_FAILED:${response.status}:${reason}`,
+      );
     }
     event = data as GoogleEvent;
   }

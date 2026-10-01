@@ -13,6 +13,11 @@ type BookingEmailInput = {
   organizerEmail: string;
 };
 
+type BookingRequestEmailInput = Pick<
+  BookingEmailInput,
+  "id" | "name" | "email" | "company" | "slotStart" | "timeZone"
+>;
+
 const htmlEntities: Record<string, string> = {
   "&": "&amp;",
   "<": "&lt;",
@@ -241,6 +246,94 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
         tags: [{ name: "booking_id", value: booking.id.replaceAll("-", "") }],
       },
       `booking-owner-alert/${booking.id}`,
+    );
+  }
+
+  return { attendeeEmailId, ownerEmailId };
+};
+
+export const sendBookingRequestEmails = async (
+  booking: BookingRequestEmailInput,
+) => {
+  const from = getFromEmail();
+  const hostEmails = (Deno.env.get("SADHA_HOST_EMAILS") || "")
+    .split(",")
+    .map((email) => email.trim())
+    .filter(Boolean);
+  const slot = new Date(booking.slotStart);
+  const firstName = booking.name.trim().split(/\s+/)[0] || booking.name;
+  const visitorMoment = formatMoment(slot, booking.timeZone);
+  const dubaiMoment = formatMoment(slot, OWNER_TIME_ZONE);
+
+  const attendeeEmailId = await sendEmail(
+    {
+      from,
+      to: [booking.email],
+      reply_to: hostEmails[0] || "abdarrahman@sadha.ai",
+      subject: `We received your Sadha demo request, ${firstName}`,
+      html: `
+        <div style="background:#f4f0e8;padding:32px 16px;font-family:Arial,sans-serif;color:#111">
+          <div style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #ded8cc;border-radius:20px;padding:36px">
+            <p style="margin:0 0 12px;color:#77736c;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">A note from our founder</p>
+            <h1 style="margin:0 0 24px;font-size:34px;line-height:1.08">Thanks, ${
+        escapeHtml(firstName)
+      }. I’ve got your request.</h1>
+            <p style="font-size:17px;line-height:1.6;margin:0 0 16px">I’ve saved your preferred time for a Sadha demo with ${
+        escapeHtml(booking.company)
+      }.</p>
+            <div style="background:#f7f4ee;border-radius:14px;padding:20px;margin:20px 0 24px">
+              <strong style="display:block;font-size:18px">${
+        escapeHtml(visitorMoment)
+      }</strong>
+              <span style="display:block;color:#666;margin-top:6px">Dubai: ${
+        escapeHtml(dubaiMoment)
+      }</span>
+            </div>
+            <p style="font-size:17px;line-height:1.6;margin:0">I’m finalising the calendar details and will send your meeting link shortly. You don’t need to book again.</p>
+            <p style="font-size:17px;line-height:1.55;margin:24px 0 0">Speak soon,<br><strong>Abdarrahman</strong><br><span style="color:#777">Founder, Sadha</span></p>
+          </div>
+        </div>`,
+      text: [
+        `Hi ${firstName},`,
+        "",
+        `I’ve saved your preferred time for a Sadha demo with ${booking.company}.`,
+        visitorMoment,
+        `Dubai: ${dubaiMoment}`,
+        "",
+        "I’m finalising the calendar details and will send your meeting link shortly. You don’t need to book again.",
+        "",
+        "Speak soon,",
+        "Abdarrahman",
+        "Founder, Sadha",
+      ].join("\n"),
+      tags: [{ name: "booking_id", value: booking.id.replaceAll("-", "") }],
+    },
+    `booking-request-receipt/${booking.id}`,
+  );
+
+  let ownerEmailId = "";
+  if (hostEmails.length) {
+    ownerEmailId = await sendEmail(
+      {
+        from,
+        to: hostEmails,
+        reply_to: booking.email,
+        subject:
+          `Action needed: Sadha demo request — ${booking.company} — ${dubaiMoment}`,
+        html: `<h2>Calendar creation needs attention</h2><p><strong>${
+          escapeHtml(booking.name)
+        }</strong> from <strong>${
+          escapeHtml(booking.company)
+        }</strong> requested a demo.</p><p>${
+          escapeHtml(dubaiMoment)
+        }</p><p>Their time is reserved, but the Google Calendar event was not created. Please send the meeting details manually if the automatic retry has not recovered it.</p><p>Contact: <a href="mailto:${
+          escapeHtml(booking.email)
+        }">${escapeHtml(booking.email)}</a></p>`,
+        text:
+          `Calendar creation needs attention\n${booking.name} — ${booking.company}\n${booking.email}\n${dubaiMoment}\nTheir time is reserved, but the Google Calendar event was not created.`,
+        tags: [{ name: "booking_id", value: booking.id.replaceAll("-", "") }],
+      },
+      `booking-request-owner-alert/${booking.id}`,
     );
   }
 

@@ -10,7 +10,10 @@ import {
   isAllowedOrigin,
   jsonResponse,
 } from "../_shared/cors.ts";
-import { sendBookingEmails } from "../_shared/email.ts";
+import {
+  sendBookingEmails,
+  sendBookingRequestEmails,
+} from "../_shared/email.ts";
 import { createCalendarEvent, getBusyIntervals } from "../_shared/google.ts";
 
 const getAdminClient = () =>
@@ -76,13 +79,80 @@ Deno.serve(async (request) => {
     }
     bookingId = saved.id;
 
-    const calendar = await createCalendarEvent({
-      id: bookingId,
-      name: booking.name,
-      email: booking.email,
-      company: booking.company,
-      slotStart: booking.slotStart,
-    });
+    let calendar;
+    try {
+      calendar = await createCalendarEvent({
+        id: bookingId,
+        name: booking.name,
+        email: booking.email,
+        company: booking.company,
+        slotStart: booking.slotStart,
+      });
+    } catch (calendarError) {
+      const calendarErrorMessage = calendarError instanceof Error
+        ? calendarError.message.slice(0, 500)
+        : "GOOGLE_EVENT_CREATE_FAILED";
+      console.error(
+        "Calendar creation failed; sending request receipt",
+        calendarError,
+      );
+      const failedAt = new Date().toISOString();
+      await admin
+        .from("demo_bookings")
+        .update({
+          status: "pending",
+          calendar_status: "failed",
+          last_error: calendarErrorMessage,
+          updated_at: failedAt,
+        })
+        .eq("id", bookingId);
+
+      let notificationStatus = "sent";
+      try {
+        const emails = await sendBookingRequestEmails({
+          id: bookingId,
+          ...booking,
+        });
+        await admin
+          .from("demo_bookings")
+          .update({
+            notification_status: "sent",
+            notification_attempts: 1,
+            last_notification_attempt_at: new Date().toISOString(),
+            resend_email_id: emails.attendeeEmailId,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", bookingId);
+      } catch (emailError) {
+        console.error("Booking request receipt failed", emailError);
+        notificationStatus = "retry_required";
+        const emailErrorMessage = emailError instanceof Error
+          ? emailError.message.slice(0, 240)
+          : "EMAIL_FAILED";
+        await admin
+          .from("demo_bookings")
+          .update({
+            notification_status: Deno.env.get("RESEND_API_KEY")
+              ? "failed"
+              : "not_configured",
+            notification_attempts: 1,
+            last_notification_attempt_at: new Date().toISOString(),
+            last_error: `${calendarErrorMessage};${emailErrorMessage}`.slice(
+              0,
+              500,
+            ),
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", bookingId);
+      }
+
+      return jsonResponse(request, {
+        confirmed: false,
+        booking_id: bookingId,
+        slot_start: booking.slotStart,
+        notification_status: notificationStatus,
+      });
+    }
     const confirmedAt = new Date().toISOString();
     const { error: confirmationError } = await admin
       .from("demo_bookings")
