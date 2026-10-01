@@ -99,7 +99,7 @@ const buildGoogleCalendarUrl = (booking: BookingEmailInput) => {
   return `https://calendar.google.com/calendar/render?${params}`;
 };
 
-const buildIcs = (booking: BookingEmailInput) => {
+const buildIcs = (booking: BookingEmailInput, includeAttendee = true) => {
   const start = new Date(booking.slotStart);
   const end = new Date(start.getTime() + BOOKING_DURATION_MINUTES * 60_000);
   return [
@@ -107,7 +107,7 @@ const buildIcs = (booking: BookingEmailInput) => {
     "VERSION:2.0",
     "PRODID:-//SADHA//Demo Booking//EN",
     "CALSCALE:GREGORIAN",
-    "METHOD:REQUEST",
+    includeAttendee ? "METHOD:REQUEST" : "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:${escapeIcs(booking.iCalUID)}`,
     `DTSTAMP:${formatIcsUtc(new Date())}`,
@@ -119,8 +119,12 @@ const buildIcs = (booking: BookingEmailInput) => {
     }`,
     `LOCATION:${escapeIcs(booking.meetingUrl)}`,
     `URL:${escapeIcs(booking.meetingUrl)}`,
-    `ORGANIZER;CN=Sadha:mailto:${booking.organizerEmail}`,
-    `ATTENDEE;CN=${escapeIcs(booking.name)};RSVP=TRUE:mailto:${booking.email}`,
+    ...(includeAttendee
+      ? [
+        `ORGANIZER;CN=Sadha:mailto:${booking.organizerEmail}`,
+        `ATTENDEE;CN=${escapeIcs(booking.name)};RSVP=TRUE:mailto:${booking.email}`,
+      ]
+      : []),
     "STATUS:CONFIRMED",
     "END:VEVENT",
     "END:VCALENDAR",
@@ -211,6 +215,7 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
     "Founder, Sadha",
   ].join("\n");
   const ics = buildIcs(booking);
+  const ownerIcs = buildIcs(booking, false);
 
   const attendeeEmailId = await sendEmail(
     {
@@ -238,11 +243,17 @@ export const sendBookingEmails = async (booking: BookingEmailInput) => {
           escapeHtml(booking.name)
         }</strong> from <strong>${escapeHtml(booking.company)}</strong></p><p>${
           escapeHtml(dubaiMoment)
-        }</p><p><a href="${meetingUrl}">Join Google Meet</a></p><p>Contact: <a href="mailto:${
+        }</p><p><a href="${meetingUrl}">Join Google Meet</a> · <a href="${
+          escapeHtml(calendarUrl)
+        }">Add to Google Calendar</a></p><p>Contact: <a href="mailto:${
           escapeHtml(booking.email)
         }">${escapeHtml(booking.email)}</a></p>`,
         text:
-          `New Sadha demo booked\n${booking.name} — ${booking.company}\n${booking.email}\n${dubaiMoment}\n${booking.meetingUrl}`,
+          `New Sadha demo booked\n${booking.name} — ${booking.company}\n${booking.email}\n${dubaiMoment}\nJoin: ${booking.meetingUrl}\nAdd to Google Calendar: ${calendarUrl}`,
+        attachments: [{
+          filename: "sadha-demo.ics",
+          content: toBase64(ownerIcs),
+        }],
         tags: [{ name: "booking_id", value: booking.id.replaceAll("-", "") }],
       },
       `booking-owner-alert/${booking.id}`,
