@@ -53,6 +53,9 @@ const LANDING_VARIANT = document.body?.dataset.landingVariant || "desktop";
 const LEAD_SOURCE = LANDING_VARIANT === "mobile_v1"
   ? "sadha_mobile_landing"
   : "sadha_landing";
+// Public email signups use the source allowed by the existing Supabase policy.
+// The page path, analytics, and booking source retain mobile attribution.
+const LEAD_CAPTURE_SOURCE = "sadha_landing";
 const IS_LOCAL_PREVIEW =
   window.location.protocol === "file:" ||
   ["127.0.0.1", "localhost"].includes(window.location.hostname);
@@ -437,6 +440,7 @@ const translations = {
     "booking.requestCopy": "Your work email is saved. We’ll contact you at {email} to schedule your demo.",
     "booking.done": "Done",
     "status.workEmailRequired": "Please use your work email, not a personal address.",
+    "status.emailCaptureError": "We couldn't save your email. Please try again.",
     "status.error": "We couldn't complete the booking. Please try again.",
     "footer.contact": "Book a Demo",
     "footer.copy": "Copyright 2026 SADHA Intelligence. All rights reserved.",
@@ -772,6 +776,7 @@ const translations = {
     "booking.requestCopy": "تم حفظ بريد العمل. سنتواصل معك على {email} لتحديد موعد العرض.",
     "booking.done": "تم",
     "status.workEmailRequired": "يرجى استخدام بريد العمل بدلا من البريد الشخصي.",
+    "status.emailCaptureError": "تعذر حفظ بريدك الإلكتروني. يرجى المحاولة مرة أخرى.",
     "status.error": "تعذر إكمال الحجز. يرجى المحاولة مرة أخرى.",
     "footer.contact": "احجز عرضا توضيحيا",
     "footer.copy": "حقوق النشر 2026 صدى. جميع الحقوق محفوظة.",
@@ -1460,13 +1465,18 @@ const captureDemoLead = async (email, signal) => {
     },
     body: JSON.stringify({
       email,
-      source: LEAD_SOURCE,
+      source: LEAD_CAPTURE_SOURCE,
       page_path: `${window.location.pathname}${window.location.search}#demo-email-captured`,
     }),
     signal,
   });
 
-  if (!response.ok && response.status !== 409) {
+  if (!response.ok) {
+    const result = await response.json().catch(() => ({}));
+    // An existing email is already captured; other conflicts are real failures.
+    if (response.status === 409 && result.code === "23505") {
+      return;
+    }
     throw new Error(`Lead capture failed with ${response.status}`);
   }
 };
@@ -1700,7 +1710,7 @@ bookingEmailForm?.addEventListener("submit", async (event) => {
     loadBookedDemoSlots().catch((error) => console.warn(error));
   } catch (error) {
     console.error(error);
-    setBookingEmailStatus("status.error", "error");
+    setBookingEmailStatus("status.emailCaptureError", "error");
   } finally {
     window.clearTimeout(timeoutId);
     setBookingEmailSubmitting(submitButton, false);
