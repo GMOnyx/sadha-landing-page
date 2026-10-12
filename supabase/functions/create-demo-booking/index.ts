@@ -236,7 +236,6 @@ Deno.serve(async (request) => {
         "INVALID_BOOKING",
         "INVALID_NAME",
         "INVALID_EMAIL",
-        "WORK_EMAIL_REQUIRED",
         "INVALID_COMPANY",
         "INVALID_SLOT",
         "INVALID_TIME_ZONE",

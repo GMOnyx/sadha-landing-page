@@ -84,26 +84,6 @@ const BOOKING_TIME_ZONES = [
   "America/New_York",
   "America/Los_Angeles",
 ];
-const PERSONAL_EMAIL_DOMAINS = new Set([
-  "aol.com",
-  "fastmail.com",
-  "gmail.com",
-  "googlemail.com",
-  "hey.com",
-  "icloud.com",
-  "mail.com",
-  "me.com",
-  "proton.me",
-  "protonmail.com",
-  "yandex.com",
-  "yandex.ru",
-  "zoho.com",
-]);
-const PERSONAL_EMAIL_PATTERNS = [
-  /^(?:hotmail|live|msn|outlook)\./,
-  /^(?:rocketmail|yahoo|ymail)\./,
-  /^gmx\./,
-];
 
 const translations = {
   en: {
@@ -165,7 +145,7 @@ const translations = {
     "mobile.finalText":
       "Pick a time and we’ll show you how Sadha turns real conversations into a CRM your team can trust.",
     "mobile.bookingEyebrow": "Your pipeline, fully visible",
-    "mobile.bookingIntro": "Start with your work email.",
+    "mobile.bookingIntro": "Start with your email.",
     "heroVisual.live": "Live deal signals",
     "heroVisual.meetSignal": "VP Finance confirmed the budget.",
     "heroVisual.meetMeta": "09:42 · transcript",
@@ -411,8 +391,8 @@ const translations = {
     "access.label": "Ready to fix your CRM data?",
     "access.title": "Stop managing deals from half the story.",
     "access.modalTitle": "Ready to transform your pipeline?",
-    "access.emailLabel": "Work email",
-    "access.placeholder": "name@company.com",
+    "access.emailLabel": "Email",
+    "access.placeholder": "you@example.com",
     "access.emailContinue": "Continue",
     "access.emailLoading": "Loading times...",
     "access.closeLabel": "Close demo form",
@@ -437,9 +417,8 @@ const translations = {
     "booking.joinMeeting": "Join Google Meet",
     "booking.requestLabel": "Request received",
     "booking.requestTitle": "We’ve got your details.",
-    "booking.requestCopy": "Your work email is saved. We’ll contact you at {email} to schedule your demo.",
+    "booking.requestCopy": "Your email is saved. We’ll contact you at {email} to schedule your demo.",
     "booking.done": "Done",
-    "status.workEmailRequired": "Please use your work email, not a personal address.",
     "status.emailCaptureError": "We couldn't save your email. Please try again.",
     "status.error": "We couldn't complete the booking. Please try again.",
     "footer.contact": "Book a Demo",
@@ -505,7 +484,7 @@ const translations = {
     "mobile.finalText":
       "اختر موعدا وسنريك كيف يحول صدى المحادثات الحقيقية إلى إدارة عملاء يثق بها فريقك.",
     "mobile.bookingEyebrow": "مسار مبيعات واضح بالكامل",
-    "mobile.bookingIntro": "ابدأ ببريد العمل.",
+    "mobile.bookingIntro": "ابدأ ببريدك الإلكتروني.",
     "heroVisual.live": "إشارات الصفقة المباشرة",
     "heroVisual.meetSignal": "أكد نائب رئيس المالية الميزانية.",
     "heroVisual.meetMeta": "09:42 · النص الكامل",
@@ -747,8 +726,8 @@ const translations = {
     "access.label": "جاهز لإصلاح بيانات إدارة العملاء؟",
     "access.title": "توقف عن إدارة الصفقات بنصف القصة.",
     "access.modalTitle": "جاهز لإحداث نقلة في مسار مبيعاتك؟",
-    "access.emailLabel": "بريد العمل",
-    "access.placeholder": "name@company.com",
+    "access.emailLabel": "البريد الإلكتروني",
+    "access.placeholder": "you@example.com",
     "access.emailContinue": "متابعة",
     "access.emailLoading": "جار تحميل المواعيد...",
     "access.closeLabel": "إغلاق نموذج حجز العرض",
@@ -773,9 +752,8 @@ const translations = {
     "booking.joinMeeting": "الانضمام إلى Google Meet",
     "booking.requestLabel": "تم استلام الطلب",
     "booking.requestTitle": "تم حفظ بياناتك.",
-    "booking.requestCopy": "تم حفظ بريد العمل. سنتواصل معك على {email} لتحديد موعد العرض.",
+    "booking.requestCopy": "تم حفظ بريدك الإلكتروني. سنتواصل معك على {email} لتحديد موعد العرض.",
     "booking.done": "تم",
-    "status.workEmailRequired": "يرجى استخدام بريد العمل بدلا من البريد الشخصي.",
     "status.emailCaptureError": "تعذر حفظ بريدك الإلكتروني. يرجى المحاولة مرة أخرى.",
     "status.error": "تعذر إكمال الحجز. يرجى المحاولة مرة أخرى.",
     "footer.contact": "احجز عرضا توضيحيا",
@@ -1164,14 +1142,6 @@ const setBookingEmailStatus = (messageKey = "", tone = "") => {
   bookingEmailStatus.dataset.statusKey = messageKey;
   bookingEmailStatus.textContent = messageKey ? t(messageKey) : "";
   bookingEmailStatus.classList.toggle("is-error", tone === "error");
-};
-
-const isPersonalEmailAddress = (email) => {
-  const emailDomain = email.split("@").pop();
-  return (
-    PERSONAL_EMAIL_DOMAINS.has(emailDomain) ||
-    PERSONAL_EMAIL_PATTERNS.some((pattern) => pattern.test(emailDomain))
-  );
 };
 
 const setBookingEmailSubmitting = (button, isSubmitting) => {
@@ -1675,15 +1645,6 @@ bookingEmailForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (isPersonalEmailAddress(email)) {
-    const message = t("status.workEmailRequired");
-    bookingEmailInput.setCustomValidity(message);
-    setBookingEmailStatus("status.workEmailRequired", "error");
-    bookingEmailInput.focus();
-    bookingEmailInput.reportValidity();
-    return;
-  }
-
   bookingEmailInput.setCustomValidity("");
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 12000);
@@ -1751,16 +1712,6 @@ demoForm?.addEventListener("submit", async (event) => {
 
   if (!name || !email || !company) {
     demoForm.reportValidity();
-    return;
-  }
-
-  if (isPersonalEmailAddress(email)) {
-    const message = t("status.workEmailRequired");
-    bookingEmailInput.setCustomValidity(message);
-    setDemoFormStatus("status.workEmailRequired", "error");
-    bookingEmailInput.readOnly = false;
-    bookingEmailInput.focus();
-    bookingEmailInput.reportValidity();
     return;
   }
 

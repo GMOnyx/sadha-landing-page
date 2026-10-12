@@ -3,25 +3,6 @@ export const BOOKING_DURATION_MINUTES = 30;
 const MINIMUM_NOTICE_MS = 2 * 60 * 60 * 1000;
 const MAXIMUM_NOTICE_MS = 60 * 24 * 60 * 60 * 1000;
 
-const personalEmailDomains = new Set([
-  "aol.com",
-  "fastmail.com",
-  "gmail.com",
-  "googlemail.com",
-  "hey.com",
-  "hotmail.com",
-  "icloud.com",
-  "live.com",
-  "mail.com",
-  "me.com",
-  "msn.com",
-  "outlook.com",
-  "proton.me",
-  "protonmail.com",
-  "yahoo.com",
-  "yandex.com",
-]);
-
 export type BookingPayload = {
   name: string;
   email: string;
@@ -66,9 +47,6 @@ export const validateBookingPayload = (input: unknown): BookingPayload => {
   }
   if (!emailPattern.test(email) || email.length > 254) {
     throw new Error("INVALID_EMAIL");
-  }
-  if (personalEmailDomains.has(email.split("@").at(-1) || "")) {
-    throw new Error("WORK_EMAIL_REQUIRED");
   }
   if (company.length < 2 || company.length > 160) {
     throw new Error("INVALID_COMPANY");
