@@ -28,6 +28,7 @@ export type BookingPayload = {
   company: string;
   slotStart: string;
   timeZone: string;
+  source: "sadha_landing" | "sadha_mobile_landing";
 };
 
 const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -55,6 +56,9 @@ export const validateBookingPayload = (input: unknown): BookingPayload => {
   const company = String(body.company || "").trim();
   const slotStart = String(body.slotStart || "");
   const timeZone = String(body.timeZone || OWNER_TIME_ZONE);
+  const source = body.source === "sadha_mobile_landing"
+    ? "sadha_mobile_landing"
+    : "sadha_landing";
   const slot = new Date(slotStart);
 
   if (name.length < 2 || name.length > 120) {
@@ -102,6 +106,7 @@ export const validateBookingPayload = (input: unknown): BookingPayload => {
     company,
     slotStart: slot.toISOString(),
     timeZone,
+    source,
   };
 };
 

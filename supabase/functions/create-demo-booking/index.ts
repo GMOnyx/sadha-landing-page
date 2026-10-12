@@ -67,7 +67,7 @@ Deno.serve(async (request) => {
         status: "pending",
         calendar_status: "pending",
         notification_status: "pending",
-        source: "sadha_landing",
+        source: booking.source,
       })
       .select("id")
       .single();

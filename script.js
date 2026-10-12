@@ -49,7 +49,10 @@ const LANGUAGE_STORAGE_KEY = "sadha-language";
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ztm-q3VrZeqqABxCp1b-sQ_jBA-Me9Y";
 const LEADS_TABLE = "early_access_requests";
-const LEAD_SOURCE = "sadha_landing";
+const LANDING_VARIANT = document.body?.dataset.landingVariant || "desktop";
+const LEAD_SOURCE = LANDING_VARIANT === "mobile_v1"
+  ? "sadha_mobile_landing"
+  : "sadha_landing";
 const IS_LOCAL_PREVIEW =
   window.location.protocol === "file:" ||
   ["127.0.0.1", "localhost"].includes(window.location.hostname);
@@ -126,6 +129,40 @@ const translations = {
     "hero.primary": "Book a Demo",
     "hero.secondary": "See it in action",
     "hero.microcopy": "Built for sales teams where the deal lives in WhatsApp.",
+    "mobile.metaTitle": "Sadha | Know What’s Happening in Every Deal",
+    "mobile.metaDescription":
+      "Know what’s happening in every deal. Sadha turns sales calls and WhatsApp into actionable CRM intelligence automatically.",
+    "mobile.eyebrow": "Revenue intelligence for MENA",
+    "mobile.titleHtml": "Know what’s happening <span>in every deal.</span>",
+    "mobile.subhead":
+      "Sadha captures sales calls and WhatsApp, surfaces risks and commitments, and updates your CRM automatically.",
+    "mobile.primary": "Find a demo time",
+    "mobile.demoNote": "30-minute demo · Times shown in your timezone",
+    "mobile.loopLabel": "How Sadha turns conversations into CRM intelligence",
+    "mobile.resultTitle": "Risk flagged. Next step added.",
+    "mobile.resultMeta": "Deal record updated automatically",
+    "mobile.outcomesEyebrow": "No more blind spots",
+    "mobile.outcomesTitle": "Your CRM should know what your team knows.",
+    "mobile.outcome1Title": "Every conversation captured",
+    "mobile.outcome1Text":
+      "Calls, WhatsApp messages, buyer questions, and commitments stay connected to the right deal.",
+    "mobile.outcome2Title": "Risks surfaced early",
+    "mobile.outcome2Text":
+      "See compliance blockers, pricing pressure, and stalled follow-ups before the deal slips.",
+    "mobile.outcome3Title": "CRM updated automatically",
+    "mobile.outcome3Text":
+      "Summaries, next steps, and deal signals arrive without chasing reps for notes.",
+    "mobile.menaEyebrow": "Built for how MENA sells",
+    "mobile.menaTitleHtml": "English. Arabic. <span>One deal record.</span>",
+    "mobile.menaText":
+      "Understand the calls and WhatsApp conversations where regional deals actually move—then turn them into action.",
+    "mobile.conversationResult": "Compliance blocker captured",
+    "mobile.finalEyebrow": "See it on a real workflow",
+    "mobile.finalTitle": "See your pipeline clearly.",
+    "mobile.finalText":
+      "Pick a time and we’ll show you how Sadha turns real conversations into a CRM your team can trust.",
+    "mobile.bookingEyebrow": "Your pipeline, fully visible",
+    "mobile.bookingIntro": "Start with your work email.",
     "heroVisual.live": "Live deal signals",
     "heroVisual.meetSignal": "VP Finance confirmed the budget.",
     "heroVisual.meetMeta": "09:42 · transcript",
@@ -431,6 +468,40 @@ const translations = {
     "hero.primary": "احجز عرضا توضيحيا",
     "hero.secondary": "شاهد المنتج",
     "hero.microcopy": "مصمم لفرق المبيعات التي تعيش صفقاتها في واتساب.",
+    "mobile.metaTitle": "صدى | اعرف ما يحدث في كل صفقة",
+    "mobile.metaDescription":
+      "اعرف ما يحدث في كل صفقة. يحوّل صدى مكالمات المبيعات وواتساب إلى ذكاء عملي داخل إدارة العملاء تلقائيا.",
+    "mobile.eyebrow": "ذكاء الإيرادات لمنطقة الشرق الأوسط وشمال أفريقيا",
+    "mobile.titleHtml": "اعرف ما يحدث <span>في كل صفقة.</span>",
+    "mobile.subhead":
+      "يلتقط صدى مكالمات المبيعات وواتساب، ويكشف المخاطر والالتزامات، ويحدث إدارة العملاء تلقائيا.",
+    "mobile.primary": "اختر موعد العرض",
+    "mobile.demoNote": "عرض لمدة 30 دقيقة · المواعيد حسب منطقتك الزمنية",
+    "mobile.loopLabel": "كيف يحول صدى المحادثات إلى ذكاء داخل إدارة العملاء",
+    "mobile.resultTitle": "رصد الخطر. إضافة الخطوة التالية.",
+    "mobile.resultMeta": "تم تحديث سجل الصفقة تلقائيا",
+    "mobile.outcomesEyebrow": "وداعا للنقاط العمياء",
+    "mobile.outcomesTitle": "يجب أن تعرف إدارة العملاء ما يعرفه فريقك.",
+    "mobile.outcome1Title": "التقاط كل محادثة",
+    "mobile.outcome1Text":
+      "تبقى المكالمات ورسائل واتساب وأسئلة المشتري والالتزامات مرتبطة بالصفقة الصحيحة.",
+    "mobile.outcome2Title": "كشف المخاطر مبكرا",
+    "mobile.outcome2Text":
+      "شاهد عوائق الامتثال وضغوط الأسعار والمتابعات المتأخرة قبل أن تتعثر الصفقة.",
+    "mobile.outcome3Title": "تحديث إدارة العملاء تلقائيا",
+    "mobile.outcome3Text":
+      "تصل الملخصات والخطوات التالية وإشارات الصفقة دون ملاحقة المندوبين للحصول على الملاحظات.",
+    "mobile.menaEyebrow": "مصمم لطريقة البيع في المنطقة",
+    "mobile.menaTitleHtml": "العربية. الإنجليزية. <span>سجل صفقة واحد.</span>",
+    "mobile.menaText":
+      "افهم المكالمات ومحادثات واتساب التي تحرك الصفقات في المنطقة، ثم حولها إلى خطوات عملية.",
+    "mobile.conversationResult": "تم رصد عائق الامتثال",
+    "mobile.finalEyebrow": "شاهده على سير عمل حقيقي",
+    "mobile.finalTitle": "شاهد مسار مبيعاتك بوضوح.",
+    "mobile.finalText":
+      "اختر موعدا وسنريك كيف يحول صدى المحادثات الحقيقية إلى إدارة عملاء يثق بها فريقك.",
+    "mobile.bookingEyebrow": "مسار مبيعات واضح بالكامل",
+    "mobile.bookingIntro": "ابدأ ببريد العمل.",
     "heroVisual.live": "إشارات الصفقة المباشرة",
     "heroVisual.meetSignal": "أكد نائب رئيس المالية الميزانية.",
     "heroVisual.meetMeta": "09:42 · النص الكامل",
@@ -803,12 +874,18 @@ const applyLanguage = (language, { persist = false } = {}) => {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
-  document.title = t("meta.title");
-  setMetaContent('meta[name="description"]', t("meta.description"));
-  setMetaContent('meta[property="og:title"]', t("meta.title"));
-  setMetaContent('meta[property="og:description"]', t("meta.socialDescription"));
-  setMetaContent('meta[name="twitter:title"]', t("meta.title"));
-  setMetaContent('meta[name="twitter:description"]', t("meta.socialDescription"));
+  const metaTitleKey = LANDING_VARIANT === "mobile_v1"
+    ? "mobile.metaTitle"
+    : "meta.title";
+  const metaDescriptionKey = LANDING_VARIANT === "mobile_v1"
+    ? "mobile.metaDescription"
+    : "meta.description";
+  document.title = t(metaTitleKey);
+  setMetaContent('meta[name="description"]', t(metaDescriptionKey));
+  setMetaContent('meta[property="og:title"]', t(metaTitleKey));
+  setMetaContent('meta[property="og:description"]', t(metaDescriptionKey));
+  setMetaContent('meta[name="twitter:title"]', t(metaTitleKey));
+  setMetaContent('meta[name="twitter:description"]', t(metaDescriptionKey));
 
   if (demoFormStatus?.dataset.statusKey) {
     demoFormStatus.textContent = t(demoFormStatus.dataset.statusKey);
@@ -1057,7 +1134,10 @@ syncAskPromptButtons();
 
 const trackEvent = (eventName, parameters = {}) => {
   if (typeof window.gtag === "function") {
-    window.gtag("event", eventName, parameters);
+    window.gtag("event", eventName, {
+      landing_variant: LANDING_VARIANT,
+      ...parameters,
+    });
   }
 };
 
@@ -1381,7 +1461,7 @@ const captureDemoLead = async (email, signal) => {
     body: JSON.stringify({
       email,
       source: LEAD_SOURCE,
-      page_path: `${window.location.pathname}#demo-email-captured`,
+      page_path: `${window.location.pathname}${window.location.search}#demo-email-captured`,
     }),
     signal,
   });
@@ -1524,13 +1604,14 @@ const openDemoModal = () => {
 
 demoCtaLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
-    const location = link.closest(".hero-copy")
-      ? "hero"
-      : link.closest(".access-card")
-        ? "final_cta"
-        : link.closest(".nav")
-          ? "navigation"
-          : "footer";
+    const location = link.dataset.ctaLocation ||
+      (link.closest(".hero-copy")
+        ? "hero"
+        : link.closest(".access-card")
+          ? "final_cta"
+          : link.closest(".nav")
+            ? "navigation"
+            : "footer");
     trackEvent("book_demo_cta_click", { cta_location: location });
 
     if (link.matches("[data-open-demo-modal]") && demoModal) {
@@ -1685,6 +1766,7 @@ demoForm?.addEventListener("submit", async (event) => {
     company,
     slotStart: selectedBookingStart,
     timeZone,
+    source: LEAD_SOURCE,
   };
 
   try {

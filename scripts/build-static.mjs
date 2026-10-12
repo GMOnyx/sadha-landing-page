@@ -14,6 +14,7 @@ const publicEntries = [
   "SA DA.svg",
   "SADHA WAVEFORM.svg",
   "assets",
+  "demo",
 ];
 
 await rm(outputDirectory, { recursive: true, force: true });
