@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Anton";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/anton-latin.woff2") format("woff2");
+}
+
 :root {
   --paper: #f4f0e8;
   --paper-bright: #fbfaf6;
@@ -15,6 +23,7 @@
   --display:
     "Eurostile", "Bank Gothic", "Rajdhani", "Arial Black", ui-sans-serif,
     system-ui, sans-serif;
+  --hero-display: "Anton", Impact, "Arial Narrow", sans-serif;
   --body:
     "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, sans-serif;
@@ -4431,13 +4440,14 @@ html[dir="rtl"] .hero-copy {
   width: max-content;
   max-width: 550px;
   margin: 16px 0 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.9rem, 5vw, 5.15rem);
-  font-weight: 500;
-  line-height: 0.91;
-  letter-spacing: -0.045em;
+  font-family: var(--hero-display);
+  font-size: clamp(4.15rem, 5.25vw, 5.45rem);
+  font-weight: 400;
+  font-synthesis: none;
+  line-height: 0.88;
+  letter-spacing: -0.03em;
   text-align: left;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 .hero-sticky .hero-title span {
@@ -4449,9 +4459,9 @@ html[dir="rtl"] .hero-copy {
   max-width: 100%;
   margin-bottom: 7px;
   color: rgba(5, 5, 5, 0.46);
-  font-size: clamp(2.55rem, 3vw, 3rem);
+  font-size: clamp(2.65rem, 3.15vw, 3.15rem);
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.015em;
 }
 
 html[lang="en"] .hero-sticky .hero-title span:first-child {
@@ -4460,6 +4470,23 @@ html[lang="en"] .hero-sticky .hero-title span:first-child {
 
 .hero-sticky .hero-title span:last-child {
   color: var(--ink);
+}
+
+.hero-sticky .hero-title-accent {
+  display: inline-block;
+  padding: 0.1em 0.1em 0.045em;
+  color: var(--paper-bright);
+  font-style: normal;
+  line-height: 1;
+  background: var(--ink);
+  transform: rotate(-1deg);
+}
+
+html[lang="ar"] .hero-sticky .hero-title-accent {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  transform: none;
 }
 
 .hero-sticky .subhead {

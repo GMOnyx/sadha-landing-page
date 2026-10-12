@@ -120,7 +120,7 @@ const translations = {
     "hero.output3": "CRM: Close date updated",
     "hero.eyebrow": "Calls + WhatsApp → CRM",
     "hero.titleMuted": "The Revenue Intelligence",
-    "hero.titleStrong": "built for MENA",
+    "hero.titleStrongHtml": 'built for <em class="hero-title-accent">MENA</em>',
     "hero.subhead":
       "Know what’s happening in every deal. SADHA turns calls and WhatsApp into actionable CRM intelligence—automatically.",
     "hero.primary": "Book a Demo",
@@ -425,7 +425,7 @@ const translations = {
     "hero.output3": "إدارة العملاء: تحديث تاريخ الإغلاق",
     "hero.eyebrow": "المكالمات + واتساب ← إدارة العملاء",
     "hero.titleMuted": "ذكاء الإيرادات",
-    "hero.titleStrong": "المصمم لمنطقة الشرق الأوسط وشمال أفريقيا",
+    "hero.titleStrongHtml": "المصمم لمنطقة الشرق الأوسط وشمال أفريقيا",
     "hero.subhead":
       "اعرف ما يحدث في كل صفقة. يحوّل صدى المكالمات وواتساب إلى ذكاء عملي داخل إدارة العملاء تلقائيا.",
     "hero.primary": "احجز عرضا توضيحيا",
@@ -784,6 +784,10 @@ const applyLanguage = (language, { persist = false } = {}) => {
     if (element.hasAttribute("data-hide-parent-when-empty")) {
       element.parentElement.hidden = value === "";
     }
+  });
+
+  document.querySelectorAll("[data-i18n-html]").forEach((element) => {
+    element.innerHTML = t(element.dataset.i18nHtml);
   });
 
   document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
