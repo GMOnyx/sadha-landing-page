@@ -108,8 +108,8 @@ a {
 
 .mobile-brand {
   display: grid;
-  width: 96px;
-  height: 38px;
+  width: 120px;
+  height: 40px;
   place-items: center;
   border-radius: 11px;
 }
@@ -1154,7 +1154,7 @@ html[dir="rtl"] .booking-selection::before {
   }
 
   .mobile-brand {
-    width: 86px;
+    width: 100px;
   }
 
   .mobile-hero h1 {
