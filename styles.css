@@ -4479,7 +4479,7 @@ html[lang="en"] .hero-sticky .hero-title span:first-child {
   font-style: normal;
   line-height: 1;
   background: var(--ink);
-  transform: rotate(-1deg);
+  transform: none;
 }
 
 html[lang="ar"] .hero-sticky .hero-title-accent {
