@@ -1,6 +1,26 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (() => {
+        const userAgent = navigator.userAgent || "";
+        const isMobileDevice =
+          navigator.userAgentData?.mobile === true ||
+          /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(userAgent) ||
+          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
+          (window.matchMedia("(max-width: 767px)").matches &&
+            window.matchMedia("(pointer: coarse)").matches);
+
+        if (isMobileDevice && /^https?:$/.test(window.location.protocol)) {
+          const mobileUrl = new URL("demo/", window.location.href);
+          mobileUrl.search = window.location.search;
+          mobileUrl.hash = window.location.hash;
+          window.location.replace(mobileUrl.href);
+        }
+      })();
+    </script>
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -11,8 +31,6 @@
     <!-- Contentsquare -->
     <script defer src="https://t.contentsquare.net/uxa/a844fc8f66cb9.js"></script>
     <!-- End Contentsquare -->
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7YN63M82HS"></script>
     <script>
