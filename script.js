@@ -1582,6 +1582,11 @@ const openDemoModal = () => {
   });
 };
 
+// Founder follow-up emails link here. No email address is put in the URL.
+if (new URLSearchParams(window.location.search).get("book_demo") === "1") {
+  openDemoModal();
+}
+
 demoCtaLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
     const location = link.dataset.ctaLocation ||

@@ -8,6 +8,7 @@ const outputDirectory = path.join(projectRoot, "dist");
 const publicEntries = [
   "index.html",
   "thank-you.html",
+  "email-preferences.html",
   "script.js",
   "styles.css",
   "LOGO.png",

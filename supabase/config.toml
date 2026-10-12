@@ -4,6 +4,12 @@
 # working directory name when running `supabase init`.
 project_id = "SADHA_landing"
 
+[functions.send-demo-followups]
+verify_jwt = false
+
+[functions.demo-followup-preferences]
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.

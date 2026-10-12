@@ -5,3 +5,4 @@ supabase/functions/.env
 .wrangler/
 .dev.vars
 dist/
+node_modules/

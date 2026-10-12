@@ -1,10 +1,12 @@
 # SADHA booking automation setup
 
-The landing page now expects three Supabase Edge Functions:
+The landing page uses these Supabase Edge Functions:
 
 - `demo-availability` — combines Supabase reservations with Google Free/Busy.
 - `create-demo-booking` — reserves the slot, creates the Google Calendar event and Meet link, then sends confirmation emails through Resend.
 - `retry-booking-emails` — retries failed confirmation emails without creating duplicate events or duplicate emails.
+- `send-demo-followups` — sends one founder note an hour after Continue if the lead never books.
+- `demo-followup-preferences` — handles secure unsubscribe links and one-click email-client opt-outs.
 
 ## 1. Apply the database migration
 
@@ -108,3 +110,48 @@ Before enabling paid ads, complete a real booking using a non-founder company em
 6. The `.ics` attachment opens in Outlook or Apple Calendar.
 7. The `book_demo_scheduled` GA4 event fires once.
 8. `demo_bookings.calendar_status` is `created` and `notification_status` is `sent`.
+
+## Demo abandonment follow-up
+
+This is a separate server-side queue, not a browser timer. Both landing pages
+insert the lead before revealing scheduling. New inserts with the
+`#demo-email-captured` marker queue one follow-up after one hour. The cron worker
+runs every five minutes, so delivery is normally 60–65 minutes after Continue.
+Closing the page does not interrupt it. Existing leads are not backfilled.
+Duplicate email captures do not create another reminder.
+
+Booking a demo, including a pending booking request, suppresses the follow-up.
+The worker checks eligibility immediately before sending. Opt-outs are stored
+privately. Failed sends retry up to five times with backoff; a stable Resend
+idempotency key prevents repeat sends after a crash. No retries after 24 hours.
+
+Deploy/update this feature:
+
+1. Apply `supabase/migrations/202610130001_demo_lead_followups.sql` through the
+   SQL Editor or `supabase db query --linked --file ...`.
+2. Run the rollback-only SQL checks in `supabase/tests/demo_lead_followups.sql`.
+   No fixture remains and no email is sent.
+3. Deploy `send-demo-followups` and `demo-followup-preferences` with
+   `--no-verify-jwt --use-api`. The worker still requires its private cron header;
+   unsubscribe accepts only possession of an opaque, random token.
+4. Run `node scripts/configure-demo-followups.mjs /absolute/path/to/supabase`.
+   This reuses the existing CLI login, creates a dedicated random worker secret,
+   stores the scheduler copy in Supabase Vault, and activates the named cron job.
+   It does not change the Google Calendar or existing email credentials.
+5. Build/publish the frontend to include `email-preferences.html` and the
+   `book_demo=1` direct-modal link behavior on desktop and mobile.
+
+Monitor `public.demo_lead_followups` for `status`, `sent_at`, `resend_email_id`,
+`attempts`, and `last_error`. Cron history is in `cron.job_run_details`; the actual
+HTTP response is in `net._http_response` (cron success alone only means queued).
+To pause follow-ups without affecting booking confirmations:
+
+```sql
+select cron.alter_job(jobid, active := false)
+from cron.job where jobname = 'sadha-demo-lead-followups';
+```
+
+The email subject is **What time works best for you?** Replies go to
+`abdarrahman@sadha.ai`. The booking link contains only campaign attribution,
+never a customer's email address. The unsubscribe page intentionally has no
+analytics or third-party resources.

@@ -70,7 +70,7 @@ const plainEmailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 const namedEmailPattern =
   /^[^<>\r\n]+<[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}>$/i;
 
-const getFromEmail = () => {
+export const getFromEmail = () => {
   const configured = Deno.env.get("RESEND_FROM_EMAIL")?.trim() || "";
   const unquoted = configured.length >= 2 &&
       ((configured.startsWith('"') && configured.endsWith('"')) ||
@@ -131,7 +131,7 @@ const buildIcs = (booking: BookingEmailInput, includeAttendee = true) => {
   ].join("\r\n");
 };
 
-const sendEmail = async (
+export const sendEmail = async (
   payload: Record<string, unknown>,
   idempotencyKey: string,
 ) => {
@@ -145,6 +145,7 @@ const sendEmail = async (
       "Idempotency-Key": idempotencyKey,
     },
     body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(15_000),
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok || !data.id) {
