@@ -114,11 +114,13 @@ Before enabling paid ads, complete a real booking using a non-founder company em
 ## Demo abandonment follow-up
 
 This is a separate server-side queue, not a browser timer. Both landing pages
-insert the lead before revealing scheduling. New inserts with the
-`#demo-email-captured` marker queue one follow-up after one hour. The cron worker
+call `capture-demo-lead` before revealing scheduling. It atomically saves or finds
+the email and queues one follow-up, including returning leads, after one hour.
+The cron worker
 runs every five minutes, so delivery is normally 60–65 minutes after Continue.
-Closing the page does not interrupt it. Existing leads are not backfilled.
-Duplicate email captures do not create another reminder.
+Closing the page does not interrupt it. Existing leads are not backfilled: they
+must click Continue again. Repeated captures do not create another reminder or
+reset its delay, and sent reminders and opt-outs are never reactivated.
 
 Booking a demo, including a pending booking request, suppresses the follow-up.
 The worker checks eligibility immediately before sending. Opt-outs are stored
@@ -127,13 +129,16 @@ idempotency key prevents repeat sends after a crash. No retries after 24 hours.
 
 Deploy/update this feature:
 
-1. Apply `supabase/migrations/202610130001_demo_lead_followups.sql` through the
+1. Apply `supabase/migrations/202610130001_demo_lead_followups.sql`, then
+   `supabase/migrations/202610130002_capture_demo_lead.sql` through the
    SQL Editor or `supabase db query --linked --file ...`.
 2. Run the rollback-only SQL checks in `supabase/tests/demo_lead_followups.sql`.
    No fixture remains and no email is sent.
-3. Deploy `send-demo-followups` and `demo-followup-preferences` with
+3. Deploy `capture-demo-lead`, `send-demo-followups`, and `demo-followup-preferences` with
    `--no-verify-jwt --use-api`. The worker still requires its private cron header;
    unsubscribe accepts only possession of an opaque, random token.
+   Lead capture validates both landing sources and applies server-side rate limits.
+   Anonymous visitors cannot call the database capture RPC directly.
 4. Run `node scripts/configure-demo-followups.mjs /absolute/path/to/supabase`.
    This reuses the existing CLI login, creates a dedicated random worker secret,
    stores the scheduler copy in Supabase Vault, and activates the named cron job.

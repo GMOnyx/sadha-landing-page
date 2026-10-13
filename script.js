@@ -48,19 +48,16 @@ let bookedSlotStarts = new Set();
 const LANGUAGE_STORAGE_KEY = "sadha-language";
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ztm-q3VrZeqqABxCp1b-sQ_jBA-Me9Y";
-const LEADS_TABLE = "early_access_requests";
 const LANDING_VARIANT = document.body?.dataset.landingVariant || "desktop";
 const LEAD_SOURCE = LANDING_VARIANT === "mobile_v1"
   ? "sadha_mobile_landing"
   : "sadha_landing";
-// Public email signups use the source allowed by the existing Supabase policy.
-// The page path, analytics, and booking source retain mobile attribution.
-const LEAD_CAPTURE_SOURCE = "sadha_landing";
 const IS_LOCAL_PREVIEW =
   window.location.protocol === "file:" ||
   ["127.0.0.1", "localhost"].includes(window.location.hostname);
 const BOOKING_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/create-demo-booking`;
 const AVAILABILITY_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/demo-availability`;
+const LEAD_CAPTURE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/capture-demo-lead`;
 const OWNER_TIME_ZONE = "Asia/Dubai";
 const OWNER_UTC_OFFSET_HOURS = 4;
 const BOOKING_DURATION_MINUTES = 30;
@@ -1425,28 +1422,23 @@ const captureDemoLead = async (email, signal) => {
     return;
   }
 
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${LEADS_TABLE}`, {
+  const response = await fetch(LEAD_CAPTURE_FUNCTION_URL, {
     method: "POST",
     headers: {
       apikey: SUPABASE_PUBLISHABLE_KEY,
       Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
       "Content-Type": "application/json",
-      Prefer: "return=minimal",
     },
     body: JSON.stringify({
       email,
-      source: LEAD_CAPTURE_SOURCE,
+      source: LEAD_SOURCE,
       page_path: `${window.location.pathname}${window.location.search}#demo-email-captured`,
     }),
     signal,
   });
 
-  if (!response.ok) {
-    const result = await response.json().catch(() => ({}));
-    // An existing email is already captured; other conflicts are real failures.
-    if (response.status === 409 && result.code === "23505") {
-      return;
-    }
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.captured !== true) {
     throw new Error(`Lead capture failed with ${response.status}`);
   }
 };

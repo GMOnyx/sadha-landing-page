@@ -10,6 +10,9 @@ verify_jwt = false
 [functions.demo-followup-preferences]
 verify_jwt = false
 
+[functions.capture-demo-lead]
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.
