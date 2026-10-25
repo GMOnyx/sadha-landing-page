@@ -32,7 +32,7 @@
     <link rel="icon" href="../assets/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
     <link rel="preload" href="../assets/fonts/anton-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="mobile.css?v=2" />
+    <link rel="stylesheet" href="mobile.css?v=3" />
     <title>Sadha | Know What’s Happening in Every Deal</title>
   </head>
   <body data-landing-variant="mobile_v1">
@@ -153,6 +153,8 @@
                 <input id="demo-email" name="email" type="email" placeholder="you@example.com" data-i18n-placeholder="access.placeholder" autocomplete="email" inputmode="email" required />
                 <button type="submit" data-i18n="access.emailContinue">Continue</button>
               </div>
+              <div class="bot-trap" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
+              <div class="bot-check" data-bot-check="demo_lead"></div>
               <p class="form-status" data-booking-email-status role="status" aria-live="polite"></p>
             </form>
           </div>
@@ -198,6 +200,8 @@
 
                 <div class="booking-selection" data-booking-selection hidden></div>
                 <button class="booking-submit" type="submit" data-i18n="access.button">Book a Demo</button>
+                <div class="bot-trap" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label></div>
+                <div class="bot-check" data-bot-check="demo_booking"></div>
                 <p class="form-status" data-demo-form-status role="status" aria-live="polite"></p>
               </div>
             </form>
@@ -217,7 +221,8 @@
       </section>
     </div>
 
-    <script src="../script.js?v=50"></script>
+    <script src="../bot-check.js?v=1"></script>
+    <script src="../script.js?v=51"></script>
     <script src="mobile.js?v=1"></script>
   </body>
 </html>

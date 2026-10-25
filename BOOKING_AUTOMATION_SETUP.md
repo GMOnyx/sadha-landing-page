@@ -3,6 +3,7 @@
 The landing page uses these Supabase Edge Functions:
 
 - `demo-availability` — combines Supabase reservations with Google Free/Busy.
+- `capture-demo-lead` — verifies the browser, saves the email, and queues the unbooked-lead follow-up.
 - `create-demo-booking` — reserves the slot, creates the Google Calendar event and Meet link, then sends confirmation emails through Resend.
 - `retry-booking-emails` — retries failed confirmation emails without creating duplicate events or duplicate emails.
 - `send-demo-followups` — sends one founder note an hour after Continue if the lead never books.
@@ -60,6 +61,7 @@ Required secrets:
 - `RESEND_API_KEY`
 - `RESEND_FROM_EMAIL`
 - `BOOKING_CRON_SECRET`
+- `TURNSTILE_SECRET_KEY`
 
 Use these non-secret values:
 
@@ -88,7 +90,46 @@ npx supabase functions deploy create-demo-booking --no-verify-jwt --use-api
 npx supabase functions deploy retry-booking-emails --no-verify-jwt --use-api
 ```
 
-These functions intentionally accept unauthenticated visitors because the booking form is public. They validate all input server-side, restrict browser origins, apply a rate limit, and use the service role only inside Supabase.
+These functions intentionally accept unauthenticated visitors because the booking form is public. Lead capture and booking require a server-validated Turnstile token. The functions also validate input, restrict browser origins, apply a rate limit, and use the service role only inside Supabase.
+
+## Background bot protection
+
+Cloudflare Turnstile uses Managed mode with `appearance: interaction-only`.
+Most visitors see no widget; higher-risk browsers can receive a checkbox.
+The API is loaded only when the demo modal opens. Each Continue/Book action
+executes a fresh check, so the single-use token cannot be reused between steps
+or expire while a visitor is choosing a time. Failed checks keep the form open
+with a retry message, never a false booking confirmation.
+
+1. Create a Turnstile widget for `sadha.ai` (covers its subdomains), Managed mode,
+   with pre-clearance disabled. There is no need to change WAF or account access.
+2. Put only its public sitekey in `bot-check.js`. Store the private secret as
+   `TURNSTILE_SECRET_KEY` in Supabase Edge Function secrets, not in Git or the browser.
+3. Deploy the updated `capture-demo-lead` and `create-demo-booking` together with
+   the frontend. Old open tabs need a refresh; old clients without a token are
+   rejected intentionally. Do not enable the API changes without the real keys.
+4. Apply `supabase/migrations/202610250001_require_verified_lead_capture.sql`
+   to close the legacy anonymous REST lead-insert route.
+
+The server checks Cloudflare's signed result, exact `sadha.ai`/`www.sadha.ai`
+hostname, `demo_lead`/`demo_booking` action, and token age before database writes,
+calendar creation, or email sends. Missing/forged/expired/replayed tokens,
+honeypot submissions, missing configuration, and provider outages fail closed.
+Production refuses Cloudflare's test keys. No browser fingerprint, email, or
+other lead data is sent to Siteverify by the application; only the token and
+private verification key are sent. Local previews do not call production APIs.
+
+Test with:
+
+```sh
+node --test tests/bot-check.test.mjs
+deno test supabase/functions/_shared/bot-verification.test.ts
+deno test --allow-env --allow-read --node-modules-dir=auto supabase/functions/_shared/bot-guard.integration.test.ts
+```
+
+Use mocks or Cloudflare's official dummy keys for local automated tests, never
+relax the production check. Turnstile reduces automated spam; it does not prove
+email ownership or prevent every fake booking made by a real human.
 
 ## 6. Schedule email retries
 

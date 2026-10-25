@@ -10,6 +10,7 @@ const publicEntries = [
   "thank-you.html",
   "email-preferences.html",
   "script.js",
+  "bot-check.js",
   "styles.css",
   "LOGO.png",
   "SA DA.svg",

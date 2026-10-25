@@ -16,25 +16,9 @@ add column if not exists full_name text;
 alter table public.early_access_requests enable row level security;
 
 grant usage on schema public to anon;
-grant insert on public.early_access_requests to anon;
-
-do $$
-begin
-  if not exists (
-    select 1
-    from pg_policies
-    where schemaname = 'public'
-      and tablename = 'early_access_requests'
-      and policyname = 'Allow public early access signups'
-  ) then
-    create policy "Allow public early access signups"
-    on public.early_access_requests
-    for insert
-    to anon
-    with check (source = 'sadha_landing');
-  end if;
-end
-$$;
+-- Leads are captured by the server-verified Edge Function, never anonymous REST.
+revoke insert on public.early_access_requests from public, anon, authenticated;
+drop policy if exists "Allow public early access signups" on public.early_access_requests;
 
 create index if not exists early_access_requests_created_at_idx
 on public.early_access_requests (created_at desc);

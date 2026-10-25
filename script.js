@@ -44,6 +44,8 @@ let bookingSlots = [];
 let selectedBookingDateKey = "";
 let selectedBookingStart = "";
 let bookedSlotStarts = new Set();
+let leadSubmitController = null;
+let bookingSubmitController = null;
 
 const LANGUAGE_STORAGE_KEY = "sadha-language";
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
@@ -418,6 +420,8 @@ const translations = {
     "booking.done": "Done",
     "status.emailCaptureError": "We couldn't save your email. Please try again.",
     "status.error": "We couldn't complete the booking. Please try again.",
+    "status.verifying": "Just a moment…",
+    "status.botError": "We couldn't verify your browser. Please try again. If it keeps happening, refresh the page or turn off content blocking for this site.",
     "footer.contact": "Book a Demo",
     "footer.copy": "Copyright 2026 SADHA Intelligence. All rights reserved.",
   },
@@ -753,6 +757,8 @@ const translations = {
     "booking.done": "تم",
     "status.emailCaptureError": "تعذر حفظ بريدك الإلكتروني. يرجى المحاولة مرة أخرى.",
     "status.error": "تعذر إكمال الحجز. يرجى المحاولة مرة أخرى.",
+    "status.verifying": "لحظة من فضلك…",
+    "status.botError": "تعذر التحقق من المتصفح. يرجى المحاولة مرة أخرى. إذا استمرت المشكلة، حدّث الصفحة أو عطّل حظر المحتوى لهذا الموقع.",
     "footer.contact": "احجز عرضا توضيحيا",
     "footer.copy": "حقوق النشر 2026 صدى. جميع الحقوق محفوظة.",
   },
@@ -1417,7 +1423,7 @@ const loadBookedDemoSlots = async () => {
   renderBookingPicker();
 };
 
-const captureDemoLead = async (email, signal) => {
+const captureDemoLead = async (email, signal, proof = {}) => {
   if (IS_LOCAL_PREVIEW) {
     return;
   }
@@ -1431,6 +1437,7 @@ const captureDemoLead = async (email, signal) => {
     },
     body: JSON.stringify({
       email,
+      ...proof,
       source: LEAD_SOURCE,
       page_path: `${window.location.pathname}${window.location.search}#demo-email-captured`,
     }),
@@ -1439,7 +1446,9 @@ const captureDemoLead = async (email, signal) => {
 
   const result = await response.json().catch(() => ({}));
   if (!response.ok || result.captured !== true) {
-    throw new Error(`Lead capture failed with ${response.status}`);
+    const error = new Error(`Lead capture failed with ${response.status}`);
+    error.code = result.error || "CAPTURE_FAILED";
+    throw error;
   }
 };
 
@@ -1460,7 +1469,7 @@ const reserveDemoSlot = async (booking, signal) => {
   });
 
   if (response.status === 404) {
-    return { confirmed: false };
+    throw new Error("Booking service unavailable");
   }
 
   const result = await response.json().catch(() => ({}));
@@ -1514,13 +1523,21 @@ const showBookingOutcome = (booking, reservation) => {
 };
 
 const resetBookingFlow = () => {
+  leadSubmitController?.abort();
+  bookingSubmitController?.abort();
+  leadSubmitController = null;
+  bookingSubmitController = null;
+  window.sadhaBotCheck?.reset();
   bookingEmailForm?.reset();
   bookingEmailForm?.classList.remove("is-complete");
   const emailSubmitButton = bookingEmailForm?.querySelector('button[type="submit"]');
   if (emailSubmitButton) {
     emailSubmitButton.hidden = false;
+    setBookingEmailSubmitting(emailSubmitButton, false);
   }
   demoForm?.reset();
+  const bookingSubmitButton = demoForm?.querySelector('button[type="submit"]');
+  if (bookingSubmitButton) setDemoSubmitting(bookingSubmitButton, false);
   bookingFormView.hidden = false;
   bookingSuccess.hidden = true;
   bookingScheduler.hidden = true;
@@ -1548,6 +1565,10 @@ const closeDemoModal = () => {
     return;
   }
 
+  leadSubmitController?.abort();
+  bookingSubmitController?.abort();
+  window.sadhaBotCheck?.reset();
+
   demoModal.classList.remove("is-open");
   document.body.classList.remove("is-modal-open");
   setDemoFormStatus("");
@@ -1566,6 +1587,7 @@ const openDemoModal = () => {
   lastFocusedElement = document.activeElement;
   resetBookingFlow();
   demoModal.hidden = false;
+  window.sadhaBotCheck?.warmup();
   document.body.classList.add("is-modal-open");
 
   window.requestAnimationFrame(() => {
@@ -1615,7 +1637,7 @@ window.addEventListener("keydown", (event) => {
   if (event.key === "Tab") {
     const focusable = Array.from(
       demoModal.querySelectorAll(
-        'button:not([disabled]), input:not([disabled]), select:not([disabled]), a[href]',
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), a[href], iframe',
       ),
     ).filter((element) => element.offsetParent !== null && element.tabIndex >= 0);
     const first = focusable[0];
@@ -1633,6 +1655,7 @@ window.addEventListener("keydown", (event) => {
 
 bookingEmailForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (leadSubmitController) return;
 
   const submitButton = bookingEmailForm.querySelector('button[type="submit"]');
   const email = bookingEmailInput.value.trim().toLowerCase();
@@ -1644,12 +1667,23 @@ bookingEmailForm?.addEventListener("submit", async (event) => {
 
   bookingEmailInput.setCustomValidity("");
   const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), 12000);
+  leadSubmitController = controller;
+  let timeoutId;
   setBookingEmailSubmitting(submitButton, true);
-  setBookingEmailStatus("");
+  setBookingEmailStatus("status.verifying");
 
   try {
-    await captureDemoLead(email, controller.signal);
+    if (!IS_LOCAL_PREVIEW && !window.sadhaBotCheck) throw Object.assign(new Error("Verification unavailable"), { code: "BOT_VERIFICATION_UNAVAILABLE" });
+    const turnstileToken = await window.sadhaBotCheck?.verify("demo_lead",
+      bookingEmailForm.querySelector('[data-bot-check="demo_lead"]'),
+      { signal: controller.signal, language: currentLanguage });
+    if (controller.signal.aborted) return;
+    timeoutId = window.setTimeout(() => controller.abort(), 12000);
+    await captureDemoLead(email, controller.signal, {
+      turnstileToken,
+      website: bookingEmailForm.querySelector('[name="website"]')?.value || "",
+    });
+    setBookingEmailStatus("");
     bookingEmailInput.value = email;
     bookingEmailInput.readOnly = true;
     bookingEmailForm.classList.add("is-complete");
@@ -1667,11 +1701,14 @@ bookingEmailForm?.addEventListener("submit", async (event) => {
     });
     loadBookedDemoSlots().catch((error) => console.warn(error));
   } catch (error) {
-    console.error(error);
-    setBookingEmailStatus("status.emailCaptureError", "error");
+    if (error.code === "BOT_VERIFICATION_CANCELLED") return;
+    setBookingEmailStatus(error.code?.startsWith("BOT_") ? "status.botError" : "status.emailCaptureError", "error");
   } finally {
     window.clearTimeout(timeoutId);
-    setBookingEmailSubmitting(submitButton, false);
+    if (leadSubmitController === controller) {
+      leadSubmitController = null;
+      setBookingEmailSubmitting(submitButton, false);
+    }
   }
 });
 
@@ -1692,6 +1729,7 @@ changeBookingEmailButton?.addEventListener("click", () => {
 
 demoForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (bookingSubmitController) return;
 
   const nameInput = demoForm.querySelector('[name="name"]');
   const companyInput = demoForm.querySelector('[name="company"]');
@@ -1715,9 +1753,10 @@ demoForm?.addEventListener("submit", async (event) => {
   bookingEmailInput.setCustomValidity("");
 
   const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), 22000);
+  bookingSubmitController = controller;
+  let timeoutId;
   setDemoSubmitting(submitButton, true);
-  setDemoFormStatus("");
+  setDemoFormStatus("status.verifying");
   const booking = {
     name,
     email,
@@ -1728,7 +1767,17 @@ demoForm?.addEventListener("submit", async (event) => {
   };
 
   try {
-    const reservation = await reserveDemoSlot(booking, controller.signal);
+    if (!IS_LOCAL_PREVIEW && !window.sadhaBotCheck) throw Object.assign(new Error("Verification unavailable"), { code: "BOT_VERIFICATION_UNAVAILABLE" });
+    const turnstileToken = await window.sadhaBotCheck?.verify("demo_booking",
+      demoForm.querySelector('[data-bot-check="demo_booking"]'),
+      { signal: controller.signal, language: currentLanguage });
+    if (controller.signal.aborted) return;
+    timeoutId = window.setTimeout(() => controller.abort(), 30000);
+    const reservation = await reserveDemoSlot({
+      ...booking,
+      turnstileToken,
+      website: demoForm.querySelector('[name="website"]')?.value || "",
+    }, controller.signal);
     const eventName = reservation.confirmed
       ? "book_demo_scheduled"
       : "book_demo_request_captured";
@@ -1738,7 +1787,7 @@ demoForm?.addEventListener("submit", async (event) => {
     });
     showBookingOutcome(booking, reservation);
   } catch (error) {
-    console.error(error);
+    if (error.code === "BOT_VERIFICATION_CANCELLED") return;
     if (error.code === "SLOT_TAKEN") {
       bookedSlotStarts.add(selectedBookingStart);
       selectedBookingStart = "";
@@ -1748,11 +1797,14 @@ demoForm?.addEventListener("submit", async (event) => {
       trackEvent("book_demo_reservation_failed", {
         form_location: "demo_modal",
       });
-      showBookingOutcome(booking, { confirmed: false });
+      setDemoFormStatus(error.code?.startsWith("BOT_") ? "status.botError" : "status.error", "error");
     }
   } finally {
     window.clearTimeout(timeoutId);
-    setDemoSubmitting(submitButton, false);
+    if (bookingSubmitController === controller) {
+      bookingSubmitController = null;
+      setDemoSubmitting(submitButton, false);
+    }
   }
 });
 

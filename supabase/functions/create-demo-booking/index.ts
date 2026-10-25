@@ -15,6 +15,7 @@ import {
   sendBookingRequestEmails,
 } from "../_shared/email.ts";
 import { createCalendarEvent, getBusyIntervals } from "../_shared/google.ts";
+import { BotVerificationError, verifyBotProof } from "../_shared/bot-verification.ts";
 
 const getAdminClient = () =>
   createClient(
@@ -31,11 +32,14 @@ Deno.serve(async (request) => {
     return jsonResponse(request, { error: "NOT_ALLOWED" }, 403);
   }
 
-  const admin = getAdminClient();
+  let admin: ReturnType<typeof getAdminClient> | undefined;
   let bookingId = "";
 
   try {
-    const booking = validateBookingPayload(await request.json());
+    const payload = await request.json();
+    const booking = validateBookingPayload(payload);
+    await verifyBotProof(payload, "demo_booking", Deno.env.get("TURNSTILE_SECRET_KEY"));
+    admin = getAdminClient();
     const fingerprint = await hashRateLimitKey(request, booking.email);
     const rateWindow = new Date(Date.now() - 15 * 60 * 1000).toISOString();
     const { count } = await admin
@@ -217,8 +221,11 @@ Deno.serve(async (request) => {
       notification_status: notificationStatus,
     });
   } catch (error) {
+    if (error instanceof BotVerificationError) {
+      return jsonResponse(request, { error: error.code }, error.status);
+    }
     console.error("Booking creation failed", error);
-    if (bookingId) {
+    if (bookingId && admin) {
       await admin
         .from("demo_bookings")
         .update({

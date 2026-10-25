@@ -5448,6 +5448,20 @@ html[dir="rtl"] .hero-sticky .subhead {
   margin-top: 24px;
 }
 
+.bot-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.bot-check { min-width: 0; }
+.bot-check.is-interactive { margin-top: 12px; }
+.booking-email-form.is-complete .bot-check { display: none; }
+
 .booking-email-form > label {
   display: block;
   margin-bottom: 7px;

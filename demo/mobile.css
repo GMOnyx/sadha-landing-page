@@ -601,6 +601,19 @@ main,
 }
 
 /* Mobile booking sheet */
+.bot-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.bot-check { min-width: 0; }
+.bot-check.is-interactive { margin-top: 12px; }
+.booking-email-form.is-complete .bot-check { display: none; }
+
 .access-modal {
   position: fixed;
   inset: 0;
