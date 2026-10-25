@@ -2415,6 +2415,9 @@ body.is-modal-open {
 .access-modal {
   position: fixed;
   inset: 0;
+  top: var(--booking-viewport-top, 0px);
+  bottom: auto;
+  height: var(--booking-viewport-height, 100vh);
   z-index: 100;
   display: grid;
   place-items: center;
@@ -5401,7 +5404,7 @@ html[dir="rtl"] .hero-sticky .subhead {
 /* In-modal demo booking */
 .booking-dialog {
   width: min(560px, 100%);
-  max-height: calc(100svh - 40px);
+  max-height: calc(var(--booking-viewport-height, 100svh) - 40px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -5867,7 +5870,7 @@ html[dir="rtl"] .booking-selection::before {
   }
 
   .booking-dialog {
-    max-height: calc(100svh - 20px);
+    max-height: calc(var(--booking-viewport-height, 100svh) - 20px);
     border-radius: 22px;
     padding: 22px 16px 18px;
   }
@@ -5892,6 +5895,13 @@ html[dir="rtl"] .booking-selection::before {
 
   .booking-email-row button {
     width: 100%;
+  }
+
+  .booking-dialog input,
+  .booking-dialog select,
+  .booking-dialog textarea {
+    min-width: 0;
+    font-size: max(16px, 1rem);
   }
 
   .booking-scheduler-heading {
@@ -5931,7 +5941,7 @@ html[dir="rtl"] .booking-selection::before {
   }
 
   .booking-success {
-    min-height: min(430px, calc(100svh - 56px));
+    min-height: min(430px, calc(var(--booking-viewport-height, 100svh) - 56px));
     padding: 44px 8px 28px;
   }
 

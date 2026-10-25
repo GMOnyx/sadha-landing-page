@@ -65,7 +65,7 @@
     <meta name="theme-color" content="#f4f0e8" />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="styles.css?v=65" />
+    <link rel="stylesheet" href="styles.css?v=66" />
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
@@ -481,7 +481,7 @@
 
     <div class="access-modal" id="demo-modal" data-demo-modal hidden>
       <button class="access-modal-backdrop" type="button" tabindex="-1" data-close-demo-modal aria-label="Close demo form" data-i18n-aria-label="access.closeLabel"></button>
-      <section class="access-dialog booking-dialog" data-booking-dialog role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <section class="access-dialog booking-dialog" data-booking-dialog role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" tabindex="-1">
         <button class="access-modal-close" type="button" data-close-demo-modal aria-label="Close demo form" data-i18n-aria-label="access.closeLabel">×</button>
         <div data-booking-form-view>
           <div class="booking-intro">
@@ -503,7 +503,7 @@
             <div class="booking-scheduler-heading">
               <div>
                 <p class="eyebrow" data-i18n="booking.nextStep">Next step</p>
-                <h3 data-i18n="booking.scheduleTitle">Choose a time</h3>
+                <h3 id="booking-schedule-title" tabindex="-1" data-i18n="booking.scheduleTitle">Choose a time</h3>
               </div>
               <button type="button" class="booking-change-email" data-change-booking-email data-i18n="booking.changeEmail">Change email</button>
             </div>
@@ -564,6 +564,6 @@
     </div>
 
     <script src="bot-check.js?v=1"></script>
-    <script src="script.js?v=51"></script>
+    <script src="script.js?v=52"></script>
   </body>
 </html>

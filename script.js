@@ -46,6 +46,7 @@ let selectedBookingStart = "";
 let bookedSlotStarts = new Set();
 let leadSubmitController = null;
 let bookingSubmitController = null;
+let modalCloseTimer = null;
 
 const LANGUAGE_STORAGE_KEY = "sadha-language";
 const SUPABASE_URL = "https://vriofvpoagfnlmrbepkm.supabase.co";
@@ -1423,6 +1424,46 @@ const loadBookedDemoSlots = async () => {
   renderBookingPicker();
 };
 
+// Mobile keyboard and viewport handling.
+let bookingViewportFrame = null;
+const syncBookingViewport = () => {
+  if (!demoModal || demoModal.hidden) return;
+  const viewport = window.visualViewport;
+  // Preserve intentional pinch zoom: never rescale or chase a magnified viewport.
+  if (viewport && Math.abs(viewport.scale - 1) > 0.05) return;
+  const height = viewport?.height || window.innerHeight;
+  demoModal.style.setProperty("--booking-viewport-height", `${Math.round(height)}px`);
+  demoModal.style.setProperty("--booking-viewport-top", `${Math.round(viewport?.offsetTop || 0)}px`);
+};
+const scheduleBookingViewport = () => {
+  if (bookingViewportFrame !== null || !demoModal || demoModal.hidden) return;
+  bookingViewportFrame = window.requestAnimationFrame(() => {
+    bookingViewportFrame = null;
+    syncBookingViewport();
+  });
+};
+const dismissBookingKeyboard = () => {
+  const active = document.activeElement;
+  if (active?.matches?.("input, select, textarea") && bookingDialog?.contains(active)) active.blur();
+};
+const focusBookingStart = () => {
+  const touchLayout = window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(max-width: 720px)").matches;
+  // Do not open the software keyboard automatically when a mobile sheet opens.
+  (touchLayout ? bookingDialog : bookingEmailInput)?.focus({ preventScroll: true });
+};
+const revealBookingScheduler = () => {
+  bookingScheduler.classList.add("is-visible");
+  bookingDialog.setAttribute("aria-labelledby", "booking-schedule-title");
+  syncBookingViewport();
+  document.getElementById("booking-schedule-title")?.focus({ preventScroll: true });
+  bookingDialog.scrollTop = 0;
+};
+window.addEventListener("resize", scheduleBookingViewport, { passive: true });
+window.visualViewport?.addEventListener("resize", scheduleBookingViewport, { passive: true });
+window.visualViewport?.addEventListener("scroll", scheduleBookingViewport, { passive: true });
+// End mobile keyboard and viewport handling.
+
 const captureDemoLead = async (email, signal, proof = {}) => {
   if (IS_LOCAL_PREVIEW) {
     return;
@@ -1519,7 +1560,7 @@ const showBookingOutcome = (booking, reservation) => {
     bookingMeetingLink.hidden = !confirmed || !reservation.meetingUrl;
     bookingMeetingLink.href = reservation.meetingUrl || "#";
   }
-  bookingSuccess.querySelector("button")?.focus();
+  bookingSuccess.querySelector("button")?.focus({ preventScroll: true });
 };
 
 const resetBookingFlow = () => {
@@ -1568,14 +1609,18 @@ const closeDemoModal = () => {
   leadSubmitController?.abort();
   bookingSubmitController?.abort();
   window.sadhaBotCheck?.reset();
+  dismissBookingKeyboard();
 
   demoModal.classList.remove("is-open");
   document.body.classList.remove("is-modal-open");
   setDemoFormStatus("");
 
-  window.setTimeout(() => {
+  window.clearTimeout(modalCloseTimer);
+  modalCloseTimer = window.setTimeout(() => {
     demoModal.hidden = true;
-    lastFocusedElement?.focus?.();
+    demoModal.style.removeProperty("--booking-viewport-height");
+    demoModal.style.removeProperty("--booking-viewport-top");
+    lastFocusedElement?.focus?.({ preventScroll: true });
   }, 180);
 };
 
@@ -1585,14 +1630,16 @@ const openDemoModal = () => {
   }
 
   lastFocusedElement = document.activeElement;
+  window.clearTimeout(modalCloseTimer);
   resetBookingFlow();
   demoModal.hidden = false;
+  syncBookingViewport();
   window.sadhaBotCheck?.warmup();
   document.body.classList.add("is-modal-open");
 
   window.requestAnimationFrame(() => {
     demoModal.classList.add("is-open");
-    bookingEmailInput?.focus();
+    focusBookingStart();
   });
 };
 
@@ -1666,6 +1713,7 @@ bookingEmailForm?.addEventListener("submit", async (event) => {
   }
 
   bookingEmailInput.setCustomValidity("");
+  dismissBookingKeyboard();
   const controller = new AbortController();
   leadSubmitController = controller;
   let timeoutId;
@@ -1695,10 +1743,7 @@ bookingEmailForm?.addEventListener("submit", async (event) => {
       form_step: "email",
     });
 
-    window.requestAnimationFrame(() => {
-      bookingScheduler.classList.add("is-visible");
-      bookingDialog.scrollTop = 0;
-    });
+    window.requestAnimationFrame(revealBookingScheduler);
     loadBookedDemoSlots().catch((error) => console.warn(error));
   } catch (error) {
     if (error.code === "BOT_VERIFICATION_CANCELLED") return;
@@ -1723,7 +1768,7 @@ changeBookingEmailButton?.addEventListener("click", () => {
   selectedBookingDateKey = "";
   setDemoFormStatus("");
   renderBookingPicker();
-  bookingEmailInput.focus();
+  bookingEmailInput.focus({ preventScroll: true });
   bookingEmailInput.select();
 });
 
@@ -1751,6 +1796,8 @@ demoForm?.addEventListener("submit", async (event) => {
   }
 
   bookingEmailInput.setCustomValidity("");
+
+  dismissBookingKeyboard();
 
   const controller = new AbortController();
   bookingSubmitController = controller;
